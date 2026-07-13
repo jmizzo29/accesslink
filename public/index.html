@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AccessLink - Accessible Travel</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; line-height: 1.6; color: #1f2937; background: #fafafa; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+    
+    /* Header */
+    header { background: white; border-bottom: 1px solid #e5e7eb; position: sticky; top: 0; z-index: 50; }
+    header nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 0; }
+    header .logo { font-size: 24px; font-weight: bold; color: #0066cc; }
+    header nav a { margin: 0 16px; color: #666; text-decoration: none; font-size: 14px; }
+    header nav a:hover { color: #0066cc; }
+    
+    /* Hero */
+    .hero { background: linear-gradient(135deg, #0066cc 0%, #0052a3 100%); color: white; padding: 80px 0; text-align: center; }
+    .hero h1 { font-size: 48px; margin-bottom: 20px; }
+    .hero p { font-size: 18px; margin-bottom: 40px; max-width: 600px; margin-left: auto; margin-right: auto; }
+    
+    /* Section */
+    .section { padding: 60px 0; }
+    .section h2 { font-size: 36px; margin-bottom: 32px; text-align: center; }
+    
+    /* Search Form */
+    .search-form { background: white; padding: 32px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 32px; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-weight: 500; margin-bottom: 8px; font-size: 14px; }
+    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-family: inherit; }
+    .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #0066cc; ring: 2px solid #0066cc; }
+    
+    /* Properties Grid */
+    .properties { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+    .property-card { background: white; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .property-card-image { width: 100%; height: 200px; background: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 100%); display: flex; align-items: center; justify-content: center; color: #999; }
+    .property-card-content { padding: 20px; }
+    .property-card h3 { font-size: 18px; margin-bottom: 8px; }
+    .property-card p { font-size: 14px; color: #666; margin-bottom: 12px; }
+    .feature-list { list-style: none; margin-bottom: 16px; }
+    .feature-list li { font-size: 13px; padding: 4px 0; color: #666; }
+    .feature-list li:before { content: "✓ "; color: #22c55e; font-weight: bold; margin-right: 6px; }
+    
+    .btn { display: inline-block; padding: 10px 24px; background: #0066cc; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 500; text-decoration: none; transition: all 0.2s; }
+    .btn:hover { background: #0052a3; }
+    .btn-secondary { background: white; color: #0066cc; border: 2px solid #0066cc; }
+    .btn-secondary:hover { background: #f3f4f6; }
+    
+    .success-msg { background: #dcfce7; color: #166534; padding: 16px; border-radius: 6px; margin-bottom: 16px; display: none; }
+    .success-msg.show { display: block; }
+    
+    footer { background: #1f2937; color: white; padding: 40px 0; text-align: center; }
+    footer p { margin: 8px 0; }
+    
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 32px; }
+      header nav { flex-direction: column; gap: 16px; }
+      header nav a { margin: 0; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav>
+        <div class="logo">♿ AccessLink</div>
+        <div>
+          <a href="#search">Search</a>
+          <a href="#report">Report</a>
+          <a href="https://github.com/jmizzo29/accesslink" target="_blank">GitHub</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <h1>Travel With Confidence & Dignity</h1>
+      <p>Find truly accessible travel options for wheelchair users. Search verified Airbnbs, hotels, and airports with community-powered accessibility data.</p>
+    </div>
+  </section>
+
+  <div class="container">
+    <section class="section" id="search">
+      <h2>Find Accessible Places</h2>
+      
+      <div class="search-form">
+        <h3>Search Properties</h3>
+        <div style="margin: 20px 0; color: #0066cc; font-weight: bold;">Sample verified listings:</div>
+        <div class="properties" id="propertiesList"></div>
+      </div>
+    </section>
+
+    <section class="section" id="report">
+      <h2>Submit a Report</h2>
+      
+      <div class="search-form">
+        <div class="success-msg" id="successMsg">✓ Report submitted successfully! Your accessibility data will be verified by the community.</div>
+        
+        <form id="reportForm" onsubmit="submitReport(event)">
+          <div class="form-group">
+            <label>Property Name *</label>
+            <input type="text" name="title" required placeholder="e.g., Downtown Hotel, Beach House Airbnb">
+          </div>
+          
+          <div class="form-group">
+            <label>Location *</label>
+            <input type="text" name="location" required placeholder="City, State">
+          </div>
+          
+          <div class="form-group">
+            <label>Accessibility Notes</label>
+            <textarea name="notes" rows="4" placeholder="Describe accessibility features..."></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label style="font-weight: 600; margin-bottom: 12px;">Accessibility Features</label>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+              <label style="font-weight: normal; display: flex; align-items: center;"><input type="checkbox" name="zeroStepEntry"> Zero-step entry</label>
+              <label style="font-weight: normal; display: flex; align-items: center;"><input type="checkbox" name="rollInShower"> Roll-in shower</label>
+              <label style="font-weight: normal; display: flex; align-items: center;"><input type="checkbox" name="wideDoors"> Wide doors (≥36")</label>
+              <label style="font-weight: normal; display: flex; align-items: center;"><input type="checkbox" name="wavAvailable"> WAV available</label>
+              <label style="font-weight: normal; display: flex; align-items: center;"><input type="checkbox" name="elevatorAccess"> Elevator access</label>
+            </div>
+          </div>
+          
+          <button type="submit" class="btn">Submit Report</button>
+        </form>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <div class="container">
+      <p><strong>AccessLink</strong> — Find truly accessible travel options for wheelchair users</p>
+      <p style="margin-top: 16px; font-size: 12px;">Built for the hackathon • Community • Trust • Accessibility</p>
+      <p style="margin-top: 12px;"><a href="https://github.com/jmizzo29/accesslink" target="_blank" style="color: white;">GitHub</a></p>
+    </div>
+  </footer>
+
+  <script>
+    // Sample data
+    const sampleProperties = [
+      {
+        title: "Accessible Downtown Hotel",
+        location: "New York, NY",
+        features: ["Zero-step entry", "Roll-in shower", "Wide doors", "Elevator access"]
+      },
+      {
+        title: "Beach View Accessible Airbnb",
+        location: "San Francisco, CA",
+        features: ["Zero-step entry", "Roll-in shower", "Wide doors"]
+      },
+      {
+        title: "Mountain Accessible Cabin",
+        location: "Denver, CO",
+        features: ["Wide doors", "Elevator access"]
+      },
+      {
+        title: "Airport Hotel with WAV",
+        location: "Los Angeles, CA",
+        features: ["Zero-step entry", "Roll-in shower", "WAV available", "Elevator access"]
+      }
+    ];
+
+    // Load sample properties
+    function loadProperties() {
+      const list = document.getElementById('propertiesList');
+      list.innerHTML = sampleProperties.map(prop => `
+        <div class="property-card">
+          <div class="property-card-image">🏨 ${prop.title}</div>
+          <div class="property-card-content">
+            <h3>${prop.title}</h3>
+            <p>📍 ${prop.location}</p>
+            <ul class="feature-list">
+              ${prop.features.map(f => `<li>${f}</li>`).join('')}
+            </ul>
+            <button class="btn btn-secondary" onclick="alert('More details coming soon!')">View Details</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Submit report
+    function submitReport(event) {
+      event.preventDefault();
+      
+      const form = event.target;
+      const data = {
+        title: form.title.value,
+        location: form.location.value,
+        notes: form.notes.value,
+        features: Array.from(form.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.name)
+      };
+      
+      console.log('Report submitted:', data);
+      
+      // Show success message
+      const msg = document.getElementById('successMsg');
+      msg.classList.add('show');
+      
+      // Reset form
+      form.reset();
+      
+      // Hide message after 5 seconds
+      setTimeout(() => msg.classList.remove('show'), 5000);
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', loadProperties);
+  </script>
+</body>
+</html>
