@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --access-primary: #0066cc;
+  --access-success: #22c55e;
+  --access-warning: #f59e0b;
+  --access-danger: #ef4444;
+  --access-dark: #1f2937;
+  --access-light: #f9fafb;
+}
+
+html {
+  scroll-behavior: smooth;
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Focus visible for accessibility */
+*:focus-visible {
+  outline: 3px solid var(--access-primary);
+  outline-offset: 2px;
+}
+
+/* Button base styles */
+button, a.btn {
+  font-family: inherit;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 200ms ease;
+  font-weight: 500;
+}
+
+input, textarea, select {
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: more) {
+  body {
+    font-weight: 500;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

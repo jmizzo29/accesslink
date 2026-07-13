@@ -1,0 +1,29 @@
+{
+  "outcome": "accesslink",
+  "version": "1.0.0",
+  "type": "WEB_APPLICATION",
+  "requiresSourceCode": true,
+  "requiresPersistence": true,
+  "displaysMetrics": false,
+  "productionPaths": [
+    "app/",
+    "components/",
+    "lib/",
+    "contracts/"
+  ],
+  "deploymentTarget": "VERCEL",
+  "blockchain": {
+    "network": "Monad",
+    "smartContract": "AccessLinkVerified.sol"
+  },
+  "database": {
+    "type": "PostgreSQL",
+    "provider": "Supabase"
+  },
+  "deliverables": {
+    "landing": "Marketing page with value prop and demo",
+    "search": "Accessible property search with filters",
+    "report": "Community-driven accessibility report submission",
+    "blockchain": "Verified records on Monad"
+  }
+}

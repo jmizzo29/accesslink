@@ -1,0 +1,28 @@
+{
+  "outcome": "accesslink",
+  "slug": "accesslink",
+  "title": "AccessLink — Accessible Travel Made Easy",
+  "description": "Find truly accessible travel options for wheelchair users. Search verified Airbnbs, hotels, and airports with community-powered accessibility data.",
+  "type": "WEB_APPLICATION",
+  "productName": "AccessLink",
+  "domainKeywords": [
+    "accessible travel",
+    "wheelchair accessible",
+    "hotels",
+    "Airbnb",
+    "accessibility",
+    "verified listings",
+    "community data"
+  ],
+  "vertical": "travel",
+  "customerDesignProvided": false,
+  "referenceExemplars": [
+    "Stripe (trust & clarity)",
+    "Airbnb (property listings)",
+    "Apple Health (accessibility-first design)"
+  ],
+  "targetAudience": "Wheelchair users and families seeking accessible travel",
+  "designPhilosophy": "Professional, trustworthy, family-focused. Accessible by default.",
+  "responsiveBreakpoints": [360, 768, 1280],
+  "targetAccessibilityStandard": "WCAG 2.2 AA"
+}
