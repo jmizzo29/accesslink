@@ -1,7 +1,37 @@
 {
   "version": 1,
-  "updatedAt": "2026-07-18T00:00:00.000Z",
+  "updatedAt": "2026-07-18T14:36:50.930Z",
   "listings": [
+    {
+      "id": "community-mrqh02sj-e0eb45",
+      "name": "Test Shared WAV",
+      "location": "Austin, TX",
+      "city": "Austin",
+      "state": "TX",
+      "category": "wav",
+      "summary": "Ramp-equipped wheelchair van with curb pickup - test listing for shared catalog.",
+      "description": "Ramp-equipped wheelchair van with curb pickup - test listing for shared catalog.",
+      "price": 0,
+      "priceLabel": "WAV / transfer",
+      "rating": 0,
+      "reviewCount": 0,
+      "verified": false,
+      "provenance": "community",
+      "accessibility": {
+        "wheelchairRamp": true,
+        "rollInShower": false,
+        "elevator": false,
+        "wideDoorways": true,
+        "accessibleParking": true,
+        "accessibleRestroom": false,
+        "accessibleEntrance": false,
+        "loweredBathroom": false,
+        "serviceAnimalsAllowed": false,
+        "ceilingHoist": false
+      },
+      "photos": [],
+      "contributedAt": "2026-07-18T14:36:50.851Z"
+    },
     {
       "id": "community-seed-wav-nyc",
       "name": "Metro Mobility WAV (community tip)",
