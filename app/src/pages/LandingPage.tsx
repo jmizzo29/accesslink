@@ -3,9 +3,10 @@ import { ArrowRight, MapPin, Users, Shield } from 'lucide-react';
 import { AppNav } from '../components/AppNav';
 import { PRODUCT_NAME, PRODUCT_TAGLINE } from '../lib/constants';
 
-/** Original generated asset — local only; no third-party stock photos. */
+/** Original generated asset — local only; no third-party stock photos.
+ *  Must use Vite BASE_URL so portfolio deploys resolve under /portfolio/access4all/app/. */
 const HERO_IMAGE = {
-  src: '/accesslink-hero.webp',
+  src: `${import.meta.env.BASE_URL}accesslink-hero.webp`,
   alt: 'Step-free hotel entrance with a wide ramp and glass doors in soft morning light',
 } as const;
 
