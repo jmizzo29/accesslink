@@ -25,6 +25,11 @@ import {
   readOnChainRecordCount,
   verifyPropertyOnMonad,
 } from './monad-server.mjs';
+import {
+  addCommunityListing,
+  isCommunityStoreConfigured,
+  listCommunityListings,
+} from './community-store.mjs';
 
 // ============================================================================
 // MOCK DATA - Replace with real Supabase/Monad integration when live
@@ -671,9 +676,59 @@ async function handleNotFound(req) {
         '/api/monad/status',
         '/api/monad/history',
         '/api/monad/verify',
+        '/api/community/listings',
+        '/api/community/contribute',
       ],
     }),
   };
+}
+
+async function handleCommunityListings() {
+  const data = await listCommunityListings();
+  return {
+    status: 200,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      ...data,
+      storeConfigured: isCommunityStoreConfigured(),
+    }),
+  };
+}
+
+async function handleCommunityContribute(req) {
+  let body = req.body;
+  if (typeof body === 'string') {
+    try {
+      body = JSON.parse(body);
+    } catch {
+      body = {};
+    }
+  }
+  if (!body || typeof body !== 'object') body = {};
+
+  try {
+    const result = await addCommunityListing(body);
+    return {
+      status: 201,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        listing: result.listing,
+        shared: Boolean(result.shared),
+        source: result.source,
+        message: result.shared
+          ? 'Published — everyone can search this place.'
+          : 'Saved on the server for now. Shared catalog will sync when storage is fully connected.',
+      }),
+    };
+  } catch (err) {
+    return {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        error: err instanceof Error ? err.message : 'Could not publish contribution',
+      }),
+    };
+  }
 }
 
 // ============================================================================
@@ -785,6 +840,30 @@ export default async function handler(req, res) {
         response = await handleOptions(req);
       } else {
         response = await handleVerify(req);
+      }
+    } else if (pathname === '/api/community/listings') {
+      if (req.method === 'OPTIONS') {
+        response = await handleOptions(req);
+      } else if (req.method === 'GET') {
+        response = await handleCommunityListings();
+      } else {
+        response = {
+          status: 405,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ error: 'Method not allowed' }),
+        };
+      }
+    } else if (pathname === '/api/community/contribute') {
+      if (req.method === 'OPTIONS') {
+        response = await handleOptions(req);
+      } else if (req.method === 'POST') {
+        response = await handleCommunityContribute(req);
+      } else {
+        response = {
+          status: 405,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ error: 'Method not allowed' }),
+        };
       }
     } else {
       response = await handleNotFound(req);

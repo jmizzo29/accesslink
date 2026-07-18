@@ -70,48 +70,51 @@ export function LandingPage() {
           <img
             src={HERO_IMAGE.src}
             alt=""
-            className="a4a-hero-img h-full w-full object-cover object-[center_35%]"
+            className="a4a-hero-img h-full w-full object-cover object-[72%_40%]"
             width={1920}
             height={1080}
             loading="eager"
             fetchPriority="high"
           />
-          {/* Soft vignette only — no dark “header band” at the top */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-[#0f4c5c]/40 to-[#061820]/88" />
+          {/* Keep photo on the right; solid dark field under copy so foliage can't fight the type */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black from-0% via-black/92 via-45% to-transparent to-78%" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/70" />
         </div>
 
         <div className="relative z-10 flex min-h-[min(92vh,900px)] w-full flex-col">
           <AppNav variant="hero" />
 
           <div className="mx-auto flex w-full max-w-[1200px] flex-1 flex-col justify-center px-4 pb-16 pt-20 sm:px-8 sm:pb-20 sm:pt-24">
-            <h1
-              id="hero-heading"
-              className="font-display max-w-[14ch] text-[clamp(2.75rem,9vw,4.75rem)] font-semibold leading-[1.02] tracking-tight text-white"
-            >
-              Access4All
-            </h1>
-            <p className="mt-5 max-w-xl text-[clamp(1.15rem,2.8vw,1.5rem)] font-medium leading-snug text-teal-50/95">
-              I stopped trusting “accessible” labels. Now I verify the features that matter.
-            </p>
-            <p className="mt-5 max-w-lg text-[17px] leading-relaxed text-white/85 sm:text-[18px]">
-              {PRODUCT_TAGLINE} — filter by roll-in showers and step-free entry, match your needs in
-              plain English, and anchor community verifications on Monad.
-            </p>
+            <div className="a4a-hero-copy max-w-xl sm:max-w-lg lg:max-w-xl">
+              <h1
+                id="hero-heading"
+                className="font-display max-w-[14ch] text-[clamp(2.75rem,9vw,4.75rem)] font-semibold leading-[1.02] tracking-tight text-white"
+              >
+                Access4All
+              </h1>
+              <p className="mt-5 max-w-md text-[clamp(1.2rem,2.8vw,1.55rem)] font-semibold leading-snug text-white">
+                I stopped trusting “accessible” labels. Now I verify the features that matter.
+              </p>
+              <p className="mt-4 max-w-md text-[17px] font-medium leading-relaxed text-white sm:text-[18px]">
+                {PRODUCT_TAGLINE} — filter by roll-in showers and step-free entry, match your needs in
+                plain English, and anchor community verifications on Monad.
+              </p>
 
-            <div className="mt-10 flex w-full max-w-lg flex-col gap-3 sm:max-w-none sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
-              <Link
-                to="/contribute"
-                className="inline-flex min-h-[52px] w-full items-center justify-center gap-2 rounded-full bg-white px-9 text-[17px] font-semibold text-[#0f4c5c] shadow-lg shadow-slate-900/30 transition-transform hover:scale-[1.02] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white sm:w-auto"
-              >
-                Contribute a place
-                <ArrowRight className="h-4 w-4" aria-hidden />
-              </Link>
-              <Link
-                to="/search"
-                className="inline-flex min-h-[52px] w-full items-center justify-center rounded-full border border-white/40 bg-white/10 px-8 text-[16px] font-semibold text-white backdrop-blur-sm transition-colors hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white sm:w-auto"
-              >
-                Search the catalog
-              </Link>
+              <div className="mt-8 flex w-full max-w-md flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
+                <Link
+                  to="/contribute"
+                  className="inline-flex min-h-[52px] w-full items-center justify-center gap-2 rounded-full bg-white px-9 text-[17px] font-semibold text-[#0f4c5c] shadow-lg shadow-slate-900/30 transition-transform hover:scale-[1.02] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white sm:w-auto"
+                >
+                  Contribute a place
+                  <ArrowRight className="h-4 w-4" aria-hidden />
+                </Link>
+                <Link
+                  to="/search"
+                  className="inline-flex min-h-[52px] w-full items-center justify-center rounded-full border-2 border-white bg-transparent px-8 text-[16px] font-semibold text-white transition-colors hover:bg-white/15 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white sm:w-auto"
+                >
+                  Search the catalog
+                </Link>
+              </div>
             </div>
           </div>
         </div>

@@ -55,6 +55,13 @@ body {
   display: block;
 }
 
+/* Hero copy sits on solid left dark field — keep type crisp */
+.a4a-hero-copy h1,
+.a4a-hero-copy p {
+  color: #fff;
+  text-shadow: none;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;

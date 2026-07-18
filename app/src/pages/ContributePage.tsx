@@ -1,15 +1,11 @@
 import { useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Github, Download, Search, CheckCircle2 } from 'lucide-react';
+import { Search, CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { AppNav } from '../components/AppNav';
 import { ACCESSIBILITY_FILTERS, CONTRIBUTE_CATEGORIES } from '../lib/listings/filters';
 import type { AccessibilityFilterKey, Listing, ListingCategory } from '../lib/listings/types';
-import {
-  addCommunityContribution,
-  buildGithubIssueUrl,
-  downloadContributionJson,
-} from '../lib/listings/communityCatalog';
+import { publishCommunityContribution } from '../lib/listings/communityCatalog';
 import { verifyListingOnMonad } from '../lib/monad/client';
 
 export function ContributePage() {
@@ -24,6 +20,7 @@ export function ContributePage() {
   const [features, setFeatures] = useState<Partial<Record<AccessibilityFilterKey, boolean>>>({});
   const [submitting, setSubmitting] = useState(false);
   const [saved, setSaved] = useState<Listing | null>(null);
+  const [shared, setShared] = useState(false);
 
   function toggleFeature(key: AccessibilityFilterKey, checked: boolean) {
     setFeatures((prev) => {
@@ -51,7 +48,7 @@ export function ContributePage() {
 
     setSubmitting(true);
     try {
-      const listing = addCommunityContribution({
+      const result = await publishCommunityContribution({
         name,
         location,
         address: address || undefined,
@@ -66,14 +63,19 @@ export function ContributePage() {
         .filter(([, v]) => v)
         .map(([k]) => k);
       void verifyListingOnMonad({
-        propertyId: listing.id,
-        propertyName: listing.name,
-        location: listing.location,
+        propertyId: result.listing.id,
+        propertyName: result.listing.name,
+        location: result.listing.location,
         features: featureKeys,
       }).catch(() => undefined);
 
-      setSaved(listing);
-      toast.success('Added to the community catalog — searchable now on this device.');
+      setSaved(result.listing);
+      setShared(result.shared);
+      toast.success(
+        result.shared
+          ? 'Published — anyone can search this place now.'
+          : result.message,
+      );
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Could not save contribution');
     } finally {
@@ -87,14 +89,14 @@ export function ContributePage() {
 
       <div className="mx-auto max-w-[720px] px-4 py-12 sm:px-8 sm:py-16">
         <p className="text-[13px] font-medium uppercase tracking-[0.12em] text-[#6e6e73]">
-          Community · like open source
+          Community catalog
         </p>
         <h1 className="mt-3 font-display text-[36px] font-semibold tracking-tight sm:text-[44px]">
           Contribute a place
         </h1>
         <p className="mt-4 text-[18px] leading-relaxed text-[#6e6e73]">
-          Add a hotel, Airbnb, or wheelchair van (WAV) you verified. Others search the shared catalog —
-          same idea as GitHub: you contribute, the community benefits.
+          Add a hotel, Airbnb, or wheelchair van you personally verified. It goes into the shared
+          catalog so other travelers can find it — no tech skills required.
         </p>
 
         {saved ? (
@@ -104,41 +106,28 @@ export function ContributePage() {
               <div>
                 <h2 className="text-[22px] font-semibold tracking-tight">{saved.name} is in the catalog</h2>
                 <p className="mt-2 text-[15px] leading-relaxed text-[#6e6e73]">
-                  Searchable on this browser immediately. To share with everyone worldwide, open a GitHub
-                  contribution issue (or download JSON and open a PR) — we merge into the public community
-                  catalog.
+                  {shared
+                    ? 'Live for everyone. Search by city or WAV to see it.'
+                    : 'Saved on this device. If the shared network was still connecting, open Contribute once more after a refresh so the whole world can see it.'}
                 </p>
               </div>
             </div>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <button
                 type="button"
-                onClick={() => navigate(`/search?location=${encodeURIComponent(saved.location)}`)}
+                onClick={() =>
+                  navigate(
+                    `/search?location=${encodeURIComponent(saved.location)}&category=${saved.category}`,
+                  )
+                }
                 className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-full bg-[#0f4c5c] px-6 text-[15px] font-semibold text-white hover:bg-[#0a3540]"
               >
                 <Search className="h-4 w-4" aria-hidden />
                 Search for it
               </button>
-              <a
-                href={buildGithubIssueUrl(saved)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-full border border-[#d2d2d7] bg-white px-6 text-[15px] font-semibold hover:bg-[#f5f5f7]"
-              >
-                <Github className="h-4 w-4" aria-hidden />
-                Publish on GitHub
-              </a>
-              <button
-                type="button"
-                onClick={() => downloadContributionJson(saved)}
-                className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-full border border-[#d2d2d7] bg-white px-6 text-[15px] font-semibold hover:bg-[#f5f5f7]"
-              >
-                <Download className="h-4 w-4" aria-hidden />
-                Download JSON
-              </button>
               <Link
                 to={`/property/${saved.id}`}
-                className="inline-flex min-h-[48px] items-center justify-center rounded-full px-4 text-[15px] font-medium text-[#0f4c5c] underline-offset-4 hover:underline"
+                className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-[#d2d2d7] bg-white px-6 text-[15px] font-semibold hover:bg-[#f5f5f7]"
               >
                 View listing
               </Link>
@@ -148,6 +137,7 @@ export function ContributePage() {
               className="mt-6 text-[14px] font-medium text-[#6e6e73] hover:text-[#1d1d1f]"
               onClick={() => {
                 setSaved(null);
+                setShared(false);
                 setName('');
                 setSummary('');
                 setFeatures({});
@@ -157,7 +147,10 @@ export function ContributePage() {
             </button>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="mt-10 space-y-6 rounded-2xl border border-[#d2d2d7] bg-white p-6 sm:p-8">
+          <form
+            onSubmit={handleSubmit}
+            className="mt-10 space-y-6 rounded-2xl border border-[#d2d2d7] bg-white p-6 sm:p-8"
+          >
             <fieldset>
               <legend className="text-[13px] font-medium text-[#6e6e73]">What are you adding?</legend>
               <div className="mt-3 grid gap-2 sm:grid-cols-3">
@@ -238,7 +231,7 @@ export function ContributePage() {
                 onChange={(e) => setSummary(e.target.value)}
                 required
                 rows={4}
-                placeholder="Roll-in shower in room 412, zero-step lobby, staff helped with WAV pickup at curb…"
+                placeholder="Ramp-equipped van, curb pickup, driver helped with transfer…"
                 className="mt-2 w-full rounded-xl border border-[#d2d2d7] bg-[#f5f5f7] px-4 py-3 text-[17px] focus:border-[#0f4c5c] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0f4c5c]/20"
               />
             </div>
@@ -277,9 +270,6 @@ export function ContributePage() {
                 placeholder="https://… — only links to photos you have rights to"
                 className="mt-2 w-full rounded-xl border border-[#d2d2d7] bg-[#f5f5f7] px-4 py-3 text-[17px] focus:border-[#0f4c5c] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0f4c5c]/20"
               />
-              <p className="mt-2 text-[13px] text-[#86868b]">
-                No stock photo uploads. Link your own image, or leave blank.
-              </p>
             </div>
 
             <div>
@@ -300,7 +290,7 @@ export function ContributePage() {
               disabled={submitting}
               className="inline-flex min-h-[52px] w-full items-center justify-center rounded-full bg-[#0f4c5c] px-8 text-[17px] font-semibold text-white hover:bg-[#0a3540] disabled:opacity-60 sm:w-auto"
             >
-              {submitting ? 'Saving…' : 'Add to community catalog'}
+              {submitting ? 'Publishing…' : 'Publish for everyone'}
             </button>
           </form>
         )}

@@ -21,8 +21,8 @@ function stripCrossorigin(): Plugin {
   };
 }
 
-/** Absolute base — Vercel serves the SPA from /portfolio/access4all/app/ */
-const DEPLOY_BASE = '/portfolio/access4all/app/';
+/** Restarto portfolio path by default; standalone Vercel uses VITE_BASE=/ */
+const DEPLOY_BASE = process.env.VITE_BASE || '/portfolio/access4all/app/';
 
 export default defineConfig({
   plugins: [tailwindcss(), react(), stripCrossorigin()],
