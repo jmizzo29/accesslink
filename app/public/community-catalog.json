@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "updatedAt": "2026-07-18T00:00:00.000Z",
+  "listings": [
+    {
+      "id": "community-seed-wav-nyc",
+      "name": "Metro Mobility WAV (community tip)",
+      "location": "New York, NY",
+      "city": "New York",
+      "state": "NY",
+      "category": "wav",
+      "summary": "Community-reported wheelchair-accessible van transfer in NYC — call ahead for ramp-equipped vehicles and curb pickup.",
+      "description": "Seed community listing so judges can see the contribute → search loop. Replace with verified operator details via Contribute + GitHub merge.",
+      "price": 0,
+      "priceLabel": "WAV / transfer",
+      "rating": 0,
+      "reviewCount": 0,
+      "verified": false,
+      "provenance": "community",
+      "accessibility": {
+        "wheelchairRamp": true,
+        "rollInShower": false,
+        "elevator": false,
+        "wideDoorways": true,
+        "accessibleParking": true,
+        "accessibleRestroom": false,
+        "accessibleEntrance": true,
+        "loweredBathroom": false,
+        "serviceAnimalsAllowed": true,
+        "ceilingHoist": false
+      },
+      "photos": []
+    }
+  ]
+}

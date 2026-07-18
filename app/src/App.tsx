@@ -9,6 +9,7 @@ import { AdminCostsPage } from './pages/AdminCostsPage';
 import { DemoPage } from './pages/DemoPage';
 import { JudgeBriefPage } from './pages/JudgeBriefPage';
 import { MonadActivityPage } from './pages/MonadActivityPage';
+import { ContributePage } from './pages/ContributePage';
 import { LoadingSpinner } from './components/LoadingSpinner';
 import { AppNav } from './components/AppNav';
 
@@ -30,6 +31,7 @@ export default function App() {
             <Route path="/property/:id" element={<PropertyDetailPage />} />
             <Route path="/activity" element={<MonadActivityPage />} />
             <Route path="/demo" element={<DemoPage />} />
+            <Route path="/contribute" element={<ContributePage />} />
             <Route path="/judge" element={<JudgeBriefPage />} />
             <Route path="/costs" element={<PublicCostsPage />} />
             <Route path="/monitoring/costs" element={<AdminCostsPage />} />

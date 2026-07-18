@@ -18,8 +18,8 @@ const WHY_ITEMS = [
   },
   {
     icon: Users,
-    title: 'Community-backed trust',
-    body: 'Reviews from wheelchair users, families, and caregivers. Open-map places labeled separately from demo stays.',
+    title: 'Community-driven — like GitHub',
+    body: 'Anyone can contribute a hotel, Airbnb, or wheelchair van. Others search the shared catalog. Publish via GitHub so the whole community benefits.',
   },
   {
     icon: Shield,
@@ -76,13 +76,14 @@ export function LandingPage() {
             loading="eager"
             fetchPriority="high"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#0a2a33]/75 via-[#0f4c5c]/45 to-[#061820]/85" />
+          {/* Soft vignette only — no dark “header band” at the top */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-[#0f4c5c]/40 to-[#061820]/88" />
         </div>
 
         <div className="relative z-10 flex min-h-[min(92vh,900px)] w-full flex-col">
           <AppNav variant="hero" />
 
-          <div className="mx-auto flex w-full max-w-[1200px] flex-1 flex-col justify-center px-4 pb-16 pt-8 sm:px-8 sm:pb-20 sm:pt-12">
+          <div className="mx-auto flex w-full max-w-[1200px] flex-1 flex-col justify-center px-4 pb-16 pt-20 sm:px-8 sm:pb-20 sm:pt-24">
             <h1
               id="hero-heading"
               className="font-display max-w-[14ch] text-[clamp(2.75rem,9vw,4.75rem)] font-semibold leading-[1.02] tracking-tight text-white"
@@ -99,17 +100,17 @@ export function LandingPage() {
 
             <div className="mt-10 flex w-full max-w-lg flex-col gap-3 sm:max-w-none sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
               <Link
-                to="/demo"
+                to="/contribute"
                 className="inline-flex min-h-[52px] w-full items-center justify-center gap-2 rounded-full bg-white px-9 text-[17px] font-semibold text-[#0f4c5c] shadow-lg shadow-slate-900/30 transition-transform hover:scale-[1.02] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white sm:w-auto"
               >
-                Start judge demo
+                Contribute a place
                 <ArrowRight className="h-4 w-4" aria-hidden />
               </Link>
               <Link
                 to="/search"
                 className="inline-flex min-h-[52px] w-full items-center justify-center rounded-full border border-white/40 bg-white/10 px-8 text-[16px] font-semibold text-white backdrop-blur-sm transition-colors hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white sm:w-auto"
               >
-                Explore search
+                Search the catalog
               </Link>
             </div>
           </div>

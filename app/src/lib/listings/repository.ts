@@ -9,6 +9,11 @@ import type { SubmitReportInput, SubmitReportResult } from '../supabase/queries'
 import { apiUrl } from '../api-base';
 import type { Listing, SearchQuery, SearchResponse } from './types';
 import { buildAccessibilityPayload } from './filters';
+import {
+  getCommunityListingByIdAsync,
+  loadCommunityCatalog,
+  mergeCommunityIntoResults,
+} from './communityCatalog';
 import { getListingById as getLocalById } from './mockData';
 import { searchListingsLocal } from './searchLocal';
 
@@ -43,6 +48,37 @@ async function applyCloudEnrichment(
   };
 }
 
+async function withCommunity(
+  response: SearchResponse,
+  query: SearchQuery,
+  dataSource: ListingsDataSource,
+): Promise<SearchResponse & { dataSource: ListingsDataSource }> {
+  const community = await loadCommunityCatalog();
+  const merged = mergeCommunityIntoResults(
+    response.results,
+    community,
+    query.location,
+    query.category,
+  );
+  const required = query.requiredFeatures;
+  const filtered =
+    required && Object.keys(required).length > 0
+      ? merged.filter((listing) =>
+          Object.entries(required).every(([feature, mustHave]) => {
+            if (!mustHave) return true;
+            const key = feature as keyof Listing['accessibility'];
+            return listing.accessibility[key] === true;
+          }),
+        )
+      : merged;
+
+  return applyCloudEnrichment(
+    { ...response, results: filtered, total: filtered.length },
+    query,
+    dataSource,
+  );
+}
+
 export async function searchListings(
   query: SearchQuery,
   options: { dataSource?: ListingsDataSource } = {},
@@ -53,7 +89,7 @@ export async function searchListings(
     if (isSupabaseConfigured()) {
       try {
         const result = await searchPropertiesFromSupabase(query);
-        return applyCloudEnrichment(result, query, 'supabase');
+        return withCommunity(result, query, 'supabase');
       } catch {
         if (forced === 'supabase') throw new Error('Supabase search failed');
       }
@@ -76,7 +112,7 @@ export async function searchListings(
       if (res.ok) {
         const data = await res.json();
         const results = normalizeListings(data.results);
-        return applyCloudEnrichment(
+        return withCommunity(
           {
             results,
             total: data.total ?? results.length,
@@ -94,7 +130,8 @@ export async function searchListings(
     }
   }
 
-  const local = searchListingsLocal(query);
+  const community = await loadCommunityCatalog();
+  const local = searchListingsLocal(query, community);
   return applyCloudEnrichment(local, query, 'local');
 }
 
@@ -114,6 +151,9 @@ export async function getListingById(
       }
     }
   }
+
+  const community = await getCommunityListingByIdAsync(id);
+  if (community) return { listing: community, dataSource: 'local' };
 
   const local = getLocalById(id) ?? null;
   return { listing: local, dataSource: 'local' };

@@ -51,8 +51,15 @@ export const ACCESSIBILITY_FILTERS: {
 export const LISTING_CATEGORIES = [
   { value: '', label: 'All types' },
   { value: 'hotel', label: 'Hotels' },
-  { value: 'airbnb', label: 'Stays' },
+  { value: 'airbnb', label: 'Airbnb / stays' },
+  { value: 'wav', label: 'Wheelchair vans (WAV)' },
   { value: 'airport', label: 'Airports' },
+] as const;
+
+export const CONTRIBUTE_CATEGORIES = [
+  { value: 'hotel', label: 'Hotel' },
+  { value: 'airbnb', label: 'Airbnb / stay' },
+  { value: 'wav', label: 'Wheelchair van (WAV)' },
 ] as const;
 
 /** Features shown on result cards (subset for scannability) */

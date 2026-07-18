@@ -1,5 +1,5 @@
 /** Listing category — swap-friendly for Supabase enum later */
-export type ListingCategory = 'hotel' | 'airbnb' | 'airport';
+export type ListingCategory = 'hotel' | 'airbnb' | 'airport' | 'wav';
 
 export type ListingPhoto = {
   url: string;

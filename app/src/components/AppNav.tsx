@@ -3,6 +3,7 @@ import { PRODUCT_NAME } from '../lib/constants';
 
 const PRIMARY_LINKS = [
   { to: '/search', label: 'Search' },
+  { to: '/contribute', label: 'Contribute' },
   { to: '/activity', label: 'Monad' },
   { to: '/demo', label: 'Demo' },
 ] as const;
@@ -29,27 +30,38 @@ export function AppNav({ variant = 'app' }: AppNavProps) {
   return (
     <header
       className={[
-        'marketing-nav sticky top-0 z-50 border-b',
+        'marketing-nav z-50',
         onHero
-          ? 'border-white/10 bg-slate-900/30 backdrop-blur-md'
+          ? // Float on the hero photo — no bar, no blur strip, no border
+            'absolute inset-x-0 top-0 border-0 bg-transparent shadow-none backdrop-blur-none'
           : isLanding
-            ? 'border-black/5 bg-white/90 backdrop-blur-xl'
-            : 'border-[#d2d2d7] bg-white',
+            ? 'sticky top-0 border-b border-black/5 bg-white/90 backdrop-blur-xl'
+            : 'sticky top-0 border-b border-[#d2d2d7] bg-white',
       ].join(' ')}
     >
-      <div className="mx-auto flex h-14 max-w-[1200px] items-center justify-between gap-3 px-4 sm:h-16 sm:gap-4 sm:px-8">
+      <div
+        className={[
+          'mx-auto flex max-w-[1200px] items-center justify-between gap-3 px-4 sm:gap-4 sm:px-8',
+          onHero ? 'h-16 pt-2 sm:h-[4.5rem] sm:pt-3' : 'h-14 sm:h-16',
+        ].join(' ')}
+      >
         <Link
           to="/"
           className={[
             'shrink-0 text-[17px] font-semibold tracking-tight focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4',
-            onHero ? 'text-white focus-visible:outline-white' : 'text-[#1d1d1f] focus-visible:outline-[#0f4c5c]',
+            onHero
+              ? 'text-white drop-shadow-[0_1px_8px_rgba(0,0,0,0.45)] focus-visible:outline-white'
+              : 'text-[#1d1d1f] focus-visible:outline-[#0f4c5c]',
           ].join(' ')}
           aria-label={`${PRODUCT_NAME} home`}
         >
           Access4All
         </Link>
 
-        <nav aria-label="Main navigation" className="min-w-0 flex-1 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <nav
+          aria-label="Main navigation"
+          className="min-w-0 flex-1 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        >
           <ul className="flex items-center justify-end gap-0.5 sm:gap-5">
             {DESKTOP_LINKS.map((item) => {
               const active = pathname === item.to;
@@ -60,7 +72,9 @@ export function AppNav({ variant = 'app' }: AppNavProps) {
                     className={[
                       'inline-flex min-h-[44px] items-center px-2 text-[14px] font-medium transition-colors sm:px-0',
                       'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4',
-                      onHero ? 'focus-visible:outline-white' : 'focus-visible:outline-[#0f4c5c]',
+                      onHero
+                        ? 'drop-shadow-[0_1px_6px_rgba(0,0,0,0.4)] focus-visible:outline-white'
+                        : 'focus-visible:outline-[#0f4c5c]',
                       active ? linkActive : linkBase,
                     ].join(' ')}
                     aria-current={active ? 'page' : undefined}
@@ -79,7 +93,9 @@ export function AppNav({ variant = 'app' }: AppNavProps) {
                     className={[
                       'inline-flex min-h-[44px] items-center whitespace-nowrap px-2.5 text-[13px] font-medium transition-colors sm:px-0 sm:text-[14px]',
                       'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4',
-                      onHero ? 'focus-visible:outline-white' : 'focus-visible:outline-[#0f4c5c]',
+                      onHero
+                        ? 'drop-shadow-[0_1px_6px_rgba(0,0,0,0.4)] focus-visible:outline-white'
+                        : 'focus-visible:outline-[#0f4c5c]',
                       active ? linkActive : linkBase,
                     ].join(' ')}
                     aria-current={active ? 'page' : undefined}
@@ -91,16 +107,16 @@ export function AppNav({ variant = 'app' }: AppNavProps) {
             })}
             <li className="ml-1 sm:ml-3">
               <Link
-                to="/search"
+                to="/contribute"
                 className={[
                   'inline-flex min-h-[40px] items-center rounded-full px-4 text-[13px] font-semibold transition-colors sm:min-h-[44px] sm:px-5 sm:text-[14px]',
                   'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4',
                   onHero
-                    ? 'bg-white text-[#0f4c5c] hover:bg-white/90 focus-visible:outline-white'
+                    ? 'bg-white/95 text-[#0f4c5c] shadow-md shadow-black/20 hover:bg-white focus-visible:outline-white'
                     : 'bg-[#0f4c5c] text-white hover:bg-[#0a3540] focus-visible:outline-[#0f4c5c]',
                 ].join(' ')}
               >
-                Explore
+                Contribute
               </Link>
             </li>
           </ul>
