@@ -1,0 +1,15 @@
+{
+  "slug": "accesslink",
+  "generatedAt": "2026-07-14T20:49:05.828Z",
+  "publicLiveUrl": "https://www.restarto.ai/portfolio/accesslink/",
+  "publicLandingUrl": "https://www.restarto.ai/portfolio/accesslink/",
+  "portfolioUrl": null,
+  "published": true,
+  "interactive": true,
+  "launchProfile": "node-server",
+  "localPreviewUrl": null,
+  "tryItLiveModule": {
+    "iframeSrc": "https://www.restarto.ai/portfolio/accesslink/",
+    "embedOnLanding": true
+  }
+}

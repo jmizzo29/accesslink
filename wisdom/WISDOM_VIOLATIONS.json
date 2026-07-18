@@ -1,0 +1,22 @@
+{
+  "violations": [
+    {
+      "id": "V-WISDOM-VERIFY-BEHAVIORAL",
+      "severity": "MUST",
+      "pass": false,
+      "detail": "verify.mjs appears existence-only"
+    },
+    {
+      "id": "V-WISDOM-FRONTIER-PACKAGE",
+      "severity": "MUST",
+      "pass": false,
+      "detail": "Frontier design package authored before delivery"
+    },
+    {
+      "id": "V-WISDOM-CEILING-CONTRACT",
+      "severity": "MUST",
+      "pass": false,
+      "detail": "Ceiling contract exists (frontier-first plan)"
+    }
+  ]
+}

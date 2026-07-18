@@ -1,0 +1,227 @@
+/**
+ * Enriched product UI — world-class operational chrome when design is auto-enriched.
+ * Link after forge-design-system.css on every consumer app without customer design spec.
+ */
+:root {
+  --forge-product-radius: 0.75rem;
+  --forge-product-shadow: 0 4px 24px rgba(0, 0, 0, 0.22);
+  --forge-product-shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.32);
+  --forge-product-border: color-mix(in srgb, var(--forge-text, #e8ecf6) 12%, transparent);
+  --forge-product-surface: color-mix(in srgb, var(--forge-bg, #0b1020) 88%, var(--forge-identity-accent, #6d8bff) 12%);
+  --forge-product-elevated: color-mix(in srgb, var(--forge-surface, #121933) 92%, white 8%);
+}
+
+body.forge-shell {
+  background: var(--forge-bg);
+  color: var(--forge-text);
+  font-family: var(--forge-font-sans, ui-sans-serif, system-ui, sans-serif);
+  min-height: 100vh;
+}
+
+.forge-shell-sidebar,
+.forge-shell-filter-rail {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--forge-identity-accent, var(--forge-color-accent)) 8%, var(--forge-surface)) 0%,
+    var(--forge-surface) 100%
+  );
+  border-color: var(--forge-product-border);
+}
+
+.sidebar-brand,
+.rail-brand {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--forge-identity-accent, var(--forge-color-accent));
+  margin: 0 0 1.25rem;
+}
+
+.sidebar-nav .nav-link,
+.sidebar-nav .nav-item,
+.sidebar-nav a {
+  display: block;
+  padding: 0.55rem 0.85rem;
+  border-radius: 0.55rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--forge-text-muted, #9aa6c8);
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.sidebar-nav .nav-link:hover,
+.sidebar-nav .nav-link.active,
+.nav-item.active {
+  color: var(--forge-text);
+  background: var(--forge-identity-accent-muted, rgba(109, 139, 255, 0.12));
+}
+
+.forge-shell-kpi-row,
+.forge-shell-command,
+.crm-header,
+.pto-header,
+.tesla-header,
+.app-header {
+  background: linear-gradient(
+    var(--forge-identity-gradient-angle, 135deg),
+    var(--forge-identity-accent-muted, rgba(109, 139, 255, 0.14)) 0%,
+    transparent 55%
+  );
+  border-bottom: 1px solid var(--forge-product-border);
+}
+
+.forge-title.forge-signature {
+  font-family: var(--forge-font-display, var(--forge-font-sans));
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.kpi-grid,
+.crm-kpi-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
+  gap: 0.75rem;
+}
+
+.kpi-card,
+.rail-stat {
+  padding: 0.9rem 1.05rem;
+  border-radius: var(--forge-product-radius);
+  background: var(--forge-product-elevated);
+  border: 1px solid var(--forge-product-border);
+  box-shadow: var(--forge-product-shadow);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.kpi-card:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--forge-product-shadow-lg);
+}
+
+.kpi-label,
+.rail-label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--forge-text-muted);
+  margin-bottom: 0.2rem;
+}
+
+.kpi-value,
+.rail-value {
+  font-size: 1.65rem;
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--forge-identity-accent, var(--forge-color-accent));
+  font-variant-numeric: tabular-nums;
+}
+
+.panel-card,
+.forge-section.panel-card {
+  padding: 1.35rem;
+  border-radius: var(--forge-product-radius);
+  background: var(--forge-product-surface);
+  border: 1px solid var(--forge-product-border);
+  box-shadow: var(--forge-product-shadow);
+}
+
+.forge-section-title {
+  font-family: var(--forge-font-display, var(--forge-font-sans));
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.forge-input,
+.forge-input.compose-area {
+  background: color-mix(in srgb, var(--forge-bg) 70%, var(--forge-surface) 30%);
+  border: 1px solid var(--forge-product-border);
+  border-radius: 0.55rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.forge-input:focus {
+  outline: none;
+  border-color: var(--forge-identity-accent, var(--forge-color-accent));
+  box-shadow: 0 0 0 3px var(--forge-identity-accent-muted);
+}
+
+.forge-btn.primary {
+  background: linear-gradient(
+    135deg,
+    var(--forge-identity-accent, var(--forge-color-accent)),
+    color-mix(in srgb, var(--forge-identity-accent, var(--forge-color-accent)) 70%, #000)
+  );
+  border: none;
+  font-weight: 600;
+  box-shadow: 0 2px 12px var(--forge-identity-accent-muted);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.forge-btn.primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 18px var(--forge-identity-accent-muted);
+}
+
+.forge-btn:not(.primary):hover {
+  border-color: var(--forge-identity-accent);
+  color: var(--forge-text);
+}
+
+.record-list li,
+.request-list li,
+.business-list li,
+.vehicle-btn,
+.pipeline-card {
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.record-list li:hover,
+.request-list li:hover,
+.business-list li:hover,
+.vehicle-btn:hover {
+  border-color: color-mix(in srgb, var(--forge-identity-accent) 45%, var(--forge-product-border));
+  background: color-mix(in srgb, var(--forge-identity-accent) 6%, var(--forge-product-elevated));
+}
+
+.command-input,
+.search-input {
+  border-radius: 999px;
+  padding-left: 1rem;
+}
+
+.login-panel .forge-auth-card {
+  box-shadow: var(--forge-product-shadow-lg);
+  border: 1px solid var(--forge-product-border);
+  backdrop-filter: blur(12px);
+}
+
+.pipeline-banner,
+.pipeline-banner.outreach-status {
+  font-family: var(--forge-font-mono, ui-monospace, monospace);
+  font-size: 0.8125rem;
+  letter-spacing: 0.02em;
+}
+
+.forge-shell-canvas,
+.crm-main,
+.pto-main,
+.tesla-main,
+.layout {
+  animation: forge-product-fade-in 0.35s ease;
+}
+
+@keyframes forge-product-fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  .kpi-value,
+  .rail-value {
+    font-size: 1.35rem;
+  }
+}

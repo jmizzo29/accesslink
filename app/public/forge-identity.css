@@ -1,0 +1,48 @@
+/* Access4All — locked consumer travel identity (light cinematic) */
+:root {
+  --a4a-font-display: "Fraunces", Georgia, "Times New Roman", serif;
+  --a4a-font-body: "Source Sans 3", system-ui, sans-serif;
+  --a4a-teal: #0f4c5c;
+  --a4a-ink: #1d1d1f;
+  --a4a-canvas: #f5f5f7;
+}
+
+html,
+body,
+#root,
+.a4a-app,
+.a4a-landing {
+  width: 100% !important;
+  max-width: none !important;
+  display: block !important;
+  background: #ffffff;
+  color: var(--a4a-ink);
+  font-family: var(--a4a-font-body);
+}
+
+.font-display,
+.a4a-landing h1,
+.a4a-landing h2,
+.a4a-landing h3,
+.forge-signature--brand-wordmark h1 {
+  font-family: var(--a4a-font-display);
+}
+
+.a4a-hero-img {
+  animation: a4a-hero- ken 18s ease-out forwards;
+}
+
+@keyframes a4a-hero-ken {
+  from {
+    transform: scale(1.06);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .a4a-hero-img {
+    animation: none;
+  }
+}

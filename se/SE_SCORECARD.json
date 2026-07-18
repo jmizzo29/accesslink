@@ -1,0 +1,25 @@
+{
+  "state": "SE_FAILED",
+  "mustViolations": 7,
+  "shouldViolations": 2,
+  "filesScanned": 25,
+  "linesScanned": 1766,
+  "rulesApplied": 12,
+  "engineers": [
+    "Dennis Ritchie",
+    "Ken Thompson",
+    "Linus Torvalds",
+    "Donald Knuth",
+    "Jeff Dean",
+    "Sanjay Ghemawat",
+    "Bjarne Stroustrup",
+    "Guido van Rossum",
+    "Anders Hejlsberg",
+    "Rob Pike",
+    "Russ Cox",
+    "John Carmack",
+    "Fabrice Bellard",
+    "Daniel J. Bernstein",
+    "Leslie Lamport"
+  ]
+}

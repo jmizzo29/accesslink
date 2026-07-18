@@ -1,0 +1,104 @@
+{
+  "must": [
+    {
+      "rule": "D-R013",
+      "severity": "MUST",
+      "file": "app/index.html",
+      "message": "Missing data-forge-shell on <html>"
+    },
+    {
+      "rule": "D-R016",
+      "severity": "MUST",
+      "file": "app/index.html",
+      "message": "data-forge-font=\"plus-jakarta\" does not match fontPairId \"dm-sans-jetbrains\""
+    },
+    {
+      "rule": "D-R017",
+      "severity": "MUST",
+      "file": "app/index.html",
+      "message": "Missing forge-identity.css link"
+    },
+    {
+      "rule": "D-R013",
+      "severity": "MUST",
+      "file": "app/index.html",
+      "message": "Missing forge-layout-shells.css link"
+    },
+    {
+      "rule": "D-R015",
+      "severity": "MUST",
+      "file": "app/index.html",
+      "message": "Missing signature element class \"forge-signature--ticker-strip\""
+    },
+    {
+      "rule": "D-E012",
+      "severity": "MUST",
+      "file": "app/index.html",
+      "message": "Layout shell declared on <html>: matched 0, need ≥1",
+      "checkId": "identity-shell"
+    },
+    {
+      "rule": "D-E010",
+      "severity": "MUST",
+      "file": "app/index.html",
+      "message": "Font pair CSS linked: missing link to forge-font-pairs.css",
+      "checkId": "link-font-pairs"
+    },
+    {
+      "rule": "D-E010",
+      "severity": "MUST",
+      "file": "app/index.html",
+      "message": "Layout shell CSS linked: missing link to forge-layout-shells.css",
+      "checkId": "link-layout-shells"
+    },
+    {
+      "rule": "D-E010",
+      "severity": "MUST",
+      "file": "app/index.html",
+      "message": "Per-outcome forge-identity.css linked: missing link to forge-identity.css",
+      "checkId": "link-identity-css"
+    },
+    {
+      "rule": "D-E010",
+      "severity": "MUST",
+      "file": "app/index.html",
+      "message": "Enriched product CSS linked: missing link to forge-enriched-product.css",
+      "checkId": "link-enriched-product"
+    },
+    {
+      "rule": "D-E012",
+      "severity": "MUST",
+      "file": "app/index.html",
+      "message": "Domain signature element in DOM: matched 0, need ≥1",
+      "checkId": "signature-element"
+    },
+    {
+      "rule": "D-E012",
+      "severity": "MUST",
+      "file": "app/index.html",
+      "message": "KPI row or product hero: matched 0, need ≥1",
+      "checkId": "kpi-or-hero"
+    },
+    {
+      "rule": "D-E011",
+      "severity": "MUST",
+      "file": "app/styles.css",
+      "message": "App styles.css depth (≥80 lines): found 0 non-empty lines, need ≥80",
+      "checkId": "min-app-css"
+    },
+    {
+      "rule": "D-E014",
+      "severity": "MUST",
+      "file": "app/index.html",
+      "message": "data-forge-font=\"plus-jakarta\" must be \"dm-sans-jetbrains\" per enriched design contract"
+    },
+    {
+      "rule": "D-E015",
+      "severity": "MUST",
+      "file": "app/index.html",
+      "message": "Missing signature class forge-signature--ticker-strip from enriched design contract"
+    }
+  ],
+  "should": [],
+  "audit": []
+}

@@ -1,0 +1,223 @@
+/**
+ * Access4All — premium minimal polish (Tesla / Apple inspired)
+ */
+
+:root {
+  --a4a-ink: #1d1d1f;
+  --a4a-ink-muted: #6e6e73;
+  --a4a-ink-faint: #86868b;
+  --a4a-canvas: #f5f5f7;
+  --a4a-line: #d2d2d7;
+  --a4a-teal: #0f4c5c;
+  --a4a-teal-dark: #0a3540;
+  --a4a-surface: #ffffff;
+  --a4a-font-display: "Fraunces", Georgia, "Times New Roman", serif;
+  --a4a-font-body: "Source Sans 3", system-ui, sans-serif;
+}
+
+body,
+.a4a-app {
+  font-family: var(--a4a-font-body);
+}
+
+.font-display {
+  font-family: var(--a4a-font-display);
+}
+
+.entry-plate,
+.auth-plate,
+.marketing-nav,
+.how-it-works {
+  /* Forge feel landmarks */
+}
+
+body.forge-shell.forge-page {
+  display: block;
+  width: 100%;
+  max-width: none;
+  padding: 0;
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--a4a-surface);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  width: 100%;
+  max-width: none;
+}
+
+/* Apple-style type rhythm */
+h1, h2, h3 {
+  letter-spacing: -0.02em;
+}
+
+/* Focus — WCAG AA */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--a4a-teal);
+  outline-offset: 3px;
+}
+
+/* Premium select arrow spacing */
+select {
+  background-image: none;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Responsive type scale */
+@media (max-width: 640px) {
+  .marketing-nav ul {
+    gap: 0.25rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .entry-plate {
+    padding-bottom: 0;
+  }
+}
+
+/* Search inputs — consistent height */
+input[type='text'],
+select {
+  min-height: 52px;
+}
+
+/* Card hover — subtle only */
+article {
+  transition: border-color 0.2s ease;
+}
+
+/* Screen reader utility fallback */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.sr-only:focus,
+.focus\:not-sr-only:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: inherit;
+  margin: inherit;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+/* Tabular numbers for prices */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Forge shell KPI row hidden landmark */
+.forge-shell-kpi-row {
+  display: none;
+}
+
+/* Beta note */
+.a4a-beta-note {
+  color: var(--a4a-ink-faint);
+  font-size: 0.75rem;
+}
+
+/* Loading state */
+@keyframes a4a-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.a4a-loading {
+  animation: a4a-pulse 1.5s ease-in-out infinite;
+}
+
+/* Nav backdrop */
+.marketing-nav {
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Hero image — clean crop */
+.entry-plate img {
+  display: block;
+}
+
+/* Result card feature pills */
+.a4a-pill-available {
+  background: color-mix(in srgb, var(--a4a-teal) 8%, transparent);
+  color: var(--a4a-teal);
+}
+
+.a4a-pill-unavailable {
+  background: var(--a4a-canvas);
+  color: var(--a4a-ink-faint);
+}
+
+/* Divider grid (why section) */
+.a4a-divider-grid {
+  gap: 1px;
+  background: var(--a4a-line);
+}
+
+/* Premium link underline */
+.a4a-link {
+  color: var(--a4a-teal);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: color-mix(in srgb, var(--a4a-teal) 30%, transparent);
+}
+
+.a4a-link:hover {
+  text-decoration-color: var(--a4a-teal);
+}
+
+/* Empty state dashed border */
+.a4a-empty {
+  border-style: dashed;
+  border-color: var(--a4a-line);
+}
+
+/* Costs page compatibility */
+[data-desk-floor] {
+  font-family: var(--a4a-font-body);
+}
+
+/* Match bars + demo preflight motion */
+@media (prefers-reduced-motion: no-preference) {
+  .a4a-landing .a4a-hero {
+    animation: a4a-fade-in 0.7s ease-out both;
+  }
+}
+
+@keyframes a4a-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Brand wordmark signature landmark */
+.forge-signature--brand-wordmark .marketing-nav a[aria-label*="home"] {
+  letter-spacing: -0.02em;
+}

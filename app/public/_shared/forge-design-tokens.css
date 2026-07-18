@@ -1,0 +1,74 @@
+/**
+ * Forge Design Tokens — structural foundation (colors come from forge-design-themes.css).
+ */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+  color-scheme: light dark;
+
+  --forge-font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --forge-font-display: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --forge-text-xs: 0.75rem;
+  --forge-text-sm: 0.875rem;
+  --forge-text-base: 1rem;
+  --forge-text-lg: 1.125rem;
+  --forge-text-xl: 1.25rem;
+  --forge-text-2xl: clamp(1.5rem, 2.2vw + 0.75rem, 2.125rem);
+  --forge-text-3xl: clamp(1.875rem, 3vw + 0.5rem, 2.75rem);
+  --forge-leading: 1.55;
+  --forge-tracking-tight: -0.025em;
+
+  --forge-space-1: 0.25rem;
+  --forge-space-2: 0.5rem;
+  --forge-space-3: 0.75rem;
+  --forge-space-4: 1rem;
+  --forge-space-5: 1.25rem;
+  --forge-space-6: 1.5rem;
+  --forge-space-8: 2rem;
+  --forge-space-10: 2.5rem;
+
+  --forge-radius-sm: 0.5rem;
+  --forge-radius-md: 0.75rem;
+  --forge-radius-lg: 1rem;
+  --forge-radius-xl: 1.25rem;
+
+  --forge-color-bg: #0a0d12;
+  --forge-color-bg-elevated: #11161d;
+  --forge-color-surface: #151b24;
+  --forge-color-surface-2: #1c2430;
+  --forge-color-border: rgba(255, 255, 255, 0.09);
+  --forge-color-border-strong: rgba(255, 255, 255, 0.15);
+  --forge-color-text: #f1f5f9;
+  --forge-color-text-muted: #94a3b8;
+  --forge-color-text-subtle: #64748b;
+  --forge-color-success: #34d399;
+  --forge-color-warning: #fbbf24;
+  --forge-color-danger: #fb7185;
+  --forge-color-danger-muted: rgba(251, 113, 133, 0.14);
+
+  --forge-theme-accent: #a855f7;
+  --forge-theme-accent-hover: #c084fc;
+  --forge-theme-accent-muted: rgba(168, 85, 247, 0.16);
+  --forge-theme-gradient-bg: radial-gradient(ellipse 80% 60% at 20% -10%, rgba(168, 85, 247, 0.35), transparent 55%), #0a0d12;
+  --forge-theme-btn-gradient: linear-gradient(135deg, #a855f7, #ec4899, #14b8a6);
+  --forge-theme-btn-hover: linear-gradient(135deg, #c084fc, #f472b6, #2dd4bf);
+  --forge-theme-mark-bg: linear-gradient(135deg, rgba(168, 85, 247, 0.35), rgba(45, 212, 191, 0.3));
+
+  --forge-color-accent: var(--forge-theme-accent);
+  --forge-color-accent-hover: var(--forge-theme-accent-hover);
+  --forge-color-accent-muted: var(--forge-theme-accent-muted);
+  --forge-gradient-bg: var(--forge-theme-gradient-bg);
+
+  --forge-shadow-lg: 0 28px 80px rgba(0, 0, 0, 0.45);
+  --forge-blur: blur(18px);
+  --forge-content-max: 76rem;
+  --forge-shell-max: 34rem;
+  --forge-duration-fast: 140ms;
+  --forge-ease: cubic-bezier(0.4, 0, 0.2, 1);
+
+  --color-bg: var(--forge-color-bg);
+  --color-text: var(--forge-color-text);
+  --font-sans: var(--forge-font-sans);
+  --radius-md: var(--forge-radius-md);
+  --space-4: var(--forge-space-4);
+}

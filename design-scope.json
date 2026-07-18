@@ -1,10 +1,11 @@
 {
   "outcome": "accesslink",
   "slug": "accesslink",
-  "title": "AccessLink — Accessible Travel Made Easy",
+  "title": "Access4All — Accessible Travel for Everyone",
   "description": "Find truly accessible travel options for wheelchair users. Search verified Airbnbs, hotels, and airports with community-powered accessibility data.",
   "type": "WEB_APPLICATION",
-  "productName": "AccessLink",
+  "productName": "Access4All",
+  "publicSlug": "access4all",
   "domainKeywords": [
     "accessible travel",
     "wheelchair accessible",

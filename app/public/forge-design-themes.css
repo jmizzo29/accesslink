@@ -1,0 +1,240 @@
+/**
+ * Forge Design Themes — vertical-specific, colorful palettes.
+ * Set on <html data-forge-theme="sunrise"> (never rely on one blue template).
+ */
+[data-forge-theme="prism"] {
+  --forge-theme-accent: #a855f7;
+  --forge-theme-accent-2: #f472b6;
+  --forge-theme-accent-3: #2dd4bf;
+  --forge-theme-accent-hover: #c084fc;
+  --forge-theme-accent-muted: rgba(168, 85, 247, 0.16);
+  --forge-theme-gradient-bg:
+    radial-gradient(ellipse 80% 60% at 15% -5%, rgba(168, 85, 247, 0.45) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 50% at 95% 5%, rgba(244, 114, 182, 0.35) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(45, 212, 191, 0.2) 0%, transparent 45%),
+    var(--forge-color-bg);
+  --forge-theme-btn-gradient: linear-gradient(135deg, #a855f7 0%, #ec4899 48%, #14b8a6 100%);
+  --forge-theme-btn-hover: linear-gradient(135deg, #c084fc 0%, #f472b6 48%, #2dd4bf 100%);
+  --forge-theme-mark-bg: linear-gradient(135deg, rgba(168, 85, 247, 0.35), rgba(45, 212, 191, 0.35));
+}
+
+[data-forge-theme="sunrise"] {
+  --forge-theme-accent: #f97316;
+  --forge-theme-accent-2: #fb7185;
+  --forge-theme-accent-3: #fbbf24;
+  --forge-theme-accent-hover: #fb923c;
+  --forge-theme-accent-muted: rgba(249, 115, 22, 0.18);
+  --forge-theme-gradient-bg:
+    radial-gradient(ellipse 90% 55% at 10% -10%, rgba(249, 115, 22, 0.42) 0%, transparent 52%),
+    radial-gradient(ellipse 75% 45% at 100% 0%, rgba(251, 113, 133, 0.32) 0%, transparent 48%),
+    radial-gradient(ellipse 55% 35% at 40% 110%, rgba(251, 191, 36, 0.18) 0%, transparent 42%),
+    #120c08;
+  --forge-color-bg: #120c08;
+  --forge-color-bg-elevated: #1a120c;
+  --forge-color-surface: #221810;
+  --forge-color-surface-2: #2c2016;
+  --forge-theme-btn-gradient: linear-gradient(135deg, #ea580c 0%, #e11d48 55%, #d97706 100%);
+  --forge-theme-btn-hover: linear-gradient(135deg, #f97316 0%, #fb7185 55%, #fbbf24 100%);
+  --forge-theme-mark-bg: linear-gradient(135deg, rgba(249, 115, 22, 0.4), rgba(251, 191, 36, 0.35));
+}
+
+[data-forge-theme="meadow"] {
+  --forge-theme-accent: #10b981;
+  --forge-theme-accent-2: #84cc16;
+  --forge-theme-accent-3: #38bdf8;
+  --forge-theme-accent-hover: #34d399;
+  --forge-theme-accent-muted: rgba(16, 185, 129, 0.18);
+  --forge-theme-gradient-bg:
+    radial-gradient(ellipse 85% 55% at 5% -5%, rgba(16, 185, 129, 0.4) 0%, transparent 52%),
+    radial-gradient(ellipse 70% 50% at 100% 10%, rgba(132, 204, 22, 0.28) 0%, transparent 48%),
+    radial-gradient(ellipse 50% 40% at 60% 100%, rgba(56, 189, 248, 0.15) 0%, transparent 42%),
+    #071210;
+  --forge-color-bg: #071210;
+  --forge-color-bg-elevated: #0c1a16;
+  --forge-color-surface: #102019;
+  --forge-color-surface-2: #162920;
+  --forge-theme-btn-gradient: linear-gradient(135deg, #059669 0%, #65a30d 50%, #0284c7 100%);
+  --forge-theme-btn-hover: linear-gradient(135deg, #10b981 0%, #84cc16 50%, #0ea5e9 100%);
+  --forge-theme-mark-bg: linear-gradient(135deg, rgba(16, 185, 129, 0.4), rgba(132, 204, 22, 0.35));
+}
+
+[data-forge-theme="clinical"] {
+  --forge-theme-accent: #14b8a6;
+  --forge-theme-accent-2: #6366f1;
+  --forge-theme-accent-3: #22d3ee;
+  --forge-theme-accent-hover: #2dd4bf;
+  --forge-theme-accent-muted: rgba(20, 184, 166, 0.16);
+  --forge-theme-gradient-bg:
+    radial-gradient(ellipse 80% 55% at 12% -8%, rgba(20, 184, 166, 0.38) 0%, transparent 52%),
+    radial-gradient(ellipse 70% 45% at 95% 5%, rgba(99, 102, 241, 0.28) 0%, transparent 48%),
+    #081018;
+  --forge-color-bg: #081018;
+  --forge-color-surface: #0f1824;
+  --forge-color-surface-2: #152030;
+  --forge-theme-btn-gradient: linear-gradient(135deg, #0d9488 0%, #4f46e5 55%, #0891b2 100%);
+  --forge-theme-btn-hover: linear-gradient(135deg, #14b8a6 0%, #818cf8 55%, #22d3ee 100%);
+  --forge-theme-mark-bg: linear-gradient(135deg, rgba(20, 184, 166, 0.35), rgba(99, 102, 241, 0.3));
+}
+
+[data-forge-theme="ember"] {
+  --forge-theme-accent: #ef4444;
+  --forge-theme-accent-2: #f59e0b;
+  --forge-theme-accent-3: #f97316;
+  --forge-theme-accent-hover: #f87171;
+  --forge-theme-accent-muted: rgba(239, 68, 68, 0.16);
+  --forge-theme-gradient-bg:
+    radial-gradient(ellipse 85% 55% at 8% -5%, rgba(239, 68, 68, 0.35) 0%, transparent 50%),
+    radial-gradient(ellipse 70% 45% at 100% 0%, rgba(245, 158, 11, 0.3) 0%, transparent 48%),
+    #100a08;
+  --forge-color-bg: #100a08;
+  --forge-color-surface: #1a100c;
+  --forge-color-surface-2: #241610;
+  --forge-theme-btn-gradient: linear-gradient(135deg, #dc2626 0%, #d97706 55%, #ea580c 100%);
+  --forge-theme-btn-hover: linear-gradient(135deg, #ef4444 0%, #f59e0b 55%, #f97316 100%);
+  --forge-theme-mark-bg: linear-gradient(135deg, rgba(239, 68, 68, 0.4), rgba(245, 158, 11, 0.35));
+}
+
+[data-forge-theme="midnight"] {
+  --forge-theme-accent: #818cf8;
+  --forge-theme-accent-2: #22d3ee;
+  --forge-theme-accent-3: #34d399;
+  --forge-theme-accent-hover: #a5b4fc;
+  --forge-theme-accent-muted: rgba(129, 140, 248, 0.16);
+  --forge-theme-gradient-bg:
+    radial-gradient(ellipse 80% 55% at 10% -10%, rgba(99, 102, 241, 0.35) 0%, transparent 52%),
+    radial-gradient(ellipse 70% 45% at 100% 0%, rgba(34, 211, 238, 0.22) 0%, transparent 48%),
+    var(--forge-color-bg);
+  --forge-theme-btn-gradient: linear-gradient(135deg, #6366f1 0%, #0891b2 55%, #059669 100%);
+  --forge-theme-btn-hover: linear-gradient(135deg, #818cf8 0%, #22d3ee 55%, #34d399 100%);
+  --forge-theme-mark-bg: linear-gradient(135deg, rgba(99, 102, 241, 0.35), rgba(34, 211, 238, 0.3));
+}
+
+/* --- Utopian Earth (light, warm, hopeful) — one family, domain-tuned accents --- */
+[data-forge-theme="utopia-harbor"] {
+  --forge-theme-accent: #3d7a8c;
+  --forge-theme-accent-2: #c4a574;
+  --forge-theme-accent-3: #6aabbf;
+  --forge-theme-accent-hover: #4d8fa3;
+  --forge-theme-accent-muted: rgba(61, 122, 140, 0.14);
+  --forge-color-bg: #f4efe6;
+  --forge-color-bg-elevated: #faf6ef;
+  --forge-color-surface: #fffcf7;
+  --forge-color-surface-2: #ebe4d8;
+  --forge-color-border: rgba(61, 52, 40, 0.11);
+  --forge-color-text: #2a2318;
+  --forge-color-text-muted: #6b5e4f;
+  --forge-color-text-subtle: #8a7b68;
+  --forge-theme-gradient-bg:
+    radial-gradient(ellipse 90% 55% at 8% -5%, rgba(61, 122, 140, 0.22) 0%, transparent 52%),
+    radial-gradient(ellipse 75% 45% at 100% 0%, rgba(196, 165, 116, 0.28) 0%, transparent 48%),
+    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(110, 171, 191, 0.12) 0%, transparent 42%),
+    #f4efe6;
+  --forge-theme-btn-gradient: linear-gradient(135deg, #3d7a8c 0%, #5a9a6e 55%, #c4a574 100%);
+  --forge-theme-btn-hover: linear-gradient(135deg, #4d8fa3 0%, #6aad82 55%, #d4b584 100%);
+  --forge-theme-mark-bg: linear-gradient(135deg, rgba(61, 122, 140, 0.25), rgba(196, 165, 116, 0.3));
+}
+
+[data-forge-theme="utopia-grove"] {
+  --forge-theme-accent: #4a7c59;
+  --forge-theme-accent-2: #a8c686;
+  --forge-theme-accent-3: #d4a574;
+  --forge-theme-accent-hover: #5a9469;
+  --forge-theme-accent-muted: rgba(74, 124, 89, 0.14);
+  --forge-color-bg: #f3f6ef;
+  --forge-color-bg-elevated: #f9fbf5;
+  --forge-color-surface: #fefffb;
+  --forge-color-surface-2: #e8efe0;
+  --forge-color-border: rgba(52, 68, 42, 0.11);
+  --forge-color-text: #1f2a1a;
+  --forge-color-text-muted: #5a6b52;
+  --forge-color-text-subtle: #7a8a72;
+  --forge-theme-gradient-bg:
+    radial-gradient(ellipse 85% 55% at 5% -5%, rgba(74, 124, 89, 0.2) 0%, transparent 52%),
+    radial-gradient(ellipse 70% 50% at 100% 10%, rgba(168, 198, 134, 0.26) 0%, transparent 48%),
+    radial-gradient(ellipse 50% 40% at 60% 100%, rgba(212, 165, 116, 0.14) 0%, transparent 42%),
+    #f3f6ef;
+  --forge-theme-btn-gradient: linear-gradient(135deg, #4a7c59 0%, #7aa060 50%, #c9956a 100%);
+  --forge-theme-btn-hover: linear-gradient(135deg, #5a9469 0%, #8ab870 50%, #d9a57a 100%);
+  --forge-theme-mark-bg: linear-gradient(135deg, rgba(74, 124, 89, 0.28), rgba(168, 198, 134, 0.32));
+}
+
+[data-forge-theme="utopia-vineyard"] {
+  --forge-theme-accent: #8b5a3c;
+  --forge-theme-accent-2: #6b7c3e;
+  --forge-theme-accent-3: #d4a853;
+  --forge-theme-accent-hover: #a06a48;
+  --forge-theme-accent-muted: rgba(139, 90, 60, 0.14);
+  --forge-color-bg: #f7f0e6;
+  --forge-color-bg-elevated: #fcf7ef;
+  --forge-color-surface: #fffaf3;
+  --forge-color-surface-2: #ede4d4;
+  --forge-color-border: rgba(92, 68, 42, 0.12);
+  --forge-color-text: #2c2014;
+  --forge-color-text-muted: #73604a;
+  --forge-color-text-subtle: #95806a;
+  --forge-theme-gradient-bg:
+    radial-gradient(ellipse 85% 55% at 10% -8%, rgba(139, 90, 60, 0.22) 0%, transparent 52%),
+    radial-gradient(ellipse 70% 45% at 95% 5%, rgba(107, 124, 62, 0.24) 0%, transparent 48%),
+    radial-gradient(ellipse 55% 35% at 40% 110%, rgba(212, 168, 83, 0.16) 0%, transparent 42%),
+    #f7f0e6;
+  --forge-theme-btn-gradient: linear-gradient(135deg, #8b5a3c 0%, #6b7c3e 50%, #c9923a 100%);
+  --forge-theme-btn-hover: linear-gradient(135deg, #a06a48 0%, #7b9248 50%, #d9a24a 100%);
+  --forge-theme-mark-bg: linear-gradient(135deg, rgba(139, 90, 60, 0.3), rgba(107, 124, 62, 0.28));
+}
+
+[data-forge-theme="utopia-horizon"] {
+  --forge-theme-accent: #c76b58;
+  --forge-theme-accent-2: #9b7cb8;
+  --forge-theme-accent-3: #e8b86d;
+  --forge-theme-accent-hover: #d47f6d;
+  --forge-theme-accent-muted: rgba(199, 107, 88, 0.14);
+  --forge-color-bg: #faf3ee;
+  --forge-color-bg-elevated: #fff8f4;
+  --forge-color-surface: #fffcfa;
+  --forge-color-surface-2: #f0e6df;
+  --forge-color-border: rgba(80, 58, 48, 0.1);
+  --forge-color-text: #2a201c;
+  --forge-color-text-muted: #6f5a52;
+  --forge-color-text-subtle: #8f7870;
+  --forge-theme-gradient-bg:
+    radial-gradient(ellipse 80% 55% at 12% -8%, rgba(199, 107, 88, 0.2) 0%, transparent 52%),
+    radial-gradient(ellipse 70% 45% at 100% 0%, rgba(155, 124, 184, 0.22) 0%, transparent 48%),
+    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(232, 184, 109, 0.18) 0%, transparent 42%),
+    #faf3ee;
+  --forge-theme-btn-gradient: linear-gradient(135deg, #c76b58 0%, #9b7cb8 50%, #e8b86d 100%);
+  --forge-theme-btn-hover: linear-gradient(135deg, #d47f6d 0%, #ab92c8 50%, #f0c87d 100%);
+  --forge-theme-mark-bg: linear-gradient(135deg, rgba(199, 107, 88, 0.28), rgba(155, 124, 184, 0.26));
+}
+
+[data-forge-theme="utopia-civic"] {
+  --forge-theme-accent: #b8860b;
+  --forge-theme-accent-2: #5c7a6a;
+  --forge-theme-accent-3: #c9956a;
+  --forge-theme-accent-hover: #c99620;
+  --forge-theme-accent-muted: rgba(184, 134, 11, 0.14);
+  --forge-color-bg: #f6f1e8;
+  --forge-color-bg-elevated: #fbf8f2;
+  --forge-color-surface: #fffdf8;
+  --forge-color-surface-2: #ebe5da;
+  --forge-color-border: rgba(68, 58, 42, 0.11);
+  --forge-color-text: #2a2418;
+  --forge-color-text-muted: #6b6253;
+  --forge-color-text-subtle: #8a8070;
+  --forge-theme-gradient-bg:
+    radial-gradient(ellipse 90% 55% at 10% -10%, rgba(184, 134, 11, 0.2) 0%, transparent 52%),
+    radial-gradient(ellipse 75% 45% at 100% 0%, rgba(92, 122, 106, 0.22) 0%, transparent 48%),
+    radial-gradient(ellipse 55% 35% at 40% 110%, rgba(201, 149, 106, 0.16) 0%, transparent 42%),
+    #f6f1e8;
+  --forge-theme-btn-gradient: linear-gradient(135deg, #a67609 0%, #5c7a6a 55%, #c9956a 100%);
+  --forge-theme-btn-hover: linear-gradient(135deg, #c99620 0%, #6c8a7a 55%, #d9a57a 100%);
+  --forge-theme-mark-bg: linear-gradient(135deg, rgba(184, 134, 11, 0.28), rgba(92, 122, 106, 0.26));
+}
+
+/* Wire theme tokens into shared accent slots */
+:root,
+[data-forge-theme] {
+  --forge-color-accent: var(--forge-theme-accent, #a855f7);
+  --forge-color-accent-hover: var(--forge-theme-accent-hover, #c084fc);
+  --forge-color-accent-muted: var(--forge-theme-accent-muted, rgba(168, 85, 247, 0.16));
+  --forge-gradient-bg: var(--forge-theme-gradient-bg, var(--forge-color-bg));
+}

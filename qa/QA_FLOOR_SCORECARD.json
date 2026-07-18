@@ -1,0 +1,9 @@
+{
+  "state": "QA_FLOOR_VERIFIED",
+  "mustFailed": 0,
+  "passed": 2,
+  "deferred": 0,
+  "profiles": [
+    "WEB_APP_STATIC"
+  ]
+}

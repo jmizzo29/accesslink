@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  data-forge-earth-tone="ocean-mist"
+  data-forge-font="fraunces-source-sans"
+  data-forge-shell="marketing-cinematic"
+  data-forge-surface="light"
+>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="Access4All — Accessible Travel for Everyone. Discover verified accessibility details for hotels, stays, and transit." />
+  <title>Access4All — Accessible Travel for Everyone</title>
+  <meta name="color-scheme" content="light only" />
+  <meta name="theme-color" content="#0f4c5c" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <style>
+    html { color-scheme: light only; background: #fff; }
+    html, body { margin: 0; width: 100%; max-width: none; min-height: 100vh; background: #fff; color: #1d1d1f; font-family: "Source Sans 3", system-ui, sans-serif; }
+    #root { width: 100%; min-height: 100vh; background: #fff; }
+    .font-display, h1, h2, h3 { font-family: Fraunces, Georgia, serif; }
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body class="a4a-app forge-signature--brand-wordmark antialiased">
+  <div id="root">
+    <div id="a4a-boot" style="margin:0;padding:2rem;font-family:'Source Sans 3',system-ui,sans-serif;color:#0f4c5c;background:#fff;min-height:100vh;width:100%;box-sizing:border-box">
+      <p style="margin:0 0 0.75rem;font-family:Fraunces,Georgia,serif;font-weight:600;font-size:1.25rem">Opening Access4All…</p>
+      <p id="a4a-boot-hint" style="margin:0;font-size:0.9rem;color:#6e6e73">Loading accessible travel search.</p>
+      <p style="margin:1.25rem 0 0">
+        <button type="button" id="a4a-boot-reload" style="min-height:44px;padding:0.65rem 1.1rem;border:0;border-radius:999px;background:#0f4c5c;color:#fff;font:inherit;font-weight:600">Reload</button>
+      </p>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var btn = document.getElementById('a4a-boot-reload');
+      if (btn) {
+        btn.onclick = function () {
+          var u = new URL(location.href);
+          u.searchParams.set('_r', String(Date.now()));
+          location.replace(u.toString());
+        };
+      }
+      function fail(msg) {
+        var hint = document.getElementById('a4a-boot-hint');
+        if (hint) hint.textContent = msg;
+      }
+      window.addEventListener('error', function (ev) {
+        if (ev && ev.target && ev.target.tagName === 'SCRIPT') {
+          fail('App script failed to load. Tap Reload — or clear this site\'s cache in your browser.');
+        }
+      }, true);
+      setTimeout(function () {
+        if (document.getElementById('a4a-boot')) {
+          fail('Still loading? Tap Reload or open a private tab.');
+        }
+      }, 12000);
+    })();
+  </script>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+</html>

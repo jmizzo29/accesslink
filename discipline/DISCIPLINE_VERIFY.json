@@ -1,0 +1,33 @@
+{
+  "disciplineLayerCompleted": true,
+  "disciplineState": "NOT_APPLICABLE",
+  "profileId": "javascript",
+  "scopeDownFrom": null,
+  "sdkOk": true,
+  "compileOk": true,
+  "generatedAt": "2026-07-14T18:57:30.214Z",
+  "engine": "forge-discipline-verify.mjs",
+  "checks": [
+    {
+      "id": "profile-selected",
+      "passed": true
+    },
+    {
+      "id": "source-tree",
+      "passed": true,
+      "detail": "source present"
+    },
+    {
+      "id": "sdk-probe",
+      "passed": true,
+      "detail": "v24.18.0 (>= 20.0.0)"
+    }
+  ],
+  "gates": {
+    "deliveryAllowed": true,
+    "publicationAllowed": true,
+    "certifiedClaimAllowed": true,
+    "commitAllowed": true
+  },
+  "failureReasons": []
+}

@@ -1,0 +1,20 @@
+{
+  "a11yLayerCompleted": true,
+  "a11yState": "A11Y_VERIFIED",
+  "mustFailed": 0,
+  "failureReasons": [],
+  "violationCount": 0,
+  "passCount": 34,
+  "incompleteCount": 0,
+  "entry": "C:/forge-os/delivery-package/accesslink/app/dist/index.html",
+  "engine": "axe-core+playwright",
+  "wcagLevel": "AA",
+  "gates": {
+    "deliveryAllowed": true,
+    "publicationAllowed": true,
+    "certifiedClaimAllowed": true,
+    "commitAllowed": true
+  },
+  "generatedAt": "2026-07-14T18:57:36.299Z",
+  "mcpHint": "Interactive repair: enable Playwright + accessibility-scanner MCP (see docs/ELITE_MCP.md)"
+}

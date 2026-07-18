@@ -1,0 +1,117 @@
+{
+  "version": "1.0.0",
+  "engine": "forge-design-rubric-v1",
+  "slug": "C:\\forge-os\\delivery-package\\accesslink",
+  "scoredAt": "2026-07-14T18:57:29.916Z",
+  "scoringMethod": "automated-proxy",
+  "disclaimer": "Scores derived from measurable HTML/CSS signals (structure, tokens, motion). Full CEILING_MET requires screenshot side-by-sides vs reference exemplars + Lighthouse/axe floors.",
+  "averageScore": 1.86,
+  "minAverageRequired": 3.5,
+  "pass": false,
+  "gateEnabled": true,
+  "criteria": [
+    {
+      "id": "visual-hierarchy",
+      "name": "visual hierarchy",
+      "description": "Clear primary action, KPI prominence, section structure readable at a glance (Linear/Stripe bar).",
+      "score": 0,
+      "max": 5,
+      "evidence": "No automated signals",
+      "evidenceArtifact": "app/index.html"
+    },
+    {
+      "id": "typographic-rhythm",
+      "name": "typographic rhythm",
+      "description": "Display + body font pairing, rem/clamp scale, consistent heading levels.",
+      "score": 2,
+      "max": 5,
+      "evidence": "Google Fonts loaded",
+      "evidenceArtifact": "app/index.html"
+    },
+    {
+      "id": "spacing-grid",
+      "name": "spacing/grid",
+      "description": "Consistent padding rhythm, responsive grid, no cramped or floating elements.",
+      "score": 0,
+      "max": 5,
+      "evidence": "No automated signals",
+      "evidenceArtifact": "app/index.html"
+    },
+    {
+      "id": "color-coherence",
+      "name": "color-system coherence",
+      "description": "Theme + identity accent applied consistently; not default browser gray.",
+      "score": 4,
+      "max": 5,
+      "evidence": "Theme declared; Theme CSS linked; Per-outcome identity accent",
+      "evidenceArtifact": "app/index.html"
+    },
+    {
+      "id": "motion-micro",
+      "name": "motion/micro-interaction",
+      "description": "Hover/focus states, transitions on interactive elements.",
+      "score": 0,
+      "max": 5,
+      "evidence": "No automated signals",
+      "evidenceArtifact": "app/index.html"
+    },
+    {
+      "id": "consistency",
+      "name": "consistency",
+      "description": "Shared Forge design layers linked; shell matches identity manifest.",
+      "score": 2,
+      "max": 5,
+      "evidence": "Shared token + system CSS",
+      "evidenceArtifact": "app/index.html"
+    },
+    {
+      "id": "brand-fit",
+      "name": "brand fit",
+      "description": "Title/copy/domain align with product; no template vertical bleed.",
+      "score": 5,
+      "max": 5,
+      "evidence": "Product name \"AccessLink\" in UI; Domain keywords in copy; No template bleed / dev copy",
+      "evidenceArtifact": "app/index.html"
+    }
+  ],
+  "referenceExemplars": [
+    {
+      "name": "Stripe (trust & clarity)",
+      "category": "OPERATIONS_DASHBOARD",
+      "comparisonArtifact": "delivery-package/C:\\forge-os\\delivery-package\\accesslink/design-ui/RUBRIC_REPORT.md"
+    },
+    {
+      "name": "Airbnb (property listings)",
+      "category": "OPERATIONS_DASHBOARD",
+      "comparisonArtifact": "delivery-package/C:\\forge-os\\delivery-package\\accesslink/design-ui/RUBRIC_REPORT.md"
+    },
+    {
+      "name": "Apple Health (accessibility-first design)",
+      "category": "OPERATIONS_DASHBOARD",
+      "comparisonArtifact": "delivery-package/C:\\forge-os\\delivery-package\\accesslink/design-ui/RUBRIC_REPORT.md"
+    }
+  ],
+  "objectiveFloors": [
+    {
+      "dimension": "accessibility",
+      "standard": "WCAG 2.2 AA",
+      "tool": "structural + axe (when run)",
+      "passed": null,
+      "score": "pending-tool-run"
+    },
+    {
+      "dimension": "performance",
+      "standard": "Core Web Vitals",
+      "tool": "Lighthouse (when run)",
+      "passed": null,
+      "score": "pending-tool-run"
+    },
+    {
+      "dimension": "responsiveness",
+      "standard": "360/768/1280/1920",
+      "tool": "CSS breakpoints + screenshots",
+      "passed": false,
+      "score": "pending-tool-run"
+    }
+  ]
+}

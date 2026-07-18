@@ -1,0 +1,46 @@
+{
+  "designLayerCompleted": true,
+  "designState": "DESIGN_FAILED",
+  "customerDesignProvided": false,
+  "scopeSource": "design-scope.json",
+  "productName": "AccessLink",
+  "domainKeywords": [
+    "accessible travel",
+    "wheelchair accessible",
+    "hotels",
+    "Airbnb",
+    "accessibility",
+    "verified listings",
+    "community data"
+  ],
+  "htmlEntriesScanned": 2,
+  "cssFilesScanned": 15,
+  "mustViolations": 15,
+  "shouldViolations": 0,
+  "auditViolations": 0,
+  "identityAuditState": "IDENTITY_AUDIT_GAPS",
+  "gates": {
+    "deliveryAllowed": false,
+    "publicationAllowed": false,
+    "certifiedClaimAllowed": false,
+    "commitAllowed": false
+  },
+  "generatedAt": "2026-07-14T18:57:29.818Z",
+  "failureReasons": [
+    "app/index.html:undefined D-R013 — Missing data-forge-shell on <html>",
+    "app/index.html:undefined D-R016 — data-forge-font=\"plus-jakarta\" does not match fontPairId \"dm-sans-jetbrains\"",
+    "app/index.html:undefined D-R017 — Missing forge-identity.css link",
+    "app/index.html:undefined D-R013 — Missing forge-layout-shells.css link",
+    "app/index.html:undefined D-R015 — Missing signature element class \"forge-signature--ticker-strip\"",
+    "app/index.html:undefined D-E012 — Layout shell declared on <html>: matched 0, need ≥1",
+    "app/index.html:undefined D-E010 — Font pair CSS linked: missing link to forge-font-pairs.css",
+    "app/index.html:undefined D-E010 — Layout shell CSS linked: missing link to forge-layout-shells.css",
+    "app/index.html:undefined D-E010 — Per-outcome forge-identity.css linked: missing link to forge-identity.css",
+    "app/index.html:undefined D-E010 — Enriched product CSS linked: missing link to forge-enriched-product.css",
+    "app/index.html:undefined D-E012 — Domain signature element in DOM: matched 0, need ≥1",
+    "app/index.html:undefined D-E012 — KPI row or product hero: matched 0, need ≥1",
+    "app/styles.css:undefined D-E011 — App styles.css depth (≥80 lines): found 0 non-empty lines, need ≥80",
+    "app/index.html:undefined D-E014 — data-forge-font=\"plus-jakarta\" must be \"dm-sans-jetbrains\" per enriched design contract",
+    "app/index.html:undefined D-E015 — Missing signature class forge-signature--ticker-strip from enriched design contract"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "disciplineLayerCompleted": true,
+  "disciplineState": "NOT_APPLICABLE",
+  "generatedAt": "2026-07-14T18:57:30.029Z",
+  "engine": "forge-discipline-select.mjs",
+  "selection": {
+    "profileId": "javascript",
+    "label": "Node / JavaScript",
+    "tier": "factory-default",
+    "tool": "node",
+    "buildCmd": "node --check",
+    "rationale": "Default factory profile (javascript).",
+    "scopeDownFrom": null
+  },
+  "gates": {
+    "codeAllowed": true,
+    "deliveryAllowed": true,
+    "publicationAllowed": true,
+    "certifiedClaimAllowed": true,
+    "commitAllowed": true
+  }
+}

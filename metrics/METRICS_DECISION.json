@@ -1,0 +1,16 @@
+{
+  "metricsLayerCompleted": true,
+  "metricsState": "METRICS_VERIFIED",
+  "dataSourceType": "none",
+  "mustFailed": 0,
+  "failureReasons": [],
+  "gates": {
+    "deliveryAllowed": true,
+    "publicationAllowed": true,
+    "certifiedClaimAllowed": true,
+    "commitAllowed": true
+  },
+  "summary": "Metrics backed by real data/import signals (not mock/demo values).",
+  "scopeSource": "auto-detected",
+  "generatedAt": "2026-07-14T18:57:36.516Z"
+}

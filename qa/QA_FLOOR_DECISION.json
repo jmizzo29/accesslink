@@ -1,0 +1,23 @@
+{
+  "qaFloorLayerCompleted": true,
+  "qaFloorState": "QA_FLOOR_VERIFIED",
+  "subdomain": "TRAVEL",
+  "accountsRequired": false,
+  "interactive": false,
+  "activeProfiles": [
+    "WEB_APP_STATIC"
+  ],
+  "scopeSource": "default",
+  "legacyExempt": false,
+  "checksRun": 2,
+  "mustFailed": 0,
+  "approvedDeferrals": [],
+  "failureReasons": [],
+  "gates": {
+    "deliveryAllowed": true,
+    "publicationAllowed": true,
+    "certifiedClaimAllowed": true,
+    "commitAllowed": true
+  },
+  "generatedAt": "2026-07-14T18:57:36.413Z"
+}

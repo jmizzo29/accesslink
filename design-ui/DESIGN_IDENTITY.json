@@ -1,0 +1,42 @@
+{
+  "slug": "accesslink",
+  "publicSlug": "access4all",
+  "customerDesignProvided": false,
+  "productName": "Access4All",
+  "domainKeywords": [
+    "accessible travel",
+    "wheelchair accessible",
+    "hotels",
+    "Airbnb",
+    "accessibility",
+    "verified listings",
+    "community data"
+  ],
+  "vertical": "travel",
+  "referenceExemplars": [
+    "Stripe (trust & clarity)",
+    "Airbnb (property listings)",
+    "Apple Health (accessibility-first design)"
+  ],
+  "identity": {
+    "productPattern": "CONSUMER_PWA",
+    "layoutShellId": "marketing-cinematic",
+    "navigationModel": "TOP_NAV",
+    "density": "COMFORTABLE",
+    "personality": "WARM_TRUST",
+    "themeId": "daylight",
+    "fontPairId": "fraunces-source-sans",
+    "heroPattern": "cinematic-fullbleed",
+    "surfaceMode": "light",
+    "motionProfile": "gentle",
+    "accentSeed": "access4all",
+    "signatureElement": "brand-wordmark",
+    "accentHue": 174,
+    "accentCss": "hsl(174 72% 28%)",
+    "gradientAngle": 168
+  },
+  "signatureClass": "forge-signature--brand-wordmark",
+  "identityLocked": true,
+  "generatedAt": "2026-07-16T13:30:00.000Z",
+  "generator": "access4all-wow-sprint"
+}

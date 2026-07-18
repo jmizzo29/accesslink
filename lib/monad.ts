@@ -1,102 +1,133 @@
-// Monad Blockchain Integration for AccessLink
-// Stores verified accessibility records on-chain for permanent trust
-// Ready for wallet connection and smart contract interaction
+import { ethers } from 'ethers';
 
-export interface VerifiedRecord {
-  propertyHash: string;
-  location: string;
-  timestamp: number;
-  verifiedBy: string;
-  verified: boolean;
-}
+const CONTRACT_ABI = [
+  'function submitRecord(bytes32 propertyHash, string memory location) public returns (bytes32)',
+  'function verifyRecord(bytes32 recordId) public',
+  'function getRecord(bytes32 recordId) public view returns (tuple(bytes32, string, uint256, address, bool))',
+  'function getRecordCount() public view returns (uint256)',
+];
 
 export class MonadAccessLink {
+  private provider: ethers.JsonRpcProvider;
+  private contract: ethers.Contract | null = null;
   private contractAddress: string;
-  private rpcUrl: string;
 
   constructor(rpcUrl: string, contractAddress: string) {
-    this.rpcUrl = rpcUrl;
+    this.provider = new ethers.JsonRpcProvider(rpcUrl);
     this.contractAddress = contractAddress;
   }
 
   /**
-   * Initialize contract for future wallet integration
+   * Initialize contract instance with signer (for write operations)
    */
   async initWithSigner(privateKey: string) {
-    // Placeholder for wallet connection
-    console.log('Wallet connection ready for:', privateKey.substring(0, 10) + '...');
+    const signer = new ethers.Wallet(privateKey, this.provider);
+    this.contract = new ethers.Contract(this.contractAddress, CONTRACT_ABI, signer);
   }
 
   /**
-   * Initialize read-only contract access
+   * Initialize contract instance for read-only (no signer needed)
    */
   async initReadOnly() {
-    console.log('Reading from Monad:', this.rpcUrl);
+    this.contract = new ethers.Contract(this.contractAddress, CONTRACT_ABI, this.provider);
   }
 
   /**
-   * Submit a property accessibility report to blockchain
+   * Submit a property accessibility report to the blockchain
    */
   async submitRecord(propertyData: { title: string; location: string; features: string[] }): Promise<string> {
-    // In production: calls smart contract on Monad
-    // For hackathon: logs the intent
-    const hash = this.generatePropertyHash(propertyData.title, propertyData.location, propertyData.features);
-    console.log('Submitting record to Monad:', { hash, location: propertyData.location });
-    return `0x${Math.random().toString(16).substring(2)}`; // Mock tx hash
+    if (!this.contract) {
+      throw new Error('Contract not initialized. Call initWithSigner first.');
+    }
+
+    try {
+      // Hash the property data
+      const hash = ethers.keccak256(
+        ethers.AbiCoder.defaultAbiCoder().encode(
+          ['string', 'string', 'string[]'],
+          [propertyData.title, propertyData.location, propertyData.features]
+        )
+      );
+
+      const tx = await this.contract.submitRecord(hash, propertyData.location);
+      const receipt = await tx.wait();
+
+      return receipt?.transactionHash || '';
+    } catch (error) {
+      console.error('Failed to submit record:', error);
+      throw error;
+    }
   }
 
   /**
    * Verify a record (mark it as verified by community)
    */
   async verifyRecord(recordId: string): Promise<string> {
-    console.log('Verifying record on Monad:', recordId);
-    return `0x${Math.random().toString(16).substring(2)}`; // Mock tx hash
+    if (!this.contract) {
+      throw new Error('Contract not initialized. Call initWithSigner first.');
+    }
+
+    try {
+      const tx = await this.contract.verifyRecord(recordId);
+      const receipt = await tx.wait();
+
+      return receipt?.transactionHash || '';
+    } catch (error) {
+      console.error('Failed to verify record:', error);
+      throw error;
+    }
   }
 
   /**
-   * Get a verified record from blockchain
+   * Get a verified record from the blockchain
    */
-  async getRecord(recordId: string): Promise<VerifiedRecord | null> {
-    // In production: fetches from smart contract
-    console.log('Fetching record from Monad:', recordId);
-    return null;
+  async getRecord(recordId: string): Promise<any> {
+    if (!this.contract) {
+      await this.initReadOnly();
+    }
+
+    try {
+      const record = await (this.contract as ethers.Contract).getRecord(recordId);
+      return {
+        propertyHash: record[0],
+        location: record[1],
+        timestamp: record[2],
+        verifiedBy: record[3],
+        verified: record[4],
+      };
+    } catch (error) {
+      console.error('Failed to get record:', error);
+      return null;
+    }
   }
 
   /**
-   * Get total verified records
+   * Get total number of verified records
    */
   async getRecordCount(): Promise<number> {
-    console.log('Fetching record count from Monad');
-    return 0;
-  }
-
-  /**
-   * Generate property hash for blockchain storage
-   */
-  private generatePropertyHash(title: string, location: string, features: string[]): string {
-    // Simple hash generation - in production would use ethers.keccak256
-    const data = `${title}|${location}|${features.join(',')}`;
-    let hash = 0;
-    for (let i = 0; i < data.length; i++) {
-      const char = data.charCodeAt(i);
-      hash = (hash << 5) - hash + char;
-      hash = hash & hash; // Convert to 32-bit integer
+    if (!this.contract) {
+      await this.initReadOnly();
     }
-    return `0x${Math.abs(hash).toString(16).padStart(64, '0')}`;
+
+    try {
+      const count = await (this.contract as ethers.Contract).getRecordCount();
+      return count.toNumber();
+    } catch (error) {
+      console.error('Failed to get record count:', error);
+      return 0;
+    }
   }
 
   /**
-   * Static method to generate property hash
+   * Generate a record hash from property data
    */
   static generatePropertyHash(title: string, location: string, features: string[]): string {
-    const data = `${title}|${location}|${features.join(',')}`;
-    let hash = 0;
-    for (let i = 0; i < data.length; i++) {
-      const char = data.charCodeAt(i);
-      hash = (hash << 5) - hash + char;
-      hash = hash & hash;
-    }
-    return `0x${Math.abs(hash).toString(16).padStart(64, '0')}`;
+    return ethers.keccak256(
+      ethers.AbiCoder.defaultAbiCoder().encode(
+        ['string', 'string', 'string[]'],
+        [title, location, features]
+      )
+    );
   }
 }
 

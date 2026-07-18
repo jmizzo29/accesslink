@@ -1,0 +1,80 @@
+{
+  "must": [
+    {
+      "rule": "SE-R005",
+      "severity": "MUST",
+      "file": "app/src/App.tsx",
+      "line": 32,
+      "message": "Nesting depth 6 exceeds limit 5",
+      "principle": "Torvalds / readability"
+    },
+    {
+      "rule": "SE-R005",
+      "severity": "MUST",
+      "file": "app/src/App.tsx",
+      "line": 36,
+      "message": "Nesting depth 6 exceeds limit 5",
+      "principle": "Torvalds / readability"
+    },
+    {
+      "rule": "SE-R005",
+      "severity": "MUST",
+      "file": "app/src/pages/CostsPage.tsx",
+      "line": 148,
+      "message": "Nesting depth 7 exceeds limit 5",
+      "principle": "Torvalds / readability"
+    },
+    {
+      "rule": "SE-R005",
+      "severity": "MUST",
+      "file": "app/src/pages/SearchPage.tsx",
+      "line": 86,
+      "message": "Nesting depth 7 exceeds limit 5",
+      "principle": "Torvalds / readability"
+    },
+    {
+      "rule": "SE-R005",
+      "severity": "MUST",
+      "file": "components/PropertyCard.tsx",
+      "line": 34,
+      "message": "Nesting depth 6 exceeds limit 5",
+      "principle": "Torvalds / readability"
+    },
+    {
+      "rule": "SE-R005",
+      "severity": "MUST",
+      "file": "components/SearchSection.tsx",
+      "line": 156,
+      "message": "Nesting depth 7 exceeds limit 5",
+      "principle": "Torvalds / readability"
+    },
+    {
+      "rule": "SE-R006",
+      "severity": "MUST",
+      "file": "lib/monad.ts",
+      "line": 7,
+      "message": "Function \"getRecordCount\" spans 130 lines (limit 80)",
+      "principle": "Ritchie / Thompson modularity"
+    }
+  ],
+  "should": [
+    {
+      "rule": "SE-R011",
+      "severity": "SHOULD",
+      "file": "components/PropertyCard.tsx",
+      "line": 5,
+      "message": "Explicit any in TypeScript — prefer typed interfaces.",
+      "principle": "Hejlsberg / type safety",
+      "snippet": "export function PropertyCard({ listing }: { listing: any }) {"
+    },
+    {
+      "rule": "SE-R011",
+      "severity": "SHOULD",
+      "file": "lib/monad.ts",
+      "line": 84,
+      "message": "Explicit any in TypeScript — prefer typed interfaces.",
+      "principle": "Hejlsberg / type safety",
+      "snippet": "async getRecord(recordId: string): Promise<any> {"
+    }
+  ]
+}

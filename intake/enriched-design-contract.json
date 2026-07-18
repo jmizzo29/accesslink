@@ -1,0 +1,174 @@
+{
+  "version": 1,
+  "engine": "forge-enrich-design-v1",
+  "enrichedAt": "2026-07-14T18:57:29.479Z",
+  "autoEnriched": true,
+  "approver": "forge-enrich-design-engine",
+  "skipped": false,
+  "customerDesignProvided": false,
+  "userRequest": "",
+  "sourceDiscipline": "OPERATIONS_DASHBOARD",
+  "referenceExemplars": [
+    "Stripe (trust & clarity)",
+    "Airbnb (property listings)",
+    "Apple Health (accessibility-first design)"
+  ],
+  "visualIdentity": {
+    "layoutShellId": "data-table-command",
+    "themeId": "prism",
+    "fontPairId": "dm-sans-jetbrains",
+    "signatureClass": "forge-signature--ticker-strip",
+    "signatureElement": "ticker-strip",
+    "googleFontsUrl": "https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+  },
+  "visualMustHave": [
+    {
+      "id": "identity-shell",
+      "label": "Layout shell declared on <html>",
+      "severity": "MUST",
+      "source": "design_enrichment",
+      "patternSources": [
+        "data-forge-shell="
+      ]
+    },
+    {
+      "id": "identity-font",
+      "label": "Font pair declared on <html>",
+      "severity": "MUST",
+      "source": "design_enrichment",
+      "patternSources": [
+        "data-forge-font="
+      ]
+    },
+    {
+      "id": "identity-theme",
+      "label": "Theme declared on <html>",
+      "severity": "MUST",
+      "source": "design_enrichment",
+      "patternSources": [
+        "data-forge-theme="
+      ]
+    },
+    {
+      "id": "link-themes",
+      "label": "Theme CSS linked",
+      "severity": "MUST",
+      "source": "design_enrichment",
+      "requiredLinks": [
+        "forge-design-themes.css"
+      ]
+    },
+    {
+      "id": "link-font-pairs",
+      "label": "Font pair CSS linked",
+      "severity": "MUST",
+      "source": "design_enrichment",
+      "requiredLinks": [
+        "forge-font-pairs.css"
+      ]
+    },
+    {
+      "id": "link-layout-shells",
+      "label": "Layout shell CSS linked",
+      "severity": "MUST",
+      "source": "design_enrichment",
+      "requiredLinks": [
+        "forge-layout-shells.css"
+      ]
+    },
+    {
+      "id": "link-identity-css",
+      "label": "Per-outcome forge-identity.css linked",
+      "severity": "MUST",
+      "source": "design_enrichment",
+      "requiredLinks": [
+        "forge-identity.css"
+      ]
+    },
+    {
+      "id": "link-enriched-product",
+      "label": "Enriched product CSS linked",
+      "severity": "MUST",
+      "source": "design_enrichment",
+      "requiredLinks": [
+        "forge-enriched-product.css"
+      ]
+    },
+    {
+      "id": "google-fonts",
+      "label": "Google Fonts loaded for display typography",
+      "severity": "MUST",
+      "source": "design_enrichment",
+      "patternSources": [
+        "fonts\\.googleapis\\.com"
+      ]
+    },
+    {
+      "id": "signature-element",
+      "label": "Domain signature element in DOM",
+      "severity": "MUST",
+      "source": "design_enrichment",
+      "patternSources": [
+        "forge-signature--"
+      ]
+    },
+    {
+      "id": "color-scheme-meta",
+      "label": "color-scheme meta for dark/light surfaces",
+      "severity": "MUST",
+      "source": "design_enrichment",
+      "patternSources": [
+        "name=[\"']color-scheme[\"']"
+      ]
+    },
+    {
+      "id": "kpi-or-hero",
+      "label": "KPI row or product hero",
+      "severity": "MUST",
+      "source": "design_discipline",
+      "patternSources": [
+        "kpi-card|forge-shell-kpi-row|forge-shell-hero"
+      ]
+    },
+    {
+      "id": "app-shell",
+      "label": "Layout shell body class",
+      "severity": "MUST",
+      "source": "design_discipline",
+      "patternSources": [
+        "forge-shell\\s"
+      ]
+    },
+    {
+      "id": "min-app-css",
+      "label": "App styles.css depth (≥80 lines)",
+      "severity": "MUST",
+      "source": "design_enrichment",
+      "minCssLines": 80
+    }
+  ],
+  "shouldHave": [
+    {
+      "id": "motion-hover",
+      "label": "Interactive hover states in CSS",
+      "severity": "SHOULD",
+      "source": "design_discipline_probable",
+      "patternSources": [
+        ":\\s*hover"
+      ]
+    },
+    {
+      "id": "responsive-breakpoints",
+      "label": "Responsive breakpoints",
+      "severity": "SHOULD",
+      "source": "design_discipline_probable",
+      "patternSources": [
+        "@media\\s*\\("
+      ]
+    }
+  ],
+  "nonGoals": [
+    "Unstyled HTML forms only"
+  ],
+  "visualBar": "World-class operational UI — reference exemplar tier (Linear / Stripe / domain SOTA), not bare forge-system forms."
+}

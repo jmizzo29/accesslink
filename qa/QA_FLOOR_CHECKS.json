@@ -1,0 +1,24 @@
+[
+  {
+    "id": "V-QA-STATIC-ENTRY",
+    "profileId": "WEB_APP_STATIC",
+    "severity": "MUST",
+    "description": "HTML entry exists",
+    "pass": true,
+    "deferred": false,
+    "skipped": false,
+    "detail": "Entry HTML: app\\index.html",
+    "source": "structural"
+  },
+  {
+    "id": "V-QA-STATIC-RESPONSIVE",
+    "profileId": "WEB_APP_STATIC",
+    "severity": "MUST",
+    "description": "Responsive @media breakpoints",
+    "pass": true,
+    "deferred": false,
+    "skipped": false,
+    "detail": "Responsive CSS present",
+    "source": "structural"
+  }
+]

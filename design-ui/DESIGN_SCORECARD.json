@@ -1,0 +1,27 @@
+{
+  "state": "DESIGN_FAILED",
+  "mustViolations": 15,
+  "shouldViolations": 0,
+  "auditViolations": 0,
+  "identityAuditState": "IDENTITY_AUDIT_GAPS",
+  "htmlEntriesScanned": 2,
+  "cssFilesScanned": 15,
+  "rulesApplied": 22,
+  "referenceExemplars": [
+    {
+      "name": "Linear",
+      "category": "SaaS product UI",
+      "reference": "https://linear.app"
+    },
+    {
+      "name": "Stripe Dashboard",
+      "category": "Operational dashboard",
+      "reference": "https://stripe.com"
+    },
+    {
+      "name": "Procore",
+      "category": "Construction field ops",
+      "reference": "https://www.procore.com"
+    }
+  ]
+}

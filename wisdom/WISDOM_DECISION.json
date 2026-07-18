@@ -1,0 +1,17 @@
+{
+  "wisdomLayerCompleted": true,
+  "wisdomState": "WISDOM_FAILED",
+  "scopeSource": "default (delivery outcome)",
+  "legacyExempt": false,
+  "filesScanned": 29,
+  "checksRun": 11,
+  "mustFailed": 3,
+  "approvedDeferrals": [],
+  "gates": {
+    "deliveryAllowed": false,
+    "publicationAllowed": false,
+    "certifiedClaimAllowed": false,
+    "commitAllowed": false
+  },
+  "generatedAt": "2026-07-14T18:57:36.645Z"
+}

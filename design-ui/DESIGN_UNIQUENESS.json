@@ -1,0 +1,54 @@
+{
+  "slug": "accesslink",
+  "fingerprint": {
+    "slug": "accesslink",
+    "layoutShellId": "data-table-command",
+    "fontPairId": "plus-jakarta",
+    "themeId": "light",
+    "signatureElement": "ticker-strip",
+    "accentHue": 258,
+    "productPattern": "OPERATIONS_DASHBOARD",
+    "hash": "e2091ad69f53628e"
+  },
+  "nearestNeighbors": [
+    {
+      "slug": "ml-experiment-tracker",
+      "distance": 2
+    },
+    {
+      "slug": "starship-build-engineering",
+      "distance": 2
+    },
+    {
+      "slug": "agriculture-crop-planner",
+      "distance": 3
+    },
+    {
+      "slug": "bozeman-cre-market-report",
+      "distance": 3
+    },
+    {
+      "slug": "business-card-scanner",
+      "distance": 3
+    }
+  ],
+  "portfolioPass": false,
+  "collisionsInvolvingSlug": [],
+  "nearDuplicatesInvolvingSlug": [
+    {
+      "slugA": "accesslink",
+      "slugB": "ml-experiment-tracker",
+      "distance": 2,
+      "minRequired": 3
+    },
+    {
+      "slugA": "accesslink",
+      "slugB": "starship-build-engineering",
+      "distance": 2,
+      "minRequired": 3
+    }
+  ],
+  "auditedAt": "2026-07-14T18:57:29.817Z",
+  "blockOnFailure": true,
+  "gateEnabled": false
+}

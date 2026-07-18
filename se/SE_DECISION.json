@@ -1,0 +1,26 @@
+{
+  "seLayerCompleted": true,
+  "seState": "SE_FAILED",
+  "requiresSourceCode": true,
+  "scopeSource": "se-scope.json",
+  "filesScanned": 25,
+  "linesScanned": 1766,
+  "mustViolations": 7,
+  "shouldViolations": 2,
+  "gates": {
+    "deliveryAllowed": false,
+    "publicationAllowed": false,
+    "certifiedClaimAllowed": false,
+    "commitAllowed": false
+  },
+  "generatedAt": "2026-07-14T18:57:29.243Z",
+  "failureReasons": [
+    "app/src/App.tsx:32 SE-R005 — Nesting depth 6 exceeds limit 5",
+    "app/src/App.tsx:36 SE-R005 — Nesting depth 6 exceeds limit 5",
+    "app/src/pages/CostsPage.tsx:148 SE-R005 — Nesting depth 7 exceeds limit 5",
+    "app/src/pages/SearchPage.tsx:86 SE-R005 — Nesting depth 7 exceeds limit 5",
+    "components/PropertyCard.tsx:34 SE-R005 — Nesting depth 6 exceeds limit 5",
+    "components/SearchSection.tsx:156 SE-R005 — Nesting depth 7 exceeds limit 5",
+    "lib/monad.ts:7 SE-R006 — Function \"getRecordCount\" spans 130 lines (limit 80)"
+  ]
+}

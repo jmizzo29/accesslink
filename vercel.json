@@ -1,0 +1,28 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "version": 2,
+  "buildCommand": "npm run build",
+  "outputDirectory": "app/dist",
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/router.mjs"
+    },
+    {
+      "source": "/((?!api|_next|.*\\.).*)",
+      "destination": "/index.html"
+    }
+  ],
+  "functions": {
+    "api/router.mjs": {
+      "memory": 3008,
+      "maxDuration": 60
+    }
+  },
+  "env": {
+    "VITE_SUPABASE_URL": "@supabase_url",
+    "VITE_SUPABASE_ANON_KEY": "@supabase_key",
+    "VITE_MONAD_RPC": "@monad_rpc",
+    "VITE_CONTRACT_ADDRESS": "@contract_address"
+  }
+}
