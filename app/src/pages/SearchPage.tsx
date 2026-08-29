@@ -8,6 +8,7 @@ import { SearchEmptyState } from '../components/search/SearchEmptyState';
 import { SearchResultsList } from '../components/search/SearchResults';
 import { ACCESSIBILITY_FILTERS, LISTING_CATEGORIES } from '../lib/listings/filters';
 import { searchListings } from '../lib/listings/repository';
+import { searchListingsLocal } from '../lib/listings/searchLocal';
 import { resolveProvenance } from '../lib/listings/provenance';
 import { matchListingsByNeeds } from '../lib/match/client';
 import type { AccessibilityFilterKey, Listing, ListingCategory } from '../lib/listings/types';
@@ -61,7 +62,6 @@ export function SearchPage() {
       if (loc) params.set('location', loc);
       if (cat) params.set('category', cat);
       if (needsText) params.set('needs', needsText);
-      if (searchParams.get('demo') === '1') params.set('demo', '1');
       Object.entries(feats).forEach(([key, on]) => {
         if (on) params.set(key, '1');
       });
@@ -100,17 +100,21 @@ export function SearchPage() {
         syncUrl({ location: loc, category: cat, requiredFeatures: feats, needsText: needsText ?? needs });
       }
 
+      const query = {
+        location: loc,
+        category: cat,
+        requiredFeatures: feats,
+      };
+      const local = searchListingsLocal(query);
+
       setHasSearched(true);
-      setStatus('loading');
       setRanked(false);
+      setResults(local.results);
+      setStatus(local.results.length ? 'done' : 'loading');
 
       try {
-        const response = await searchListings({
-          location: loc,
-          category: cat,
-          requiredFeatures: feats,
-        });
-        let nextResults = response.results;
+        const response = await searchListings(query);
+        let nextResults = response.results.length ? response.results : local.results;
         let nextRanked = false;
         let nextParsed: string[] = [];
 
@@ -129,10 +133,13 @@ export function SearchPage() {
         setStatus('done');
 
         const openData = nextResults.filter((r) => resolveProvenance(r) === 'open-data').length;
-        const demo = nextResults.filter((r) => resolveProvenance(r) === 'curated-demo').length;
+        const verified = nextResults.filter((r) => {
+          const kind = resolveProvenance(r);
+          return kind === 'verified' || kind === 'curated-demo';
+        }).length;
         const community = nextResults.filter((r) => resolveProvenance(r) === 'community').length;
         const parts: string[] = [];
-        if (demo) parts.push(`${demo} verified stay${demo === 1 ? '' : 's'}`);
+        if (verified) parts.push(`${verified} verified stay${verified === 1 ? '' : 's'}`);
         if (community) parts.push(`${community} community report${community === 1 ? '' : 's'}`);
         if (openData || response.cloudPlacesAdded) {
           parts.push(
@@ -143,8 +150,13 @@ export function SearchPage() {
         }
         setEnrichmentNote(parts.length ? parts.join(' · ') : null);
       } catch {
-        setResults([]);
-        setStatus('error');
+        if (local.results.length) {
+          setResults(local.results);
+          setStatus('done');
+        } else {
+          setResults([]);
+          setStatus('error');
+        }
         setEnrichmentNote(null);
       }
     },
@@ -249,11 +261,11 @@ export function SearchPage() {
 
             <button
               type="submit"
-              disabled={status === 'loading'}
+              disabled={status === 'loading' && results.length === 0}
               className="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-full bg-[var(--teal)] px-8 text-[17px] font-medium text-white hover:bg-[var(--teal-deep)] disabled:opacity-60 lg:min-w-[140px]"
             >
               <Search className="h-4 w-4" aria-hidden />
-              {status === 'loading' ? 'Searching…' : 'Search'}
+              {status === 'loading' && results.length === 0 ? 'Searching…' : 'Search'}
             </button>
           </div>
 
@@ -290,14 +302,14 @@ export function SearchPage() {
           </div>
         )}
 
-        <section className="mt-12" aria-live="polite" aria-busy={status === 'loading'}>
-          {status === 'loading' && (
+        <section className="mt-12" aria-live="polite" aria-busy={status === 'loading' && results.length === 0}>
+          {status === 'loading' && results.length === 0 && (
             <div className="rounded-2xl border border-[var(--sand)] bg-[var(--paper)] px-8 py-20 text-center">
               <p className="text-[17px] text-[var(--muted)]">Searching listings…</p>
             </div>
           )}
 
-          {status === 'error' && (
+          {status === 'error' && results.length === 0 && (
             <div
               className="rounded-2xl border border-[var(--sand)] bg-[var(--paper)] px-8 py-20 text-center"
               role="alert"
@@ -312,9 +324,7 @@ export function SearchPage() {
             <SearchEmptyState searched={hasSearched} hasFilters={activeFilterCount > 0} />
           )}
 
-          {status === 'done' && results.length > 0 && (
-            <SearchResultsList results={results} ranked={ranked} />
-          )}
+          {results.length > 0 && <SearchResultsList results={results} ranked={ranked} />}
         </section>
       </div>
 

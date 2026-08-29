@@ -1,4 +1,3 @@
-import { enrichSearchWithAccessibilityCloud } from '../accessibility-cloud/enrich';
 import { isSupabaseConfigured } from '../supabase/client';
 import {
   getPropertyByIdFromSupabase,
@@ -7,9 +6,11 @@ import {
 } from '../supabase/queries';
 import type { SubmitReportInput, SubmitReportResult } from '../supabase/queries';
 import { apiUrl } from '../api-base';
+import { fetchWithTimeout, withTimeout } from '../fetch-timeout';
 import type { Listing, SearchQuery, SearchResponse } from './types';
 import { buildAccessibilityPayload } from './filters';
 import {
+  getBundledCommunityListings,
   getCommunityListingByIdAsync,
   loadCommunityCatalog,
   mergeCommunityIntoResults,
@@ -41,33 +42,16 @@ function mergeById(primary: Listing[], secondary: Listing[]): Listing[] {
   return [...byId.values()];
 }
 
-async function applyCloudEnrichment(
-  response: SearchResponse,
-  query: SearchQuery,
-  dataSource: ListingsDataSource,
-): Promise<SearchResponse & { dataSource: ListingsDataSource }> {
-  try {
-    const enriched = await enrichSearchWithAccessibilityCloud(response.results, query);
-    return {
-      ...response,
-      results: enriched.results,
-      total: enriched.results.length,
-      dataSource,
-      accessibilityCloudEnriched: enriched.cloudEnriched,
-      cloudPlacesAdded: enriched.cloudPlacesAdded,
-      enrichmentSource: enriched.enrichmentSource ?? response.enrichmentSource,
-    };
-  } catch {
-    return { ...response, dataSource };
-  }
-}
-
 async function withCommunity(
   response: SearchResponse,
   query: SearchQuery,
   dataSource: ListingsDataSource,
 ): Promise<SearchResponse & { dataSource: ListingsDataSource }> {
-  const community = await loadCommunityCatalog();
+  const community = await withTimeout(
+    loadCommunityCatalog(),
+    2800,
+    [...getBundledCommunityListings(), ...readLocalCommunityCatalog()],
+  );
   const merged = mergeCommunityIntoResults(
     response.results,
     community,
@@ -86,11 +70,12 @@ async function withCommunity(
         )
       : merged;
 
-  return applyCloudEnrichment(
-    { ...response, results: filtered, total: filtered.length },
-    query,
+  return {
+    ...response,
+    results: filtered,
+    total: filtered.length,
     dataSource,
-  );
+  };
 }
 
 export async function searchListings(
@@ -115,15 +100,19 @@ export async function searchListings(
   if (!forced || forced === 'api') {
     try {
       const accessibility = buildAccessibilityPayload(query.requiredFeatures);
-      const res = await fetch(apiUrl('/api/search'), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          location: query.location.trim() || undefined,
-          category: query.category || undefined,
-          accessibility,
-        }),
-      });
+      const res = await fetchWithTimeout(
+        apiUrl('/api/search'),
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            location: query.location.trim() || undefined,
+            category: query.category || undefined,
+            accessibility,
+          }),
+        },
+        4000,
+      );
 
       if (res.ok) {
         const data = await res.json();
@@ -146,9 +135,13 @@ export async function searchListings(
     }
   }
 
-  const community = await loadCommunityCatalog();
+  const community = await withTimeout(
+    loadCommunityCatalog(),
+    2800,
+    [...getBundledCommunityListings(), ...readLocalCommunityCatalog()],
+  );
   const local = searchListingsLocal(query, community);
-  return applyCloudEnrichment(local, query, 'local');
+  return { ...local, dataSource: 'local' };
 }
 
 export async function getListingById(
@@ -167,7 +160,7 @@ export async function getListingById(
 
   if (!forced || forced === 'api') {
     try {
-      const res = await fetch(apiUrl(`/api/listings/${encodeURIComponent(id)}`));
+      const res = await fetchWithTimeout(apiUrl(`/api/listings/${encodeURIComponent(id)}`), {}, 4000);
       if (res.ok) {
         const data = await res.json();
         const listing = normalizeListings([data.listing ?? data])[0];
@@ -235,6 +228,10 @@ function normalizeListings(raw: unknown): Listing[] {
       rating: Number(r.rating ?? 0),
       reviewCount: Number(r.reviews ?? r.reviewCount ?? 0),
       verified: Boolean(r.verified ?? false),
+      verifiedBy: typeof r.verifiedBy === 'string' ? r.verifiedBy : undefined,
+      verifiedAt: typeof r.verifiedAt === 'string' ? r.verifiedAt : undefined,
+      contributorName: typeof r.contributorName === 'string' ? r.contributorName : undefined,
+      contributedAt: typeof r.contributedAt === 'string' ? r.contributedAt : undefined,
       provenance: r.provenance as Listing['provenance'],
       summary: String(
         r.summary ?? r.description ?? 'Community-verified accessibility details available.',

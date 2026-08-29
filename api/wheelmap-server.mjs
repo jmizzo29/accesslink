@@ -132,7 +132,12 @@ async function fetchCloudPlaces({ lat, lng, category, wheelchairFilter, limit = 
   if (category === 'airbnb') url.searchParams.set('includeCategories', 'accommodation,vacation_rental');
   if (category === 'airport') url.searchParams.set('includeCategories', 'airport,transport');
 
-  const res = await fetch(url.toString(), { headers: { Accept: 'application/json' } });
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 2500);
+  const res = await fetch(url.toString(), {
+    headers: { Accept: 'application/json' },
+    signal: controller.signal,
+  }).finally(() => clearTimeout(timer));
   if (!res.ok) return [];
   const data = await res.json();
   return data.features ?? [];
@@ -149,15 +154,18 @@ async function fetchOsmWheelchairPlaces({ lat, lng, limit = 15 }) {
     out center ${limit};
   `;
 
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 8000);
   const res = await fetch('https://overpass-api.de/api/interpreter', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
-      'User-Agent': 'Access4All/1.0 (https://www.restarto.ai)',
+      'User-Agent': 'Access4All/1.0 (https://access4all.vercel.app)',
       Accept: 'application/json',
     },
     body: `data=${encodeURIComponent(query)}`,
-  });
+    signal: controller.signal,
+  }).finally(() => clearTimeout(timer));
 
   if (!res.ok) return [];
   const data = await res.json();

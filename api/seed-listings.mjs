@@ -6,6 +6,7 @@
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { COMMUNITY_ATTRIBUTION, SEED_VERIFICATION } from './verification.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -42,9 +43,12 @@ export function normalizeSeedListing(raw) {
   const category = ['hotel', 'airbnb', 'airport', 'wav'].includes(raw.category)
     ? raw.category
     : 'hotel';
+  const id = String(raw.id || `seed-${name.toLowerCase().replace(/\s+/g, '-')}`);
+  const verification = SEED_VERIFICATION[id] || {};
+  const community = COMMUNITY_ATTRIBUTION[id] || {};
 
   return {
-    id: String(raw.id || `seed-${name.toLowerCase().replace(/\s+/g, '-')}`),
+    id,
     name,
     location: location || city,
     address: raw.address ? String(raw.address) : undefined,
@@ -59,6 +63,10 @@ export function normalizeSeedListing(raw) {
     reviewCount: Number(raw.reviewCount || raw.reviews || 0),
     reviews: Number(raw.reviewCount || raw.reviews || 0),
     verified: Boolean(raw.verified),
+    verifiedBy: raw.verifiedBy || verification.verifiedBy,
+    verifiedAt: raw.verifiedAt || verification.verifiedAt,
+    contributorName: raw.contributorName || community.contributorName,
+    contributedAt: raw.contributedAt || community.contributedAt,
     provenance: raw.provenance || (raw.verified ? 'curated-demo' : 'community'),
     verifiedOnChain: Boolean(raw.verifiedOnChain),
     summary: String(raw.summary || raw.description || 'Community-verified accessibility details.').slice(0, 320),

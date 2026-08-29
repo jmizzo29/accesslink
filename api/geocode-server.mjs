@@ -14,12 +14,15 @@ export async function geocodeLocationServer(location) {
   url.searchParams.set('format', 'json');
   url.searchParams.set('limit', '1');
 
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 2500);
   const res = await fetch(url.toString(), {
     headers: {
       Accept: 'application/json',
-      'User-Agent': 'Access4All/1.0 (restarto.ai portfolio demo)',
+      'User-Agent': 'Access4All/1.0 (https://access4all.vercel.app)',
     },
-  });
+    signal: controller.signal,
+  }).finally(() => clearTimeout(timer));
 
   if (!res.ok) return null;
   const data = await res.json();

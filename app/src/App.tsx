@@ -6,8 +6,6 @@ import { SearchPage } from './pages/SearchPage';
 import { PropertyDetailPage } from './pages/PropertyDetailPage';
 import { PublicCostsPage } from './pages/PublicCostsPage';
 import { AdminCostsPage } from './pages/AdminCostsPage';
-import { DemoPage } from './pages/DemoPage';
-import { JudgeBriefPage } from './pages/JudgeBriefPage';
 import { ContributePage } from './pages/ContributePage';
 import { LoadingSpinner } from './components/LoadingSpinner';
 import { PageShell } from './components/PageShell';
@@ -28,12 +26,12 @@ export default function App() {
             <Route path="/" element={<LandingPage />} />
             <Route path="/search" element={<SearchPage />} />
             <Route path="/property/:id" element={<PropertyDetailPage />} />
-            <Route path="/activity" element={<Navigate to="/" replace />} />
-            <Route path="/demo" element={<DemoPage />} />
             <Route path="/contribute" element={<ContributePage />} />
-            <Route path="/judge" element={<JudgeBriefPage />} />
             <Route path="/costs" element={<PublicCostsPage />} />
             <Route path="/monitoring/costs" element={<AdminCostsPage />} />
+            <Route path="/activity" element={<Navigate to="/" replace />} />
+            <Route path="/demo" element={<Navigate to="/search" replace />} />
+            <Route path="/judge" element={<Navigate to="/" replace />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </Suspense>

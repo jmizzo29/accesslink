@@ -32,7 +32,7 @@ const LISTING_PHOTO: Record<string, string> = {
   'community-wav-orl': '/photos/photo-van.jpg',
 };
 
-export const HERO_PHOTO = '/photos/hero-hotel-entrance.jpg';
+export const HERO_PHOTO = '/accesslink-hero.webp';
 
 export function listingPhotoUrl(listing: Pick<Listing, 'id' | 'category' | 'photos'>): string {
   const owned = listing.photos?.find((p) => p.url);

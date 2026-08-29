@@ -1,17 +1,22 @@
 import type { Listing, SearchQuery, SearchResponse } from './types';
 import { MOCK_LISTINGS } from './mockData';
-import { mergeCommunityIntoResults, readLocalCommunityCatalog } from './communityCatalog';
+import {
+  getBundledCommunityListings,
+  mergeCommunityIntoResults,
+  readLocalCommunityCatalog,
+} from './communityCatalog';
 import { listingMatchesLocation } from './locationMatch';
 
 /**
- * Client-side search — demo corpus + community contributions (local + shared catalog).
- * Works with zero env vars and no API.
+ * Client-side search — seed catalog + community contributions.
+ * Works with zero env vars and no API. Never waits on the network.
  */
 export function searchListingsLocal(
   query: SearchQuery,
   community: Listing[] = readLocalCommunityCatalog(),
 ): SearchResponse {
   let results = [...MOCK_LISTINGS];
+  community = [...getBundledCommunityListings(), ...community];
 
   if (query.category) {
     results = results.filter((p) => p.category === query.category);

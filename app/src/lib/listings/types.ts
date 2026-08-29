@@ -37,6 +37,10 @@ export type Listing = {
   rating: number;
   reviewCount: number;
   verified: boolean;
+  verifiedBy?: string;
+  verifiedAt?: string;
+  contributorName?: string;
+  contributedAt?: string;
   summary: string;
   description?: string;
   photos?: ListingPhoto[];

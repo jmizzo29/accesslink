@@ -8,7 +8,7 @@ Access4All is a community catalog of accessibility-verified hotels, Airbnb stays
 
 ## Zero-env happy path
 
-The catalog is seeded in the repo. **No environment variables are required** to search, open Harborview (`/property/prop-001`), contribute a place, or take the 90-second product walkthrough.
+The catalog is seeded in the repo. **No environment variables are required** to search, open Harborview (`/property/prop-001`), or contribute a place.
 
 ```bash
 npm install
@@ -28,14 +28,12 @@ Then open http://localhost:5173
 
 | Path | Job |
 | --- | --- |
-| `/` | Home — photo hero, featured stays, Why Access4All, 90-second tour |
+| `/` | Home — photo hero, featured stays, recently confirmed listings |
 | `/search` | Location, type, 8 feature filters, Match my needs |
 | `/property/:id` | Stay page — photos, story, checklist, map |
 | `/contribute` | Write a stay report |
 | `/costs` | How we work (public transparency) |
 | `/monitoring/costs` | Gated cost detail |
-| `/demo` | Numbered 90-second product walkthrough |
-| `/judge` | Printable one-page product overview |
 
 Search state is driven by URL params (`location`, `category`, `needs`, feature keys such as `rollInShower=1`).
 

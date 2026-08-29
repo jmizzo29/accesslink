@@ -72,27 +72,28 @@ export function ContributePage() {
 
   return (
     <PageShell>
-      <div className="mx-auto max-w-[720px] px-4 py-12 sm:px-8 sm:py-16">
+      <div className="mx-auto flex max-w-[720px] flex-col items-center px-4 py-12 text-center sm:px-8 sm:py-20">
         <p className="text-[13px] font-semibold uppercase tracking-[0.14em] text-[var(--teal)]">
           Share what you found
         </p>
         <h1 className="mt-3 font-display text-[40px] font-semibold tracking-tight sm:text-[48px]">
           Write a stay report
         </h1>
-        <p className="mt-4 text-[19px] leading-relaxed text-[var(--muted)]">
+        <p className="mt-4 max-w-xl text-[19px] leading-relaxed text-[var(--muted)]">
           If a listing said “accessible” and it was wrong — or surprisingly right — tell the next
           traveler. Your report is labeled Community until someone else can confirm the same
           features.
         </p>
 
         {saved ? (
-          <div className="mt-10 rounded-3xl border border-[var(--sand)] bg-[var(--paper)] p-6 sm:p-8">
+          <div className="mt-10 w-full rounded-3xl border border-[var(--sand)] bg-[var(--paper)] p-6 text-left sm:p-10">
             <div className="flex items-start gap-3">
               <CheckCircle2 className="mt-0.5 h-6 w-6 shrink-0 text-[var(--ok)]" aria-hidden />
               <div>
                 <h2 className="font-display text-[26px] font-semibold tracking-tight">
-                  {saved.name} is in the catalog
+                  Report published
                 </h2>
+                <p className="mt-1 font-display text-[20px] font-semibold tracking-tight">{saved.name}</p>
                 <p className="mt-2 text-[16px] leading-relaxed text-[var(--muted)]">
                   {shared
                     ? 'Live for everyone. Search that city to see your report alongside verified stays.'
@@ -138,7 +139,7 @@ export function ContributePage() {
           <form
             onSubmit={handleSubmit}
             noValidate
-            className="mt-10 space-y-7 rounded-3xl border border-[var(--sand)] bg-[var(--paper)] p-6 sm:p-8"
+            className="mt-10 w-full space-y-7 rounded-3xl border border-[var(--sand)] bg-[var(--paper)] p-6 text-left sm:p-8"
           >
             <fieldset>
               <legend className="text-[15px] font-semibold text-[var(--ink)]">What kind of place?</legend>

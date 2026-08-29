@@ -1,6 +1,7 @@
 import type { AccessibilityFeatures, Listing } from './types';
 import seedFile from '../../data/seed-listings.json';
 import { withListingPhoto } from './photos';
+import { SEED_VERIFICATION } from './verification';
 
 function emptyAccessibility(): AccessibilityFeatures {
   return {
@@ -24,9 +25,11 @@ export function normalizeSeedListing(raw: Partial<Listing> & { title?: string; r
   const city = String(raw.city ?? location.split(',')[0]?.trim() ?? location);
   const state = String(raw.state ?? location.split(',')[1]?.trim() ?? '');
   const category = raw.category ?? 'hotel';
+  const id = String(raw.id ?? `seed-${name.toLowerCase().replace(/\s+/g, '-')}`);
+  const verification = SEED_VERIFICATION[id] ?? {};
 
   return {
-    id: String(raw.id ?? `seed-${name.toLowerCase().replace(/\s+/g, '-')}`),
+    id,
     name,
     location: location || city,
     address: raw.address ? String(raw.address) : undefined,
@@ -40,6 +43,10 @@ export function normalizeSeedListing(raw: Partial<Listing> & { title?: string; r
     rating: Number(raw.rating ?? 0),
     reviewCount: Number(raw.reviewCount ?? raw.reviews ?? 0),
     verified: Boolean(raw.verified),
+    verifiedBy: raw.verifiedBy || verification.verifiedBy,
+    verifiedAt: raw.verifiedAt || verification.verifiedAt,
+    contributorName: raw.contributorName,
+    contributedAt: raw.contributedAt,
     provenance: raw.provenance === 'curated-demo' ? 'verified' : raw.provenance ?? (raw.verified ? 'verified' : 'community'),
     summary: String(raw.summary ?? raw.description ?? 'Community-verified accessibility details.').slice(0, 320),
     description: raw.description ? String(raw.description) : undefined,

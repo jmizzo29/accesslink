@@ -1,6 +1,10 @@
 import { apiUrl } from '../api-base';
+import { fetchWithTimeout, withTimeout } from '../fetch-timeout';
 import { listingMatchesLocation } from './locationMatch';
+import { COMMUNITY_ATTRIBUTION } from './verification';
 import type { AccessibilityFeatures, Listing, ListingCategory } from './types';
+import bundledCommunityFile from '../../data/community-catalog.json';
+import { withListingPhoto } from './photos';
 
 const LOCAL_KEY = 'a4a-community-catalog-v1';
 const GITHUB_RAW =
@@ -77,7 +81,21 @@ function normalizeListing(raw: Partial<Listing> & { id?: string; name?: string }
     coordinates: raw.coordinates,
     accessibility: acc,
     provenance: 'community',
+    contributorName: raw.contributorName || COMMUNITY_ATTRIBUTION[String(raw.id ?? '')]?.contributorName,
+    contributedAt: raw.contributedAt || COMMUNITY_ATTRIBUTION[String(raw.id ?? '')]?.contributedAt,
+    verifiedBy: raw.verifiedBy,
+    verifiedAt: raw.verifiedAt,
   };
+}
+
+export function getBundledCommunityListings(): Listing[] {
+  const rows = Array.isArray(bundledCommunityFile)
+    ? bundledCommunityFile
+    : bundledCommunityFile.listings ?? [];
+  return rows
+    .map((item) => normalizeListing(item as Partial<Listing>))
+    .filter((x): x is Listing => Boolean(x))
+    .map(withListingPhoto);
 }
 
 export function readLocalCommunityCatalog(): Listing[] {
@@ -107,7 +125,7 @@ function rememberLocal(listing: Listing): void {
 
 async function fetchApiCatalog(): Promise<Listing[]> {
   try {
-    const res = await fetch(apiUrl('/api/community/listings'));
+    const res = await fetchWithTimeout(apiUrl('/api/community/listings'), {}, 2500);
     if (!res.ok) return [];
     const data = (await res.json()) as { listings?: unknown[] };
     const rows = Array.isArray(data.listings) ? data.listings : [];
@@ -120,9 +138,11 @@ async function fetchApiCatalog(): Promise<Listing[]> {
 }
 
 async function fetchBundledCatalog(): Promise<Listing[]> {
+  const bundled = getBundledCommunityListings();
+  if (bundled.length) return bundled;
   try {
     const base = import.meta.env.BASE_URL || '/';
-    const res = await fetch(`${base}community-catalog.json`, { cache: 'no-cache' });
+    const res = await fetchWithTimeout(`${base}community-catalog.json`, { cache: 'no-cache' }, 1500);
     if (!res.ok) return [];
     const data = (await res.json()) as { listings?: unknown[] } | unknown[];
     const rows = Array.isArray(data) ? data : data.listings ?? [];
@@ -136,7 +156,7 @@ async function fetchBundledCatalog(): Promise<Listing[]> {
 
 async function fetchGithubCatalog(): Promise<Listing[]> {
   try {
-    const res = await fetch(`${GITHUB_RAW}?t=${Date.now()}`, { cache: 'no-cache' });
+    const res = await fetchWithTimeout(`${GITHUB_RAW}?t=${Date.now()}`, { cache: 'no-cache' }, 2000);
     if (!res.ok) return [];
     const data = (await res.json()) as { listings?: unknown[] } | unknown[];
     const rows = Array.isArray(data) ? data : data.listings ?? [];
@@ -148,14 +168,16 @@ async function fetchGithubCatalog(): Promise<Listing[]> {
   }
 }
 
-/** Shared catalog for everyone + this browser's offline copies. */
+/** Shared catalog for everyone + this browser's offline copies. Never blocks on GitHub. */
 export async function loadCommunityCatalog(): Promise<Listing[]> {
+  const local = readLocalCommunityCatalog();
+  const bundled = getBundledCommunityListings();
+
   if (!remoteFetchPromise) {
     remoteFetchPromise = (async () => {
-      const [api, bundled, github] = await Promise.all([
-        fetchApiCatalog(),
-        fetchBundledCatalog(),
-        fetchGithubCatalog(),
+      const [api, github] = await Promise.all([
+        withTimeout(fetchApiCatalog(), 2500, []),
+        withTimeout(fetchGithubCatalog(), 2000, []),
       ]);
       const byId = new Map<string, Listing>();
       for (const listing of [...api, ...github, ...bundled]) {
@@ -165,10 +187,10 @@ export async function loadCommunityCatalog(): Promise<Listing[]> {
       return remoteCache;
     })();
   }
-  const remote = await remoteFetchPromise;
-  const local = readLocalCommunityCatalog();
+
+  const remote = await withTimeout(remoteFetchPromise, 2800, bundled);
   const byId = new Map<string, Listing>();
-  for (const listing of [...remote, ...local]) {
+  for (const listing of [...remote, ...bundled, ...local]) {
     byId.set(listing.id, listing);
   }
   return [...byId.values()];

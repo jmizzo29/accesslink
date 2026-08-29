@@ -10,7 +10,7 @@ export function SiteFooter() {
           <p className="mt-2 max-w-md text-[15px] leading-relaxed text-[var(--muted)]">{PRODUCT_TAGLINE}</p>
         </div>
         <nav aria-label="Footer">
-          <ul className="flex flex-wrap gap-x-6 gap-y-2 text-[15px] font-medium text-[var(--teal)]">
+          <ul className="flex flex-wrap gap-x-8 gap-y-2 text-[15px] font-medium text-[var(--teal)]">
             <li>
               <Link to="/search" className="inline-flex min-h-[44px] items-center hover:underline">
                 Search
@@ -22,11 +22,6 @@ export function SiteFooter() {
               </Link>
             </li>
             <li>
-              <Link to="/demo" className="inline-flex min-h-[44px] items-center hover:underline">
-                Quick tour
-              </Link>
-            </li>
-            <li>
               <Link to="/costs" className="inline-flex min-h-[44px] items-center hover:underline">
                 How we work
               </Link>
@@ -34,7 +29,7 @@ export function SiteFooter() {
           </ul>
         </nav>
       </div>
-      <p className="border-t border-[var(--sand)] px-4 py-4 text-center text-[13px] text-[var(--faint)]">
+      <p className="border-t border-[var(--sand)] px-4 py-4 text-center text-[13px] text-[var(--muted)]">
         Confirm features with the place before you book. Community reports are labeled.
       </p>
     </footer>

@@ -3,6 +3,7 @@ import { MapPin, Star } from 'lucide-react';
 import type { Listing } from '../../lib/listings/types';
 import { ACCESSIBILITY_FILTERS, CARD_FEATURE_KEYS, categoryLabel } from '../../lib/listings/filters';
 import { listingPhotoUrl } from '../../lib/listings/photos';
+import { listingAttribution } from '../../lib/listings/attribution';
 import { MatchFeatureBars } from './MatchFeatureBars';
 import { ProvenanceBadge } from './ProvenanceBadge';
 
@@ -48,8 +49,11 @@ export function ListingCard({ listing, onViewDetails, ranked = false, variant = 
       <h3 className="mt-2 font-display text-[22px] font-semibold leading-tight tracking-tight">{listing.name}</h3>
       <p className="mt-2 flex items-center gap-1.5 text-[15px] text-[var(--muted)]">
         <MapPin className="h-4 w-4 shrink-0" aria-hidden />
-        {listing.location}
+        {listing.city || listing.location}
       </p>
+      {listingAttribution(listing) && (
+        <p className="mt-2 text-[14px] font-medium text-[var(--ink)]">{listingAttribution(listing)}</p>
+      )}
       {listing.reviewCount > 0 && (
         <p className="mt-2 flex items-center gap-1 text-[14px] text-[var(--faint)]">
           <Star className="h-3.5 w-3.5 fill-[var(--gold)] text-[var(--gold)]" aria-hidden />

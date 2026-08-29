@@ -13,6 +13,7 @@ import { categoryLabel } from '../lib/listings/filters';
 import { listingPhotos } from '../lib/listings/photos';
 import { wheelchairRatingLabel } from '../lib/accessibility-cloud/mappers';
 import { provenanceLabel, resolveProvenance } from '../lib/listings/provenance';
+import { listingAttribution } from '../lib/listings/attribution';
 import type { Listing } from '../lib/listings/types';
 
 export function PropertyDetailPage() {
@@ -112,6 +113,9 @@ export function PropertyDetailPage() {
               <MapPin className="h-4 w-4 shrink-0" aria-hidden />
               {listing.address || listing.location}
             </p>
+            {listingAttribution(listing) && (
+              <p className="mt-3 text-[16px] font-medium text-[var(--ink)]">{listingAttribution(listing)}</p>
+            )}
             {listing.reviewCount > 0 && (
               <p className="mt-2 flex items-center gap-1 text-[15px] text-[var(--faint)]">
                 <Star className="h-4 w-4 fill-[var(--gold)] text-[var(--gold)]" aria-hidden />

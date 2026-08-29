@@ -25,6 +25,7 @@ import {
   getAllSeedListings,
   getSeedListingById,
 } from './seed-listings.mjs';
+import { withTimeout } from './timeout.mjs';
 
 // ============================================================================
 // MOCK DATA - Replace with live database integration when configured
@@ -248,9 +249,11 @@ async function handleSearch(req) {
 
     const { location, category, accessibility } = body;
 
+    const seedResults = filterSeedListings({ location, category, accessibility }).map(normalizeListing);
+
     let community = [];
     try {
-      const catalog = await listCommunityListings();
+      const catalog = await withTimeout(listCommunityListings(), 1500, { listings: [] });
       community = catalog.listings || [];
     } catch {
       community = [];
@@ -259,23 +262,33 @@ async function handleSearch(req) {
     let results = filterSeedListings({ location, category, accessibility }, community).map(
       normalizeListing,
     );
+    if (!results.length && seedResults.length) {
+      results = seedResults;
+    }
 
     let enriched = { results, cloudEnriched: false, cloudPlacesAdded: 0, enrichmentSource: 'none' };
     try {
-      enriched = await enrichListingsServer(results, { location, category, accessibility });
-      if (!enriched.results?.length) {
+      const next = await withTimeout(
+        enrichListingsServer(results, { location, category, accessibility }),
+        2500,
+        enriched,
+      );
+      if (next?.results?.length) {
+        enriched = next;
+      } else {
         enriched = { ...enriched, results };
       }
     } catch (error) {
       console.warn('[AccessLink] Enrichment skipped:', error?.message || error);
     }
 
+    const finalResults = enriched.results?.length ? enriched.results : results;
     return {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        results: enriched.results,
-        total: enriched.results.length,
+        results: finalResults,
+        total: finalResults.length,
         query: { location, category, accessibility },
         accessibilityCloudEnriched: enriched.cloudEnriched,
         cloudPlacesAdded: enriched.cloudPlacesAdded,
@@ -284,14 +297,28 @@ async function handleSearch(req) {
     };
   } catch (error) {
     console.error('[AccessLink] Search handler error:', error);
-    return {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        error: 'Search failed',
-        message: error.message,
-      }),
-    };
+    try {
+      const fallback = filterSeedListings({}).map(normalizeListing);
+      return {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          results: fallback,
+          total: fallback.length,
+          query: {},
+          enrichmentSource: 'none',
+        }),
+      };
+    } catch {
+      return {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          error: 'Search failed',
+          message: error.message,
+        }),
+      };
+    }
   }
 }
 

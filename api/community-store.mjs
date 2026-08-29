@@ -9,6 +9,8 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { randomBytes } from 'node:crypto';
 import { getCommunitySeedListings } from './seed-listings.mjs';
+import { abortAfter } from './timeout.mjs';
+import { COMMUNITY_ATTRIBUTION } from './verification.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -104,21 +106,26 @@ function normalizeListing(raw) {
     provenance: 'community',
     accessibility: { ...emptyAccessibility(), ...(raw.accessibility || {}) },
     photos: Array.isArray(raw.photos) ? raw.photos : [],
-    contributedAt: raw.contributedAt || new Date().toISOString(),
-    contributorName: raw.contributorName ? String(raw.contributorName).slice(0, 80) : undefined,
+    contributedAt:
+      raw.contributedAt || COMMUNITY_ATTRIBUTION[String(raw.id || '')]?.contributedAt || new Date().toISOString(),
+    contributorName: raw.contributorName
+      ? String(raw.contributorName).slice(0, 80)
+      : COMMUNITY_ATTRIBUTION[String(raw.id || '')]?.contributorName,
   };
 }
 
 async function fetchGithubFile() {
   const token = githubToken();
   if (!token) return null;
+  const wait = abortAfter(1500);
   const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${FILE_PATH}`, {
     headers: {
       Authorization: `Bearer ${token}`,
       Accept: 'application/vnd.github+json',
       'User-Agent': 'access4all-community',
     },
-  });
+    signal: wait.signal,
+  }).finally(wait.cancel);
   if (!res.ok) return null;
   const data = await res.json();
   const decoded = Buffer.from(data.content.replace(/\n/g, ''), 'base64').toString('utf8');
@@ -135,10 +142,12 @@ async function fetchGithubFile() {
 
 async function fetchRawCatalog() {
   try {
+    const wait = abortAfter(1500);
     const res = await fetch(`${RAW_URL}?t=${Date.now()}`, {
       headers: { 'User-Agent': 'access4all-community' },
       cache: 'no-store',
-    });
+      signal: wait.signal,
+    }).finally(wait.cancel);
     if (!res.ok) return null;
     const parsed = await res.json();
     return {
