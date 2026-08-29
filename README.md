@@ -8,7 +8,7 @@ Access4All is a community catalog of accessibility-verified hotels, Airbnb stays
 
 ## Zero-env happy path
 
-The catalog is seeded in the repo. **No environment variables are required** to search, open Harborview (`/property/prop-001`), or contribute a place.
+The **16 verified stays** ship in the repo as first-party product data. Search, home, and stay pages always include them — no login. New Contribute listings **append** to a shared store (Neon `DATABASE_URL`, or Vercel Blob / KV) so another device sees them. If that store is not connected, Contribute fails instead of pretending the listing is public.
 
 ```bash
 npm install
@@ -19,10 +19,10 @@ npm run dev
 
 Then open http://localhost:5173
 
-- Seeded stays live in `app/src/data/seed-listings.json` (and `api/data/seed-listings.json`).
-- Seeded community reports live in `app/public/community-catalog.json`.
-- The API (`/api/search`, `/api/match`, `/api/community/*`, `/api/listings/:id`) falls back to that corpus when Neon, GitHub, Wheelmap, or Mapbox keys are missing.
-- The browser also searches the seed locally, so Vite-only local dev works even without the API process.
+- Verified stays live in `app/src/data/seed-listings.json` (and `api/data/seed-listings.json`) with provenance `verified`.
+- Community reports live in `app/public/community-catalog.json`.
+- The API (`/api/search`, `/api/match`, `/api/community/*`, `/api/listings/:id`) always returns the in-repo verified catalog when Neon, GitHub, Wheelmap, or Mapbox keys are missing.
+- The browser also searches that catalog locally, so Vite-only local dev works even without the API process.
 
 ## Routes
 
@@ -44,10 +44,12 @@ These stay optional. The happy path never depends on them.
 | Variable | Used for |
 | --- | --- |
 | `VITE_BASE` | Asset prefix. Defaults to `/` (Vercel). |
-| `DATABASE_URL` / Supabase keys | Live listings instead of seed |
+| `DATABASE_URL` / `POSTGRES_URL` | Shared Contribute catalog (Neon). Preferred. |
+| `BLOB_READ_WRITE_TOKEN` | Shared Contribute catalog (Vercel Blob) if Neon is absent |
+| `KV_REST_API_*` / `UPSTASH_REDIS_REST_*` | Shared Contribute catalog (KV) if Neon and Blob are absent |
 | `ACCESSIBILITY_CLOUD_TOKEN` | Wheelmap / accessibility.cloud enrichment |
 | `VITE_MAPBOX_ACCESS_TOKEN` | Richer maps |
-| `COMMUNITY_GITHUB_TOKEN` | Persist contributions to the shared catalog |
+| `COMMUNITY_GITHUB_TOKEN` | Persist community contributions to the shared catalog |
 | `COST_ADMIN_KEY` | Private cost page |
 
 ## Build

@@ -19,11 +19,13 @@ import {
   addCommunityListing,
   isCommunityStoreConfigured,
   listCommunityListings,
+  storeStatus,
 } from './community-store.mjs';
 import {
   filterSeedListings,
   getAllSeedListings,
   getSeedListingById,
+  normalizeCategory,
 } from './seed-listings.mjs';
 import { withTimeout } from './timeout.mjs';
 
@@ -42,12 +44,22 @@ const LOCATION_COORDS = {
   'Seattle, WA': { lat: 47.6062, lng: -122.3321 },
 };
 
+function canonicalizeProvenance(raw, verified = false) {
+  if (raw === 'verified' || raw === 'community' || raw === 'open-data') return raw;
+  if (raw === 'curated-demo' || raw === 'demo') return 'verified';
+  return verified ? 'verified' : 'community';
+}
+
 function normalizeListing(listing) {
-  if (listing.coordinates?.lat != null && listing.coordinates?.lng != null) {
-    return listing;
+  const withProvenance = {
+    ...listing,
+    provenance: canonicalizeProvenance(listing.provenance, listing.verified),
+  };
+  if (withProvenance.coordinates?.lat != null && withProvenance.coordinates?.lng != null) {
+    return withProvenance;
   }
-  const coords = LOCATION_COORDS[listing.location];
-  return coords ? { ...listing, coordinates: coords } : listing;
+  const coords = LOCATION_COORDS[withProvenance.location];
+  return coords ? { ...withProvenance, coordinates: coords } : withProvenance;
 }
 
 const MOCK_COST_DATA = {
@@ -147,8 +159,8 @@ const MOCK_COST_DATA = {
   ],
 };
 
-/** Demo corpus — always available with zero env vars. */
-function demoProperties() {
+/** In-repo verified catalog — always available with zero env vars. */
+function verifiedCatalog() {
   return getAllSeedListings();
 }
 
@@ -247,13 +259,15 @@ async function handleSearch(req) {
       body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
     }
 
-    const { location, category, accessibility } = body;
+    const location = body.location;
+    const category = normalizeCategory(body.category || body.type);
+    const accessibility = body.accessibility;
 
     const seedResults = filterSeedListings({ location, category, accessibility }).map(normalizeListing);
 
     let community = [];
     try {
-      const catalog = await withTimeout(listCommunityListings(), 1500, { listings: [] });
+      const catalog = await withTimeout(listCommunityListings(), 4000, { listings: [] });
       community = catalog.listings || [];
     } catch {
       community = [];
@@ -344,7 +358,7 @@ async function handleVerify(req) {
     }
 
     // Find property
-    const property = getSeedListingById(propertyId) || demoProperties().find((p) => p.id === propertyId);
+    const property = getSeedListingById(propertyId) || verifiedCatalog().find((p) => p.id === propertyId);
 
     if (!property) {
       return {
@@ -400,7 +414,7 @@ async function handleMatch(req) {
 
     const sourceListings = Array.isArray(listings)
       ? listings.map(normalizeListing)
-      : demoProperties().map(normalizeListing);
+      : verifiedCatalog().map(normalizeListing);
     const { listings: ranked, parsed } = rankListingsByNeeds(sourceListings, needs);
 
     return {
@@ -458,6 +472,7 @@ async function handleNotFound(req) {
         '/api/verify',
         '/api/community/listings',
         '/api/community/contribute',
+        '/api/community/status',
         '/api/listings/:id',
         '/api/wheelmap/enrich',
       ],
@@ -512,7 +527,7 @@ async function handleWheelmapEnrich(req) {
       body = {};
     }
   }
-  const listings = Array.isArray(body?.listings) ? body.listings.map(normalizeListing) : demoProperties();
+  const listings = Array.isArray(body?.listings) ? body.listings.map(normalizeListing) : verifiedCatalog();
   try {
     const enriched = await enrichListingsServer(listings, {
       location: body?.location,
@@ -562,29 +577,70 @@ async function handleCommunityContribute(req) {
   }
   if (!body || typeof body !== 'object') body = {};
 
+  if (!isCommunityStoreConfigured()) {
+    return {
+      status: 503,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        error:
+          'Shared catalog is not connected. Contribute cannot publish until DATABASE_URL, BLOB_READ_WRITE_TOKEN, or KV/Upstash is set on the Vercel project.',
+        shared: false,
+        store: storeStatus(),
+      }),
+    };
+  }
+
   try {
     const result = await addCommunityListing(body);
+    if (!result.shared) {
+      return {
+        status: 503,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          error: 'Shared catalog write did not confirm. The listing was not published.',
+          shared: false,
+          store: storeStatus(),
+        }),
+      };
+    }
     return {
       status: 201,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         listing: result.listing,
-        shared: Boolean(result.shared),
+        shared: true,
         source: result.source,
-        message: result.shared
-          ? 'Published — everyone can search this place.'
-          : 'Saved on the server for now. Shared catalog will sync when storage is fully connected.',
+        store: storeStatus(),
+        message: 'Saved. Anyone opening Access4All will see this listing.',
       }),
     };
   } catch (err) {
+    const message = err instanceof Error ? err.message : 'Could not publish contribution';
+    const missing = /not connected/i.test(message);
     return {
-      status: 400,
+      status: missing ? 503 : 400,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        error: err instanceof Error ? err.message : 'Could not publish contribution',
+        error: message,
+        shared: false,
+        store: storeStatus(),
       }),
     };
   }
+}
+
+async function handleCommunityStatus() {
+  const listed = await listCommunityListings();
+  return {
+    status: 200,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      store: storeStatus(),
+      storeConfigured: isCommunityStoreConfigured(),
+      source: listed.source,
+      total: listed.total,
+    }),
+  };
 }
 
 // ============================================================================
@@ -636,7 +692,8 @@ export default async function handler(req, res) {
         const url = new URL(req.url || '/', 'http://localhost');
         req.body = {
           location: url.searchParams.get('location') || undefined,
-          category: url.searchParams.get('category') || undefined,
+          category:
+            url.searchParams.get('category') || url.searchParams.get('type') || undefined,
         };
         response = await handleSearch(req);
       } else {
@@ -683,6 +740,18 @@ export default async function handler(req, res) {
         response = await handleOptions(req);
       } else if (req.method === 'GET') {
         response = await handleCommunityListings();
+      } else {
+        response = {
+          status: 405,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ error: 'Method not allowed' }),
+        };
+      }
+    } else if (pathname === '/api/community/status') {
+      if (req.method === 'OPTIONS') {
+        response = await handleOptions(req);
+      } else if (req.method === 'GET') {
+        response = await handleCommunityStatus();
       } else {
         response = {
           status: 405,

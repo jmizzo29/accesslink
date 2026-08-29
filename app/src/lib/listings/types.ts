@@ -46,7 +46,7 @@ export type Listing = {
   photos?: ListingPhoto[];
   coordinates?: ListingCoordinates;
   accessibility: AccessibilityFeatures;
-  provenance?: 'verified' | 'community' | 'open-data' | 'curated-demo';
+  provenance?: 'verified' | 'community' | 'open-data';
   wheelchairRating?: 'full' | 'partial' | 'none' | 'unknown';
   accessibilityCloudId?: string;
   matchScore?: number;

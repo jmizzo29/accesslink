@@ -1,3 +1,4 @@
+import { formatAttributionDate } from '../../lib/listings/attribution';
 import { resolveProvenance, provenanceShortLabel } from '../../lib/listings/provenance';
 import type { Listing } from '../../lib/listings/types';
 
@@ -8,7 +9,14 @@ type ProvenanceBadgeProps = {
 export function ProvenanceBadge({ listing }: ProvenanceBadgeProps) {
   const kind = resolveProvenance(listing);
   const isOpenData = kind === 'open-data';
-  const isVerified = kind === 'verified' || kind === 'curated-demo';
+  const isVerified = kind === 'verified';
+  const when = formatAttributionDate(listing.verifiedAt);
+  const verifiedLabel =
+    listing.verifiedBy && when
+      ? `Verified · ${listing.verifiedBy} · ${when}`
+      : listing.verifiedBy
+        ? `Verified · ${listing.verifiedBy}`
+        : 'Verified';
 
   return (
     <span
@@ -24,11 +32,13 @@ export function ProvenanceBadge({ listing }: ProvenanceBadgeProps) {
         isOpenData
           ? 'Place tagged on OpenStreetMap / Wheelmap'
           : isVerified
-            ? 'Features confirmed by travelers or our team'
+            ? listing.verifiedBy
+              ? `Verified by ${listing.verifiedBy}${when ? ` on ${when}` : ''}`
+              : 'Features confirmed by travelers'
             : 'Community-reported accessibility details — confirm before you book'
       }
     >
-      {provenanceShortLabel(kind)}
+      {isVerified ? verifiedLabel : provenanceShortLabel(kind)}
     </span>
   );
 }

@@ -1,6 +1,7 @@
 /**
- * Shared demo corpus — used when Neon / GitHub / enrichment keys are absent.
- * Happy path works with zero environment variables.
+ * First-party verified catalog — ships in-repo.
+ * Search, stay pages, and home cards work with zero environment variables.
+ * A missing Neon / GitHub / OSM store must never hide these listings.
  */
 
 import { readFileSync } from 'node:fs';
@@ -67,7 +68,12 @@ export function normalizeSeedListing(raw) {
     verifiedAt: raw.verifiedAt || verification.verifiedAt,
     contributorName: raw.contributorName || community.contributorName,
     contributedAt: raw.contributedAt || community.contributedAt,
-    provenance: raw.provenance || (raw.verified ? 'curated-demo' : 'community'),
+    provenance:
+      raw.provenance === 'verified' || raw.provenance === 'community' || raw.provenance === 'open-data'
+        ? raw.provenance
+        : raw.provenance === 'curated-demo' || raw.verified
+          ? 'verified'
+          : 'community',
     verifiedOnChain: Boolean(raw.verifiedOnChain),
     summary: String(raw.summary || raw.description || 'Community-verified accessibility details.').slice(0, 320),
     description: raw.description ? String(raw.description) : undefined,
@@ -173,6 +179,16 @@ export function listingMatchesLocation(listing, query) {
   return false;
 }
 
+export function normalizeCategory(value) {
+  const v = String(value || '')
+    .toLowerCase()
+    .trim();
+  if (!v) return '';
+  if (v === 'van' || v === 'vans' || v === 'wheelchair van' || v === 'wheelchair vans') return 'wav';
+  if (v === 'hotel' || v === 'airbnb' || v === 'airport' || v === 'wav') return v;
+  return '';
+}
+
 export function filterSeedListings({ location, category, accessibility } = {}, extra = []) {
   const byId = new Map();
   for (const listing of [...getAllSeedListings(), ...extra]) {
@@ -180,8 +196,9 @@ export function filterSeedListings({ location, category, accessibility } = {}, e
   }
   let results = [...byId.values()];
 
-  if (category) {
-    results = results.filter((p) => p.category === category);
+  const cat = normalizeCategory(category);
+  if (cat) {
+    results = results.filter((p) => p.category === cat);
   }
   if (location) {
     results = results.filter((p) => listingMatchesLocation(p, location));

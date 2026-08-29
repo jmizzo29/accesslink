@@ -1,6 +1,7 @@
 import type { AccessibilityFeatures, Listing } from './types';
 import seedFile from '../../data/seed-listings.json';
 import { withListingPhoto } from './photos';
+import { canonicalizeProvenance } from './provenance';
 import { SEED_VERIFICATION } from './verification';
 
 function emptyAccessibility(): AccessibilityFeatures {
@@ -47,7 +48,7 @@ export function normalizeSeedListing(raw: Partial<Listing> & { title?: string; r
     verifiedAt: raw.verifiedAt || verification.verifiedAt,
     contributorName: raw.contributorName,
     contributedAt: raw.contributedAt,
-    provenance: raw.provenance === 'curated-demo' ? 'verified' : raw.provenance ?? (raw.verified ? 'verified' : 'community'),
+    provenance: canonicalizeProvenance(raw.provenance, raw.verified),
     summary: String(raw.summary ?? raw.description ?? 'Community-verified accessibility details.').slice(0, 320),
     description: raw.description ? String(raw.description) : undefined,
     photos: Array.isArray(raw.photos) ? raw.photos : [],

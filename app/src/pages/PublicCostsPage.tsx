@@ -124,7 +124,7 @@ export function PublicCostsPage() {
                 <Clock className="h-5 w-5 text-[#0f4c5c]" aria-hidden />
                 <p className="mt-4 text-[17px] font-semibold">Faster answers</p>
                 <p className="mt-2 text-[14px] leading-relaxed text-[#6e6e73]">
-                  Response times are tuned for real search and report workflows — not demo fluff.
+                  Response times are tuned for real search and report workflows.
                 </p>
               </div>
               <div className="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-black/[0.04]">

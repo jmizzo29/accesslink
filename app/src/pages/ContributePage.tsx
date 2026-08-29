@@ -15,6 +15,7 @@ export function ContributePage() {
   const [address, setAddress] = useState('');
   const [summary, setSummary] = useState('');
   const [contributorName, setContributorName] = useState('');
+  const [asVerified, setAsVerified] = useState(false);
   const [features, setFeatures] = useState<Partial<Record<AccessibilityFilterKey, boolean>>>({});
   const [submitting, setSubmitting] = useState(false);
   const [saved, setSaved] = useState<Listing | null>(null);
@@ -54,13 +55,15 @@ export function ContributePage() {
         summary,
         contributorName: contributorName || undefined,
         accessibility: features,
+        verified: asVerified,
+        verifiedBy: asVerified ? contributorName.trim() || 'Access4All' : undefined,
       });
 
       setSaved(result.listing);
       setShared(result.shared);
       toast.success(
         result.shared
-          ? 'Published — anyone searching that city can see your report.'
+          ? 'Saved. Anyone opening Access4All will see this listing.'
           : result.message,
       );
     } catch (err) {
@@ -96,8 +99,8 @@ export function ContributePage() {
                 <p className="mt-1 font-display text-[20px] font-semibold tracking-tight">{saved.name}</p>
                 <p className="mt-2 text-[16px] leading-relaxed text-[var(--muted)]">
                   {shared
-                    ? 'Live for everyone. Search that city to see your report alongside verified stays.'
-                    : 'Saved on this device. If the shared catalog is still connecting, refresh and search the city to confirm it appears.'}
+                    ? 'Saved. Anyone opening Access4All will see this listing.'
+                    : 'The shared catalog did not accept this listing. It is not visible on other devices.'}
                 </p>
               </div>
             </div>
@@ -130,6 +133,7 @@ export function ContributePage() {
                 setName('');
                 setSummary('');
                 setFeatures({});
+                setAsVerified(false);
               }}
             >
               Write another report
@@ -263,6 +267,23 @@ export function ContributePage() {
                 className="mt-2 w-full rounded-2xl border border-[var(--sand)] bg-[var(--cream)] px-4 py-3.5 text-[17px] placeholder:text-[var(--faint)] focus:border-[var(--teal)] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[var(--teal)]/20"
               />
             </div>
+
+            <label className="flex min-h-[52px] cursor-pointer items-start gap-3 rounded-2xl border border-[var(--sand)] bg-[var(--cream)] px-3 py-3">
+              <input
+                type="checkbox"
+                checked={asVerified}
+                onChange={(e) => setAsVerified(e.target.checked)}
+                className="mt-1 h-5 w-5 rounded border-[var(--sand)] text-[var(--teal)] focus:ring-[var(--teal)]"
+              />
+              <span>
+                <span className="block text-[15px] font-medium">Verified listing</span>
+                <span className="block text-[13px] text-[var(--muted)]">
+                  Off by default. When checked, this place is labeled Verified
+                  {contributorName.trim() ? ` by ${contributorName.trim()}` : ' by Access4All'} and
+                  stays in search for everyone.
+                </span>
+              </span>
+            </label>
 
             <button
               type="submit"

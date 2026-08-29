@@ -19,6 +19,7 @@ import {
 import { getListingById as getLocalById } from './mockData';
 import { searchListingsLocal } from './searchLocal';
 import { withListingPhoto } from './photos';
+import { canonicalizeProvenance } from './provenance';
 
 export type ListingsDataSource = 'supabase' | 'api' | 'local';
 
@@ -31,7 +32,7 @@ export function resolveDataSource(): DataSourceInfo {
   if (isSupabaseConfigured()) {
     return { source: 'supabase', label: 'Live database' };
   }
-  return { source: 'local', label: 'Demo catalog (works without env vars)' };
+  return { source: 'local', label: 'In-repo verified catalog' };
 }
 
 function mergeById(primary: Listing[], secondary: Listing[]): Listing[] {
@@ -232,7 +233,7 @@ function normalizeListings(raw: unknown): Listing[] {
       verifiedAt: typeof r.verifiedAt === 'string' ? r.verifiedAt : undefined,
       contributorName: typeof r.contributorName === 'string' ? r.contributorName : undefined,
       contributedAt: typeof r.contributedAt === 'string' ? r.contributedAt : undefined,
-      provenance: r.provenance as Listing['provenance'],
+      provenance: canonicalizeProvenance(r.provenance, Boolean(r.verified)),
       summary: String(
         r.summary ?? r.description ?? 'Community-verified accessibility details available.',
       ).slice(0, 240),

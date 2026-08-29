@@ -77,6 +77,7 @@ export function categoryLabel(category: string): string {
   if (category === 'airbnb') return 'Stay';
   if (category === 'airport') return 'Airport';
   if (category === 'hotel') return 'Hotel';
+  if (category === 'wav') return 'Wheelchair van';
   return category.charAt(0).toUpperCase() + category.slice(1);
 }
 

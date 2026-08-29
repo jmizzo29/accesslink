@@ -1,6 +1,6 @@
 /**
  * Natural-language accessibility needs → feature extraction + listing scores.
- * No external LLM — deterministic keyword matching for demo reliability.
+ * No external LLM — deterministic keyword matching so ranking works offline.
  */
 
 const NEED_PATTERNS = [

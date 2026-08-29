@@ -135,7 +135,7 @@ export function SearchPage() {
         const openData = nextResults.filter((r) => resolveProvenance(r) === 'open-data').length;
         const verified = nextResults.filter((r) => {
           const kind = resolveProvenance(r);
-          return kind === 'verified' || kind === 'curated-demo';
+          return kind === 'verified';
         }).length;
         const community = nextResults.filter((r) => resolveProvenance(r) === 'community').length;
         const parts: string[] = [];

@@ -22,6 +22,8 @@ export type CommunityContributionInput = {
   accessibility: Partial<AccessibilityFeatures>;
   contributorName?: string;
   photoUrl?: string;
+  verified?: boolean;
+  verifiedBy?: string;
 };
 
 export type PublishResult = {
@@ -71,7 +73,7 @@ function normalizeListing(raw: Partial<Listing> & { id?: string; name?: string }
       category === 'wav' ? 'WAV / transfer' : category === 'airport' ? 'public facility' : 'per night',
     rating: Number(raw.rating ?? 0),
     reviewCount: Number(raw.reviewCount ?? 0),
-    verified: Boolean(raw.verified ?? false),
+    verified: Boolean(raw.verified ?? raw.provenance === 'verified'),
     summary: String(raw.summary ?? raw.description ?? 'Community-contributed accessible place.').slice(
       0,
       280,
@@ -80,7 +82,7 @@ function normalizeListing(raw: Partial<Listing> & { id?: string; name?: string }
     photos: Array.isArray(raw.photos) ? raw.photos : [],
     coordinates: raw.coordinates,
     accessibility: acc,
-    provenance: 'community',
+    provenance: raw.verified || raw.provenance === 'verified' ? 'verified' : 'community',
     contributorName: raw.contributorName || COMMUNITY_ATTRIBUTION[String(raw.id ?? '')]?.contributorName,
     contributedAt: raw.contributedAt || COMMUNITY_ATTRIBUTION[String(raw.id ?? '')]?.contributedAt,
     verifiedBy: raw.verifiedBy,
@@ -227,51 +229,44 @@ export async function publishCommunityContribution(
       ? [{ url: input.photoUrl.trim(), alt: `${input.name.trim()} — contributor photo` }]
       : [],
     contributorName: input.contributorName?.trim(),
+    verified: Boolean(input.verified),
+    asVerified: Boolean(input.verified),
+    verifiedListing: Boolean(input.verified),
+    verifiedBy: input.verified
+      ? input.verifiedBy?.trim() || input.contributorName?.trim() || 'Access4All'
+      : undefined,
+    provenance: input.verified ? 'verified' : 'community',
   };
 
-  try {
-    const res = await fetch(apiUrl('/api/community/contribute'), {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    if (res.ok) {
-      const data = (await res.json()) as {
-        listing: Listing;
-        shared?: boolean;
-        message?: string;
-      };
-      const listing = normalizeListing(data.listing);
-      if (listing) {
-        rememberLocal(listing);
-        return {
-          listing,
-          shared: Boolean(data.shared),
-          message:
-            data.message ||
-            (data.shared
-              ? 'Published — everyone can search this place.'
-              : 'Saved. Searchable for everyone once sync completes.'),
-        };
-      }
-    }
-  } catch {
-    /* fall through to local */
-  }
-
-  const localListing = normalizeListing({
-    id: `community-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`,
-    ...payload,
-    provenance: 'community',
-    verified: false,
+  const res = await fetch(apiUrl('/api/community/contribute'), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
   });
-  if (!localListing) throw new Error('Could not save contribution');
-  rememberLocal(localListing);
+  const data = (await res.json().catch(() => ({}))) as {
+    listing?: Listing;
+    shared?: boolean;
+    message?: string;
+    error?: string;
+  };
+  if (!res.ok || !data.shared || !data.listing) {
+    throw new Error(
+      data.error ||
+        'Could not publish to the shared catalog. The listing was not saved for other visitors.',
+    );
+  }
+  const listing = normalizeListing({
+    ...data.listing,
+    verified: Boolean(payload.verified || data.listing.verified),
+    provenance: payload.verified ? 'verified' : data.listing.provenance,
+    verifiedBy: payload.verifiedBy || data.listing.verifiedBy,
+  });
+  if (!listing) throw new Error('Could not publish contribution');
+  rememberLocal(listing);
   return {
-    listing: localListing,
-    shared: false,
-    message:
-      'Saved on this device. The shared catalog is reconnecting — try Contribute again in a moment so everyone can see it.',
+    listing,
+    shared: true,
+    message: data.message || 'Saved. Anyone opening Access4All will see this listing.',
   };
 }
 
