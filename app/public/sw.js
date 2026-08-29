@@ -1,5 +1,5 @@
 /* Access4All offline shell — static assets only, never caches API writes. */
-const CACHE = 'access4all-shell-v1';
+const CACHE = 'access4all-shell-v2';
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
