@@ -1,11 +1,25 @@
 /**
  * Durable shared listing store — no traveler login.
- * Order: Neon (DATABASE_URL) → Vercel Blob → Upstash/Vercel KV.
+ * Order: Neon (DATABASE_URL or bundled claimable URL) → Vercel Blob → KV.
  * Writes fail if none of these are configured. Seed listings stay in-repo.
  */
 
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 const CATALOG_KEY = 'access4all/shared-listings.json';
 const KV_KEY = 'a4a-shared-listings';
+
+function bundledDatabaseUrl() {
+  try {
+    const raw = JSON.parse(readFileSync(join(__dirname, 'data/shared-db.json'), 'utf8'));
+    return String(raw.databaseUrl || '').trim();
+  } catch {
+    return '';
+  }
+}
 
 export function postgresUrl() {
   return (
@@ -13,7 +27,7 @@ export function postgresUrl() {
     process.env.POSTGRES_URL ||
     process.env.POSTGRES_PRISMA_URL ||
     process.env.NEON_DATABASE_URL ||
-    ''
+    bundledDatabaseUrl()
   ).trim();
 }
 

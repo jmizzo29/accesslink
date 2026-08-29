@@ -1,0 +1,7 @@
+{
+  "backend": "neon",
+  "databaseUrl": "postgresql://neondb_owner:npg_TcSofGU8C7Xh@ep-dark-queen-a5xmtum4-pooler.us-east-2.aws.neon.tech/neondb?channel_binding=require&sslmode=require",
+  "claimUrl": "https://neon.new/claim/01a04e6a-9a75-704a-93f0-9cb62fd0395d",
+  "expiresAt": "2026-09-01T16:46:44.725Z",
+  "projectId": "damp-king-24582260"
+}

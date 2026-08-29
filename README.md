@@ -8,7 +8,7 @@ Access4All is a community catalog of accessibility-verified hotels, Airbnb stays
 
 ## Zero-env happy path
 
-The **16 verified stays** ship in the repo as first-party product data. Search, home, and stay pages always include them — no login. New Contribute listings **append** to a shared store (Neon `DATABASE_URL`, or Vercel Blob / KV) so another device sees them. If that store is not connected, Contribute fails instead of pretending the listing is public.
+The **16 verified stays** ship in the repo as first-party product data. Search, home, and stay pages always include them — no login. New Contribute listings **append** to a shared Neon catalog so another device sees them after refresh. If that write does not succeed, Contribute fails instead of pretending the listing is public.
 
 ```bash
 npm install
@@ -44,7 +44,7 @@ These stay optional. The happy path never depends on them.
 | Variable | Used for |
 | --- | --- |
 | `VITE_BASE` | Asset prefix. Defaults to `/` (Vercel). |
-| `DATABASE_URL` / `POSTGRES_URL` | Shared Contribute catalog (Neon). Preferred. |
+| `DATABASE_URL` / `POSTGRES_URL` | Shared Contribute catalog (Neon). Overrides the bundled claimable database. |
 | `BLOB_READ_WRITE_TOKEN` | Shared Contribute catalog (Vercel Blob) if Neon is absent |
 | `KV_REST_API_*` / `UPSTASH_REDIS_REST_*` | Shared Contribute catalog (KV) if Neon and Blob are absent |
 | `ACCESSIBILITY_CLOUD_TOKEN` | Wheelmap / accessibility.cloud enrichment |
