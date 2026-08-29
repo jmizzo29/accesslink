@@ -1,4 +1,5 @@
 import { apiUrl } from '../api-base';
+import { fetchWithTimeout } from '../fetch-timeout';
 import type { Listing } from '../listings/types';
 import { rankListingsLocally } from './rankLocal';
 
@@ -23,11 +24,15 @@ export async function matchListingsByNeeds(
   if (!trimmed) return null;
 
   try {
-    const res = await fetch(apiUrl('/api/match'), {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ needs: trimmed, listings }),
-    });
+    const res = await fetchWithTimeout(
+      apiUrl('/api/match'),
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ needs: trimmed, listings }),
+      },
+      4000,
+    );
     if (res.ok) {
       const data = await res.json();
       return {
@@ -39,7 +44,11 @@ export async function matchListingsByNeeds(
             requiredFeatures: {},
             matchedPhrases: [],
           },
-        ranked: Boolean(data.ranked),
+        ranked: Boolean(
+          data.ranked ??
+            data.parsed?.parsed ??
+            (Array.isArray(data.results) && data.results.some((row: Listing) => row.matchScore != null)),
+        ),
       };
     }
   } catch {

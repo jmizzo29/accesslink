@@ -4,7 +4,6 @@ import { isSupabaseConfigured } from '../../lib/supabase/client';
 import { submitAccessibilityReport } from '../../lib/listings/repository';
 import type { Listing } from '../../lib/listings/types';
 import type { AccessibilityFilterKey } from '../../lib/listings/types';
-import { verifyListingOnMonad } from '../../lib/monad/client';
 import { ACCESSIBILITY_FILTERS } from '../../lib/listings/filters';
 
 type AccessibilityReportFormProps = {
@@ -47,11 +46,8 @@ export function AccessibilityReportForm({ listing, onSuccess }: AccessibilityRep
     }
 
     if (!supabaseReady) {
-      const subject = encodeURIComponent(`Access4All report: ${title || listing?.name || 'listing'}`);
-      const body = encodeURIComponent(
-        `Issue: ${issueType}\nLocation: ${location}\nProperty: ${listing?.name ?? title}\n\n${notes}\n\nPage: ${window.location.href}`,
-      );
-      window.location.href = `mailto:hello@restarto.ai?subject=${subject}&body=${body}`;
+      toast.message('Share what you found on the Contribute page — it publishes to the catalog.');
+      window.location.href = '/contribute';
       return;
     }
 
@@ -67,20 +63,7 @@ export function AccessibilityReportForm({ listing, onSuccess }: AccessibilityRep
         features,
       });
 
-      if (listing?.id && (title || listing.name)) {
-        const featureKeys = Object.entries(features)
-          .filter(([, v]) => v)
-          .map(([k]) => k);
-        void verifyListingOnMonad({
-          propertyId: listing.id,
-          propertyName: listing.name || title,
-          location: location || listing.location,
-          features: featureKeys,
-          reportId: result.id,
-        });
-      }
-
-      toast.success('Report submitted — thank you for helping the community.');
+      toast.success('Report submitted — thank you for helping the next traveler.');
       setNotes('');
       setFeatures({});
       onSuccess?.();
@@ -96,15 +79,15 @@ export function AccessibilityReportForm({ listing, onSuccess }: AccessibilityRep
     <section
       id="report"
       aria-labelledby="report-heading"
-      className="rounded-2xl border border-[#d2d2d7] bg-white p-6 sm:p-8"
+      className="rounded-3xl border border-[var(--sand)] bg-[var(--paper)] p-6 sm:p-8"
     >
-      <h2 id="report-heading" className="text-[28px] font-semibold tracking-tight text-[#1d1d1f]">
-        Report an issue
+      <h2 id="report-heading" className="font-display text-[28px] font-semibold tracking-tight">
+        Something off about this stay?
       </h2>
-      <p className="mt-2 text-[17px] text-[#6e6e73]">
+      <p className="mt-2 text-[17px] text-[var(--muted)]">
         {supabaseReady
-          ? 'Submit a community report. Verified reports are logged to the Monad ledger after review.'
-          : 'Connect Supabase for in-app reports, or send via email. Verified reports anchor to Monad.'}
+          ? 'Tell us what did not match. Community reports stay labeled until another traveler can confirm them.'
+          : 'Use Contribute to add what you found. Your report is labeled Community until others confirm it.'}
       </p>
 
       <form onSubmit={handleSubmit} className="mt-8 space-y-6">

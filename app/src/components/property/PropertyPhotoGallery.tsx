@@ -3,11 +3,11 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import type { ListingPhoto } from '../../lib/listings/types';
 
 type PropertyPhotoGalleryProps = {
-  photos: ListingPhoto[];
+  photos?: ListingPhoto[];
   propertyName: string;
 };
 
-export function PropertyPhotoGallery({ photos, propertyName }: PropertyPhotoGalleryProps) {
+export function PropertyPhotoGallery({ photos = [], propertyName }: PropertyPhotoGalleryProps) {
   const [index, setIndex] = useState(0);
   const hasPhotos = photos.length > 0;
   const safePhotos = hasPhotos ? photos : [];

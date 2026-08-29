@@ -2,12 +2,18 @@ import type { ListingCoordinates } from '../../lib/listings/types';
 
 type PropertyMapProps = {
   name: string;
-  address: string;
-  coordinates: ListingCoordinates;
+  address?: string;
+  coordinates?: ListingCoordinates;
 };
 
-function hasValidCoords(coords: ListingCoordinates): boolean {
-  return coords.lat !== 0 && coords.lng !== 0 && Number.isFinite(coords.lat) && Number.isFinite(coords.lng);
+function hasValidCoords(coords?: ListingCoordinates): coords is ListingCoordinates {
+  return Boolean(
+    coords &&
+      coords.lat !== 0 &&
+      coords.lng !== 0 &&
+      Number.isFinite(coords.lat) &&
+      Number.isFinite(coords.lng),
+  );
 }
 
 export function PropertyMap({ name, address, coordinates }: PropertyMapProps) {

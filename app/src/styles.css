@@ -1,12 +1,26 @@
 @import "tailwindcss";
 
 :root {
-  --a4a-ink: #1d1d1f;
-  --a4a-muted: #6e6e73;
-  --a4a-teal: #0f4c5c;
-  --a4a-teal-dark: #0a3540;
-  --a4a-canvas: #f5f5f7;
-  --a4a-surface: #ffffff;
+  --ink: #1c1915;
+  --muted: #3a352e;
+  --faint: #4f493f;
+  --teal: #1f4d48;
+  --teal-deep: #163833;
+  --teal-soft: #dce8e4;
+  --clay: #c45c26;
+  --clay-deep: #9a4418;
+  --cream: #f6f0e6;
+  --paper: #fffaf3;
+  --sand: #e4d8c6;
+  --gold: #9a6b12;
+  --focus: #1f4d48;
+  --ok: #2a6b4a;
+  --a4a-ink: var(--ink);
+  --a4a-muted: var(--muted);
+  --a4a-teal: var(--teal);
+  --a4a-teal-dark: var(--teal-deep);
+  --a4a-canvas: var(--cream);
+  --a4a-surface: var(--paper);
 }
 
 *,
@@ -16,7 +30,7 @@
 }
 
 html {
-  color-scheme: light only;
+  color-scheme: light;
   scroll-behavior: smooth;
 }
 
@@ -30,36 +44,41 @@ body,
 }
 
 body {
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  font-size: 16px;
-  line-height: 1.5;
-  color: var(--a4a-ink);
-  background: var(--a4a-surface);
+  font-family: "Source Sans 3", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--ink);
+  background: var(--cream);
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
-#root {
-  display: block;
-  min-height: 100vh;
-  background: var(--a4a-surface);
+.font-display,
+h1,
+h2,
+h3 {
+  font-family: Fraunces, Georgia, "Times New Roman", serif;
+  font-optical-sizing: auto;
 }
 
-.a4a-landing,
-.a4a-hero {
-  width: 100%;
-  max-width: none;
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
 }
 
-.a4a-hero img {
-  display: block;
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -100px;
+  z-index: 80;
+  border-radius: 999px;
+  background: var(--paper);
+  color: var(--teal);
+  padding: 0.7rem 1.1rem;
+  font-weight: 600;
 }
 
-/* Hero copy sits on solid left dark field — keep type crisp */
-.a4a-hero-copy h1,
-.a4a-hero-copy p {
-  color: #fff;
-  text-shadow: none;
+.skip-link:focus {
+  top: 0.75rem;
 }
 
 .sr-only {
@@ -74,23 +93,26 @@ body {
   border-width: 0;
 }
 
-.sr-only:focus,
-.focus\:not-sr-only:focus {
-  position: static;
-  width: auto;
-  height: auto;
-  padding: inherit;
-  margin: inherit;
-  overflow: visible;
-  clip: auto;
-  white-space: normal;
-}
-
 input,
 select,
 textarea,
 button {
   font: inherit;
+}
+
+a,
+button,
+[role="button"] {
+  min-height: 44px;
+}
+
+.stay-card {
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.stay-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 40px rgba(28, 25, 21, 0.08);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -101,5 +123,9 @@ button {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  .stay-card:hover {
+    transform: none;
   }
 }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Clock, Heart, Sparkles, TrendingUp } from 'lucide-react';
-import { AppNav } from '../components/AppNav';
+import { PageShell } from '../components/PageShell';
 import { PublicActivityChart, PublicDailyChart } from '../components/costs/PublicCostCharts';
 import { fetchPublicCostDashboard } from '../lib/costs/client';
 import type { PublicCostDashboardData } from '../lib/costs/public-types';
@@ -41,10 +41,8 @@ export function PublicCostsPage() {
   const summary = data?.summary;
 
   return (
-    <div className="min-h-screen bg-[#fafafa] text-[#1d1d1f] antialiased">
-      <AppNav variant="app" />
-
-      <section className="border-b border-black/[0.04] bg-white">
+    <PageShell mainClassName="">
+      <section className="border-b border-[var(--sand)] bg-[var(--paper)]">
         <div className="mx-auto max-w-[1080px] px-6 py-16 sm:px-8 sm:py-24">
           <p className="text-[13px] font-medium uppercase tracking-[0.16em] text-[#0f4c5c]">
             Transparency
@@ -74,14 +72,14 @@ export function PublicCostsPage() {
                 hint="Estimated spend to build and improve Access4All"
               />
               <MetricTile
-                label="Pipeline runs"
+                label="Catalog runs"
                 value={summary.totalCalls.toLocaleString()}
-                hint="End-to-end manufacturing cycles completed"
+                hint="Search, match, and listing lookups completed"
               />
               <MetricTile
                 label="Avg response"
                 value={`${summary.averageRuntimeSec}s`}
-                hint="Typical time to deliver a pipeline step"
+                hint="Typical time to return a search or match"
               />
               <MetricTile
                 label="Focus"
@@ -126,7 +124,7 @@ export function PublicCostsPage() {
                 <Clock className="h-5 w-5 text-[#0f4c5c]" aria-hidden />
                 <p className="mt-4 text-[17px] font-semibold">Faster answers</p>
                 <p className="mt-2 text-[14px] leading-relaxed text-[#6e6e73]">
-                  Response times are tuned for real search and report workflows — not demo fluff.
+                  Response times are tuned for real search and report workflows.
                 </p>
               </div>
               <div className="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-black/[0.04]">
@@ -147,6 +145,6 @@ export function PublicCostsPage() {
           </div>
         )}
       </div>
-    </div>
+    </PageShell>
   );
 }

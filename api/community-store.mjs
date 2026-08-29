@@ -1,31 +1,22 @@
 /**
- * Shared community catalog — durable store for hotel / Airbnb / WAV contributions.
- * Backed by GitHub Contents API (invisible to travelers). Falls back to in-memory
- * for the warm serverless instance when a token is missing.
+ * Shared listing catalog — in-repo community seed + durable store writes.
+ * Travelers never log in. A missing store fails Contribute loudly.
  */
 
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { randomBytes } from 'node:crypto';
+import { getCommunitySeedListings } from './seed-listings.mjs';
+import { COMMUNITY_ATTRIBUTION } from './verification.mjs';
+import {
+  describeStore,
+  isSharedStoreConfigured,
+  readSharedCatalog,
+  writeSharedCatalog,
+} from './shared-store.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-
-const REPO = process.env.COMMUNITY_GITHUB_REPO || 'jmizzo29/accesslink';
-const FILE_PATH = process.env.COMMUNITY_CATALOG_PATH || 'app/public/community-catalog.json';
-const RAW_URL = `https://raw.githubusercontent.com/${REPO}/main/${FILE_PATH}`;
-
-/** @type {{ version: number, updatedAt: string, listings: object[] } | null} */
-let memoryCatalog = null;
-
-function githubToken() {
-  return (
-    process.env.COMMUNITY_GITHUB_TOKEN ||
-    process.env.GITHUB_TOKEN ||
-    process.env.GH_TOKEN ||
-    ''
-  );
-}
 
 function emptyAccessibility() {
   return {
@@ -42,18 +33,31 @@ function emptyAccessibility() {
   };
 }
 
+function mergeById(primary = [], secondary = []) {
+  const byId = new Map();
+  for (const listing of [...secondary, ...primary]) {
+    if (listing?.id) byId.set(listing.id, listing);
+  }
+  return [...byId.values()];
+}
+
 function seedCatalog() {
   try {
     const seeded = JSON.parse(
-      readFileSync(join(__dirname, '../app/public/community-catalog.json'), 'utf8'),
+      readFileSync(join(__dirname, 'data/community-catalog.json'), 'utf8'),
     );
+    const fromFile = Array.isArray(seeded.listings) ? seeded.listings : [];
     return {
       version: 1,
       updatedAt: seeded.updatedAt || new Date().toISOString(),
-      listings: Array.isArray(seeded.listings) ? seeded.listings : [],
+      listings: mergeById(fromFile, getCommunitySeedListings()),
     };
   } catch {
-    return { version: 1, updatedAt: new Date().toISOString(), listings: [] };
+    return {
+      version: 1,
+      updatedAt: new Date().toISOString(),
+      listings: getCommunitySeedListings(),
+    };
   }
 }
 
@@ -65,14 +69,29 @@ function normalizeListing(raw) {
   if (location.length < 3) return null;
   const category = ['hotel', 'airbnb', 'airport', 'wav'].includes(raw.category)
     ? raw.category
-    : 'hotel';
+    : raw.category === 'van' || raw.category === 'vans'
+      ? 'wav'
+      : 'hotel';
   const city = String(raw.city || location.split(',')[0] || '').trim();
   const state = String(raw.state || location.split(',')[1] || '').trim();
   const summary = String(raw.summary || raw.description || '').trim();
   if (summary.length < 10) return null;
 
+  const asVerified = Boolean(
+    raw.verified || raw.asVerified || raw.verifiedListing || raw.provenance === 'verified',
+  );
+  const contributorName = raw.contributorName
+    ? String(raw.contributorName).slice(0, 80)
+    : COMMUNITY_ATTRIBUTION[String(raw.id || '')]?.contributorName;
+  const verifiedBy = asVerified
+    ? String(raw.verifiedBy || contributorName || 'Access4All').slice(0, 80)
+    : undefined;
+
   return {
-    id: String(raw.id || `community-${Date.now().toString(36)}-${randomBytes(3).toString('hex')}`),
+    id: String(
+      raw.id ||
+        `${asVerified ? 'shared' : 'community'}-${Date.now().toString(36)}-${randomBytes(3).toString('hex')}`,
+    ),
     name,
     location,
     city,
@@ -84,134 +103,96 @@ function normalizeListing(raw) {
     price: Number(raw.price || 0),
     priceLabel:
       category === 'wav' ? 'WAV / transfer' : category === 'airport' ? 'public facility' : 'per night',
-    rating: 0,
-    reviewCount: 0,
-    verified: false,
-    provenance: 'community',
+    rating: Number(raw.rating || 0),
+    reviewCount: Number(raw.reviewCount || 0),
+    verified: asVerified,
+    provenance: asVerified ? 'verified' : 'community',
+    verifiedBy,
+    verifiedAt: asVerified ? raw.verifiedAt || new Date().toISOString().slice(0, 10) : undefined,
     accessibility: { ...emptyAccessibility(), ...(raw.accessibility || {}) },
     photos: Array.isArray(raw.photos) ? raw.photos : [],
-    contributedAt: raw.contributedAt || new Date().toISOString(),
-    contributorName: raw.contributorName ? String(raw.contributorName).slice(0, 80) : undefined,
+    contributedAt:
+      raw.contributedAt ||
+      COMMUNITY_ATTRIBUTION[String(raw.id || '')]?.contributedAt ||
+      new Date().toISOString(),
+    contributorName,
   };
 }
 
-async function fetchGithubFile() {
-  const token = githubToken();
-  if (!token) return null;
-  const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${FILE_PATH}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: 'application/vnd.github+json',
-      'User-Agent': 'access4all-community',
-    },
-  });
-  if (!res.ok) return null;
-  const data = await res.json();
-  const decoded = Buffer.from(data.content.replace(/\n/g, ''), 'base64').toString('utf8');
-  const parsed = JSON.parse(decoded);
-  return {
-    sha: data.sha,
-    catalog: {
-      version: 1,
-      updatedAt: parsed.updatedAt || new Date().toISOString(),
-      listings: Array.isArray(parsed.listings) ? parsed.listings : [],
-    },
-  };
+export function isCommunityStoreConfigured() {
+  return isSharedStoreConfigured();
 }
 
-async function fetchRawCatalog() {
-  try {
-    const res = await fetch(`${RAW_URL}?t=${Date.now()}`, {
-      headers: { 'User-Agent': 'access4all-community' },
-      cache: 'no-store',
-    });
-    if (!res.ok) return null;
-    const parsed = await res.json();
-    return {
-      version: 1,
-      updatedAt: parsed.updatedAt || new Date().toISOString(),
-      listings: Array.isArray(parsed.listings) ? parsed.listings : [],
-    };
-  } catch {
-    return null;
-  }
+export function storeStatus() {
+  return describeStore();
 }
 
 export async function listCommunityListings() {
-  const fromGh = await fetchGithubFile();
-  if (fromGh?.catalog) {
-    memoryCatalog = fromGh.catalog;
-    return { listings: fromGh.catalog.listings, source: 'shared', total: fromGh.catalog.listings.length };
-  }
-  const raw = await fetchRawCatalog();
-  if (raw) {
-    memoryCatalog = raw;
-    return { listings: raw.listings, source: 'shared', total: raw.listings.length };
-  }
-  if (memoryCatalog) {
-    return { listings: memoryCatalog.listings, source: 'memory', total: memoryCatalog.listings.length };
-  }
-  memoryCatalog = seedCatalog();
-  return { listings: memoryCatalog.listings, source: 'seed', total: memoryCatalog.listings.length };
-}
-
-async function persistCatalog(catalog, sha) {
-  const token = githubToken();
-  if (!token) {
-    memoryCatalog = catalog;
-    return { ok: true, source: 'memory', shared: false };
+  const seed = seedCatalog();
+  let stored = [];
+  let source = 'seed';
+  try {
+    const remote = await readSharedCatalog();
+    if (remote?.listings) {
+      stored = remote.listings.map(normalizeListing).filter(Boolean);
+      source = `${describeStore().backend}+seed`;
+    }
+  } catch (error) {
+    console.warn('[Access4All] Shared catalog read failed:', error?.message || error);
   }
 
-  const body = {
-    message: `community: add ${catalog.listings[0]?.name || 'listing'}`,
-    content: Buffer.from(JSON.stringify(catalog, null, 2) + '\n', 'utf8').toString('base64'),
-    sha,
+  const listings = mergeById(stored, seed.listings);
+  return {
+    listings,
+    source,
+    total: listings.length,
+    storeConfigured: isSharedStoreConfigured(),
+    store: describeStore(),
   };
-
-  const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${FILE_PATH}`, {
-    method: 'PUT',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: 'application/vnd.github+json',
-      'Content-Type': 'application/json',
-      'User-Agent': 'access4all-community',
-    },
-    body: JSON.stringify(body),
-  });
-
-  if (!res.ok) {
-    const errText = await res.text();
-    memoryCatalog = catalog;
-    return { ok: false, source: 'memory', shared: false, error: errText.slice(0, 300) };
-  }
-
-  memoryCatalog = catalog;
-  return { ok: true, source: 'shared', shared: true };
 }
 
 export async function addCommunityListing(input) {
+  if (!isSharedStoreConfigured()) {
+    throw new Error(
+      'Shared catalog is not connected. Contribute cannot publish until DATABASE_URL, BLOB_READ_WRITE_TOKEN, or KV/Upstash is set on the Vercel project.',
+    );
+  }
+
   const listing = normalizeListing({
     ...input,
-    id: `community-${Date.now().toString(36)}-${randomBytes(3).toString('hex')}`,
+    id:
+      input.id ||
+      `${input.verified || input.asVerified || input.verifiedListing ? 'shared' : 'community'}-${Date.now().toString(36)}-${randomBytes(3).toString('hex')}`,
     contributedAt: new Date().toISOString(),
   });
   if (!listing) {
     throw new Error('Name, location, and a short accessibility description are required.');
   }
 
-  const existing = await fetchGithubFile();
-  const base = existing?.catalog || memoryCatalog || (await fetchRawCatalog()) || seedCatalog();
-  const listings = [listing, ...base.listings.filter((l) => l.id !== listing.id)].slice(0, 500);
+  let existing = [];
+  try {
+    const remote = await readSharedCatalog();
+    existing = remote?.listings || [];
+  } catch {
+    existing = [];
+  }
+
+  const listings = [listing, ...existing.filter((row) => row.id !== listing.id)].slice(0, 500);
   const catalog = {
     version: 1,
     updatedAt: new Date().toISOString(),
     listings,
   };
 
-  const persist = await persistCatalog(catalog, existing?.sha);
-  return { listing, ...persist };
-}
+  const wrote = await writeSharedCatalog(catalog);
+  if (!wrote) {
+    throw new Error('Shared catalog write failed. The listing was not published.');
+  }
 
-export function isCommunityStoreConfigured() {
-  return Boolean(githubToken());
+  return {
+    listing,
+    ok: true,
+    shared: true,
+    source: describeStore().backend,
+  };
 }

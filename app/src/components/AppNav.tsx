@@ -1,16 +1,10 @@
 import { Link, useLocation } from 'react-router-dom';
 import { PRODUCT_NAME } from '../lib/constants';
 
-const PRIMARY_LINKS = [
+const LINKS = [
+  { to: '/', label: 'Home' },
   { to: '/search', label: 'Search' },
   { to: '/contribute', label: 'Contribute' },
-  { to: '/activity', label: 'Monad' },
-  { to: '/demo', label: 'Demo' },
-] as const;
-
-const DESKTOP_LINKS = [
-  { to: '/', label: 'Home' },
-  { to: '/costs', label: 'Transparency' },
 ] as const;
 
 type AppNavProps = {
@@ -20,83 +14,51 @@ type AppNavProps = {
 export function AppNav({ variant = 'app' }: AppNavProps) {
   const { pathname } = useLocation();
   const onHero = variant === 'hero';
-  const isLanding = variant === 'landing' || onHero;
+  const onHome = pathname === '/';
 
-  const linkBase = onHero
-    ? 'text-white/85 hover:text-white'
-    : 'text-[#6e6e73] hover:text-[#1d1d1f]';
-  const linkActive = onHero ? 'text-white' : 'text-[#1d1d1f]';
+  const linkBase = onHero ? 'text-white/88 hover:text-white' : 'text-[var(--muted)] hover:text-[var(--ink)]';
+  const linkActive = onHero ? 'text-white' : 'text-[var(--ink)]';
 
   return (
     <header
       className={[
-        'marketing-nav z-50',
+        'z-[60]',
         onHero
-          ? // Float on the hero photo — no bar, no blur strip, no border
-            'absolute inset-x-0 top-0 border-0 bg-transparent shadow-none backdrop-blur-none'
-          : isLanding
-            ? 'sticky top-0 border-b border-black/5 bg-white/90 backdrop-blur-xl'
-            : 'sticky top-0 border-b border-[#d2d2d7] bg-white',
+          ? 'absolute inset-x-0 top-0 border-0 bg-transparent'
+          : 'sticky top-0 border-b border-[var(--sand)] bg-[var(--paper)]/94 backdrop-blur-xl',
       ].join(' ')}
     >
-      <div
-        className={[
-          'mx-auto flex max-w-[1200px] items-center justify-between gap-3 px-4 sm:gap-4 sm:px-8',
-          onHero ? 'h-16 pt-2 sm:h-[4.5rem] sm:pt-3' : 'h-14 sm:h-16',
-        ].join(' ')}
-      >
+      <div className="mx-auto flex h-16 max-w-[1180px] items-center justify-between gap-6 px-4 sm:h-[4.25rem] sm:px-8">
         <Link
           to="/"
           className={[
-            'shrink-0 text-[17px] font-semibold tracking-tight focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4',
-            onHero
-              ? 'text-white drop-shadow-[0_1px_8px_rgba(0,0,0,0.45)] focus-visible:outline-white'
-              : 'text-[#1d1d1f] focus-visible:outline-[#0f4c5c]',
+            'inline-flex min-h-[44px] min-w-[44px] shrink-0 items-center gap-2.5 rounded-md px-1 font-display text-[20px] font-semibold tracking-tight underline-offset-4 hover:underline',
+            onHero ? 'text-white' : 'text-[var(--ink)]',
           ].join(' ')}
           aria-label={`${PRODUCT_NAME} home`}
+          aria-current={onHome ? 'page' : undefined}
         >
-          Access4All
+          <img
+            src="/favicon.svg?v=isa"
+            alt=""
+            width={28}
+            height={28}
+            className="h-7 w-7 rounded-[7px]"
+          />
+          {PRODUCT_NAME}
         </Link>
 
-        <nav
-          aria-label="Main navigation"
-          className="min-w-0 flex-1 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-        >
-          <ul className="flex items-center justify-end gap-0.5 sm:gap-5">
-            {DESKTOP_LINKS.map((item) => {
-              const active = pathname === item.to;
-              return (
-                <li key={item.to} className="hidden md:block">
-                  <Link
-                    to={item.to}
-                    className={[
-                      'inline-flex min-h-[44px] items-center px-2 text-[14px] font-medium transition-colors sm:px-0',
-                      'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4',
-                      onHero
-                        ? 'drop-shadow-[0_1px_6px_rgba(0,0,0,0.4)] focus-visible:outline-white'
-                        : 'focus-visible:outline-[#0f4c5c]',
-                      active ? linkActive : linkBase,
-                    ].join(' ')}
-                    aria-current={active ? 'page' : undefined}
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              );
-            })}
-            {PRIMARY_LINKS.map((item) => {
-              const active = pathname === item.to;
+        <nav aria-label="Main">
+          <ul className="flex items-center gap-2 sm:gap-8">
+            {LINKS.map((item) => {
+              const active = item.to === '/' ? onHome : pathname === item.to || pathname.startsWith(`${item.to}/`);
               return (
                 <li key={item.to}>
                   <Link
                     to={item.to}
                     className={[
-                      'inline-flex min-h-[44px] items-center whitespace-nowrap px-2.5 text-[13px] font-medium transition-colors sm:px-0 sm:text-[14px]',
-                      'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4',
-                      onHero
-                        ? 'drop-shadow-[0_1px_6px_rgba(0,0,0,0.4)] focus-visible:outline-white'
-                        : 'focus-visible:outline-[#0f4c5c]',
-                      active ? linkActive : linkBase,
+                      'inline-flex min-h-[44px] items-center rounded-md px-2 text-[15px] font-medium sm:px-3',
+                      active ? `${linkActive} underline decoration-2 underline-offset-4` : linkBase,
                     ].join(' ')}
                     aria-current={active ? 'page' : undefined}
                   >
@@ -105,20 +67,6 @@ export function AppNav({ variant = 'app' }: AppNavProps) {
                 </li>
               );
             })}
-            <li className="ml-1 sm:ml-3">
-              <Link
-                to="/contribute"
-                className={[
-                  'inline-flex min-h-[40px] items-center rounded-full px-4 text-[13px] font-semibold transition-colors sm:min-h-[44px] sm:px-5 sm:text-[14px]',
-                  'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4',
-                  onHero
-                    ? 'bg-white/95 text-[#0f4c5c] shadow-md shadow-black/20 hover:bg-white focus-visible:outline-white'
-                    : 'bg-[#0f4c5c] text-white hover:bg-[#0a3540] focus-visible:outline-[#0f4c5c]',
-                ].join(' ')}
-              >
-                Contribute
-              </Link>
-            </li>
           </ul>
         </nav>
       </div>

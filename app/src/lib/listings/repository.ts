@@ -1,4 +1,3 @@
-import { enrichSearchWithAccessibilityCloud } from '../accessibility-cloud/enrich';
 import { isSupabaseConfigured } from '../supabase/client';
 import {
   getPropertyByIdFromSupabase,
@@ -7,15 +6,20 @@ import {
 } from '../supabase/queries';
 import type { SubmitReportInput, SubmitReportResult } from '../supabase/queries';
 import { apiUrl } from '../api-base';
+import { fetchWithTimeout, withTimeout } from '../fetch-timeout';
 import type { Listing, SearchQuery, SearchResponse } from './types';
 import { buildAccessibilityPayload } from './filters';
 import {
+  getBundledCommunityListings,
   getCommunityListingByIdAsync,
   loadCommunityCatalog,
   mergeCommunityIntoResults,
+  readLocalCommunityCatalog,
 } from './communityCatalog';
 import { getListingById as getLocalById } from './mockData';
 import { searchListingsLocal } from './searchLocal';
+import { withListingPhoto } from './photos';
+import { canonicalizeProvenance } from './provenance';
 
 export type ListingsDataSource = 'supabase' | 'api' | 'local';
 
@@ -28,24 +32,15 @@ export function resolveDataSource(): DataSourceInfo {
   if (isSupabaseConfigured()) {
     return { source: 'supabase', label: 'Live database' };
   }
-  return { source: 'local', label: 'Sample data (connect Supabase for live listings)' };
-};
+  return { source: 'local', label: 'In-repo verified catalog' };
+}
 
-async function applyCloudEnrichment(
-  response: SearchResponse,
-  query: SearchQuery,
-  dataSource: ListingsDataSource,
-): Promise<SearchResponse & { dataSource: ListingsDataSource }> {
-  const enriched = await enrichSearchWithAccessibilityCloud(response.results, query);
-  return {
-    ...response,
-    results: enriched.results,
-    total: enriched.results.length,
-    dataSource,
-    accessibilityCloudEnriched: enriched.cloudEnriched,
-    cloudPlacesAdded: enriched.cloudPlacesAdded,
-    enrichmentSource: enriched.enrichmentSource ?? response.enrichmentSource,
-  };
+function mergeById(primary: Listing[], secondary: Listing[]): Listing[] {
+  const byId = new Map<string, Listing>();
+  for (const listing of [...secondary, ...primary]) {
+    byId.set(listing.id, listing);
+  }
+  return [...byId.values()];
 }
 
 async function withCommunity(
@@ -53,7 +48,11 @@ async function withCommunity(
   query: SearchQuery,
   dataSource: ListingsDataSource,
 ): Promise<SearchResponse & { dataSource: ListingsDataSource }> {
-  const community = await loadCommunityCatalog();
+  const community = await withTimeout(
+    loadCommunityCatalog(),
+    2800,
+    [...getBundledCommunityListings(), ...readLocalCommunityCatalog()],
+  );
   const merged = mergeCommunityIntoResults(
     response.results,
     community,
@@ -72,11 +71,12 @@ async function withCommunity(
         )
       : merged;
 
-  return applyCloudEnrichment(
-    { ...response, results: filtered, total: filtered.length },
-    query,
+  return {
+    ...response,
+    results: filtered,
+    total: filtered.length,
     dataSource,
-  );
+  };
 }
 
 export async function searchListings(
@@ -84,12 +84,14 @@ export async function searchListings(
   options: { dataSource?: ListingsDataSource } = {},
 ): Promise<SearchResponse & { dataSource: ListingsDataSource }> {
   const forced = options.dataSource;
+  const seed = searchListingsLocal(query, []);
 
   if (!forced || forced === 'supabase') {
     if (isSupabaseConfigured()) {
       try {
         const result = await searchPropertiesFromSupabase(query);
-        return withCommunity(result, query, 'supabase');
+        const merged = { ...result, results: mergeById(result.results, seed.results) };
+        return withCommunity(merged, query, 'supabase');
       } catch {
         if (forced === 'supabase') throw new Error('Supabase search failed');
       }
@@ -99,30 +101,34 @@ export async function searchListings(
   if (!forced || forced === 'api') {
     try {
       const accessibility = buildAccessibilityPayload(query.requiredFeatures);
-      const res = await fetch(apiUrl('/api/search'), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          location: query.location.trim() || undefined,
-          category: query.category || undefined,
-          accessibility,
-        }),
-      });
+      const res = await fetchWithTimeout(
+        apiUrl('/api/search'),
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            location: query.location.trim() || undefined,
+            category: query.category || undefined,
+            accessibility,
+          }),
+        },
+        4000,
+      );
 
       if (res.ok) {
         const data = await res.json();
-        const results = normalizeListings(data.results);
+        const results = mergeById(normalizeListings(data.results), seed.results);
         return withCommunity(
           {
             results,
-            total: data.total ?? results.length,
+            total: results.length,
             query,
             accessibilityCloudEnriched: data.accessibilityCloudEnriched,
             cloudPlacesAdded: data.cloudPlacesAdded,
             enrichmentSource: data.enrichmentSource,
           },
           query,
-          'api',
+          results.length ? 'api' : 'local',
         );
       }
     } catch {
@@ -130,9 +136,13 @@ export async function searchListings(
     }
   }
 
-  const community = await loadCommunityCatalog();
+  const community = await withTimeout(
+    loadCommunityCatalog(),
+    2800,
+    [...getBundledCommunityListings(), ...readLocalCommunityCatalog()],
+  );
   const local = searchListingsLocal(query, community);
-  return applyCloudEnrichment(local, query, 'local');
+  return { ...local, dataSource: 'local' };
 }
 
 export async function getListingById(
@@ -140,6 +150,27 @@ export async function getListingById(
   options: { dataSource?: ListingsDataSource } = {},
 ): Promise<{ listing: Listing | null; dataSource: ListingsDataSource }> {
   const forced = options.dataSource;
+  const local = getLocalById(id);
+  if (local) return { listing: local, dataSource: 'local' };
+
+  const justPublished = readLocalCommunityCatalog().find((listing) => listing.id === id);
+  if (justPublished) return { listing: justPublished, dataSource: 'local' };
+
+  const community = await getCommunityListingByIdAsync(id);
+  if (community) return { listing: community, dataSource: 'local' };
+
+  if (!forced || forced === 'api') {
+    try {
+      const res = await fetchWithTimeout(apiUrl(`/api/listings/${encodeURIComponent(id)}`), {}, 4000);
+      if (res.ok) {
+        const data = await res.json();
+        const listing = normalizeListings([data.listing ?? data])[0];
+        if (listing?.id) return { listing, dataSource: 'api' };
+      }
+    } catch {
+      if (forced === 'api') throw new Error('API fetch failed');
+    }
+  }
 
   if (!forced || forced === 'supabase') {
     if (isSupabaseConfigured()) {
@@ -152,11 +183,7 @@ export async function getListingById(
     }
   }
 
-  const community = await getCommunityListingByIdAsync(id);
-  if (community) return { listing: community, dataSource: 'local' };
-
-  const local = getLocalById(id) ?? null;
-  return { listing: local, dataSource: 'local' };
+  return { listing: null, dataSource: 'local' };
 }
 
 export async function submitAccessibilityReport(
@@ -166,7 +193,7 @@ export async function submitAccessibilityReport(
     return submitReportToSupabase(input);
   }
   throw new Error(
-    'Report submission requires Supabase. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.',
+    'Report submission requires a connected database. Use Contribute to add a community listing without env vars.',
   );
 }
 
@@ -180,6 +207,7 @@ function normalizeListings(raw: unknown): Listing[] {
     const city = String(r.city ?? location.split(',')[0]?.trim() ?? location);
     const state = String(r.state ?? location.split(',')[1]?.trim() ?? '');
     const photos = Array.isArray(r.photos) ? r.photos : [];
+    const category = (r.category as Listing['category']) ?? 'hotel';
 
     return {
       id: String(r.id ?? ''),
@@ -188,16 +216,24 @@ function normalizeListings(raw: unknown): Listing[] {
       address: String(r.address ?? location),
       city,
       state,
-      category: (r.category as Listing['category']) ?? 'hotel',
+      category,
       price: Number(r.price ?? 0),
-      priceLabel: r.category === 'airport' ? 'public facility' : 'per night',
+      priceLabel:
+        typeof r.priceLabel === 'string'
+          ? r.priceLabel
+          : category === 'airport'
+            ? 'public facility'
+            : category === 'wav'
+              ? 'WAV / transfer'
+              : 'per night',
       rating: Number(r.rating ?? 0),
       reviewCount: Number(r.reviews ?? r.reviewCount ?? 0),
-      verified: Boolean(r.verified ?? true),
-      verifiedOnChain: Boolean(r.verifiedOnChain ?? r.verified_on_chain ?? false),
-      monadRecordId: r.monadRecordId ? String(r.monadRecordId) : undefined,
-      monadTxHash: r.monadTxHash ? String(r.monadTxHash) : undefined,
-      monadVerifiedAt: r.monadVerifiedAt ? String(r.monadVerifiedAt) : undefined,
+      verified: Boolean(r.verified ?? false),
+      verifiedBy: typeof r.verifiedBy === 'string' ? r.verifiedBy : undefined,
+      verifiedAt: typeof r.verifiedAt === 'string' ? r.verifiedAt : undefined,
+      contributorName: typeof r.contributorName === 'string' ? r.contributorName : undefined,
+      contributedAt: typeof r.contributedAt === 'string' ? r.contributedAt : undefined,
+      provenance: canonicalizeProvenance(r.provenance, Boolean(r.verified)),
       summary: String(
         r.summary ?? r.description ?? 'Community-verified accessibility details available.',
       ).slice(0, 240),
@@ -217,11 +253,13 @@ function normalizeListings(raw: unknown): Listing[] {
         wideDoorways: Boolean(acc.wideDoorways ?? acc.wide_doorways),
         accessibleParking: Boolean(acc.accessibleParking ?? acc.accessible_parking),
         accessibleRestroom: Boolean(acc.accessibleRestroom ?? acc.accessible_restroom),
-        accessibleEntrance: Boolean(acc.accessibleEntrance ?? acc.accessible_entrance ?? acc.wheelchairRamp),
+        accessibleEntrance: Boolean(
+          acc.accessibleEntrance ?? acc.accessible_entrance ?? acc.wheelchairRamp,
+        ),
         loweredBathroom: Boolean(acc.loweredBathroom ?? acc.lowered_bathroom),
         serviceAnimalsAllowed: Boolean(acc.serviceAnimalsAllowed ?? acc.service_animals_allowed),
         ceilingHoist: Boolean(acc.ceilingHoist ?? acc.ceiling_hoist),
       },
     };
-  });
+  }).map(withListingPhoto);
 }

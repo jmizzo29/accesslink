@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { DollarSign, Clock, Zap, BarChart3, LogOut } from 'lucide-react';
-import { AppNav } from '../components/AppNav';
+import { PageShell } from '../components/PageShell';
 import { AdminGate } from '../components/costs/AdminGate';
 import { AgentBreakdown } from '../components/costs/AgentBreakdown';
 import { DailyCostChart, HourlyUsageChart } from '../components/costs/UsageCharts';
@@ -74,29 +74,27 @@ export function AdminCostsPage() {
 
   if (!unlocked) {
     return (
-      <div className="min-h-screen bg-[#f5f5f7]">
-        <AppNav variant="app" />
+      <PageShell>
         <div className="mx-auto px-6 py-20 sm:px-8">
           <AdminGate onUnlock={unlock} />
-          <p className="mt-8 text-center text-[14px] text-[#86868b]">
-            <Link to="/costs" className="text-[#0f4c5c] hover:underline">
+          <p className="mt-8 text-center text-[14px] text-[var(--faint)]">
+            <Link to="/costs" className="text-[var(--teal)] hover:underline">
               Back to public transparency view
             </Link>
           </p>
         </div>
-      </div>
+      </PageShell>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#f5f5f7] text-[#1d1d1f] antialiased">
-      <AppNav variant="app" />
+    <PageShell>
 
       <div className="mx-auto max-w-[1080px] px-6 py-12 sm:px-8 sm:py-16">
         <header className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <p className="text-[12px] font-semibold uppercase tracking-[0.12em] text-[#0f4c5c]">
-              Forge pipeline · Internal
+            <p className="text-[12px] font-semibold uppercase tracking-[0.12em] text-[var(--teal)]">
+              Operator dashboard
             </p>
             <h1 className="mt-2 text-[40px] font-semibold tracking-tight sm:text-[48px]">Operator dashboard</h1>
             <p className="mt-4 max-w-2xl text-[19px] leading-relaxed text-[#6e6e73]">
@@ -203,6 +201,6 @@ export function AdminCostsPage() {
           </div>
         )}
       </div>
-    </div>
+    </PageShell>
   );
 }

@@ -1,3 +1,4 @@
+import { formatAttributionDate } from '../../lib/listings/attribution';
 import { resolveProvenance, provenanceShortLabel } from '../../lib/listings/provenance';
 import type { Listing } from '../../lib/listings/types';
 
@@ -8,27 +9,36 @@ type ProvenanceBadgeProps = {
 export function ProvenanceBadge({ listing }: ProvenanceBadgeProps) {
   const kind = resolveProvenance(listing);
   const isOpenData = kind === 'open-data';
-  const isDemo = kind === 'curated-demo';
+  const isVerified = kind === 'verified';
+  const when = formatAttributionDate(listing.verifiedAt);
+  const verifiedLabel =
+    listing.verifiedBy && when
+      ? `Verified · ${listing.verifiedBy} · ${when}`
+      : listing.verifiedBy
+        ? `Verified · ${listing.verifiedBy}`
+        : 'Verified';
 
   return (
     <span
       className={[
-        'rounded-full px-2 py-0.5 text-[11px] font-medium',
+        'rounded-full px-2.5 py-0.5 text-[11px] font-semibold',
         isOpenData
-          ? 'bg-sky-50 text-sky-800'
-          : isDemo
-            ? 'bg-amber-50 text-amber-900'
-            : 'bg-[#0f4c5c]/8 text-[#0f4c5c]',
+          ? 'bg-sky-50 text-sky-900'
+          : isVerified
+            ? 'bg-[var(--teal-soft)] text-[var(--teal)]'
+            : 'bg-[var(--sand)] text-[var(--ink)]',
       ].join(' ')}
       title={
         isOpenData
-          ? 'Live place from OpenStreetMap / Wheelmap wheelchair tags'
-          : isDemo
-            ? 'Curated demo stay for the judge path — not a live marketplace booking'
-            : 'Community-reported accessibility details'
+          ? 'Place tagged on OpenStreetMap / Wheelmap'
+          : isVerified
+            ? listing.verifiedBy
+              ? `Verified by ${listing.verifiedBy}${when ? ` on ${when}` : ''}`
+              : 'Features confirmed by travelers'
+            : 'Community-reported accessibility details — confirm before you book'
       }
     >
-      {provenanceShortLabel(kind)}
+      {isVerified ? verifiedLabel : provenanceShortLabel(kind)}
     </span>
   );
 }
