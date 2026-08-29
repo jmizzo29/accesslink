@@ -21,8 +21,8 @@ function stripCrossorigin(): Plugin {
   };
 }
 
-/** Restarto portfolio path by default; standalone Vercel uses VITE_BASE=/ */
-const DEPLOY_BASE = process.env.VITE_BASE || '/portfolio/access4all/app/';
+/** Standalone Vercel uses `/`. Restarto can set VITE_BASE=/portfolio/access4all/app/ */
+const DEPLOY_BASE = process.env.VITE_BASE || '/';
 
 export default defineConfig({
   plugins: [tailwindcss(), react(), stripCrossorigin()],

@@ -30,6 +30,11 @@ import {
   isCommunityStoreConfigured,
   listCommunityListings,
 } from './community-store.mjs';
+import {
+  filterSeedListings,
+  getAllSeedListings,
+  getSeedListingById,
+} from './seed-listings.mjs';
 
 // ============================================================================
 // MOCK DATA - Replace with real Supabase/Monad integration when live
@@ -41,6 +46,9 @@ const LOCATION_COORDS = {
   'San Francisco, CA': { lat: 37.7749, lng: -122.4194 },
   'Miami, FL': { lat: 25.7617, lng: -80.1918 },
   'Orlando, FL': { lat: 28.5383, lng: -81.3792 },
+  'Portland, OR': { lat: 45.5152, lng: -122.6784 },
+  'Austin, TX': { lat: 30.2672, lng: -97.7431 },
+  'Seattle, WA': { lat: 47.6062, lng: -122.3321 },
 };
 
 function normalizeListing(listing) {
@@ -148,169 +156,10 @@ const MOCK_COST_DATA = {
   ],
 };
 
-const MOCK_PROPERTIES = [
-  {
-    id: 'prop-001',
-    name: 'Harborview Accessible Hotel',
-    location: 'New York, NY',
-    category: 'hotel',
-    rating: 4.8,
-    reviews: 142,
-    price: 189,
-    verified: true,
-    summary:
-      'Downtown hotel with verified roll-in shower rooms, 36-inch doorways, and staffed accessibility desk at check-in.',
-    accessibility: {
-      wheelchairRamp: true,
-      rollInShower: true,
-      elevator: true,
-      wideDoorways: true,
-      accessibleParking: true,
-      accessibleRestroom: true,
-      serviceAnimalsAllowed: true,
-      accessibleEntrance: true,
-      loweredBathroom: true,
-    },
-  },
-  {
-    id: 'prop-002',
-    name: 'Lincoln Park Inclusive Stay',
-    location: 'Chicago, IL',
-    category: 'airbnb',
-    rating: 4.5,
-    reviews: 87,
-    price: 129,
-    verified: true,
-    summary:
-      'Ground-floor stay with ramp entry and wide hallway. Roll-in shower reported by 12 community reviewers.',
-    accessibility: {
-      wheelchairRamp: true,
-      rollInShower: true,
-      elevator: false,
-      wideDoorways: true,
-      accessibleParking: true,
-      accessibleRestroom: true,
-      serviceAnimalsAllowed: true,
-      accessibleEntrance: true,
-      loweredBathroom: true,
-    },
-  },
-  {
-    id: 'prop-003',
-    name: 'SFO Accessibility Services Hub',
-    location: 'San Francisco, CA',
-    category: 'airport',
-    rating: 4.2,
-    reviews: 54,
-    price: 0,
-    verified: true,
-    summary:
-      'Terminal accessibility desk, elevator maps, and wheelchair assistance between gates.',
-    accessibility: {
-      wheelchairRamp: true,
-      rollInShower: false,
-      elevator: true,
-      wideDoorways: true,
-      accessibleParking: true,
-      accessibleRestroom: true,
-      serviceAnimalsAllowed: true,
-      accessibleEntrance: true,
-      loweredBathroom: true,
-    },
-  },
-  {
-    id: 'prop-004',
-    name: 'Ocean Breeze Accessible Resort',
-    location: 'Miami, FL',
-    category: 'hotel',
-    rating: 4.7,
-    reviews: 210,
-    price: 249,
-    verified: true,
-    summary:
-      'Beachfront property with pool lift, accessible paths, and multiple roll-in shower suites.',
-    accessibility: {
-      wheelchairRamp: true,
-      rollInShower: true,
-      elevator: true,
-      wideDoorways: true,
-      accessibleParking: true,
-      accessibleRestroom: true,
-      serviceAnimalsAllowed: true,
-      accessibleEntrance: true,
-      loweredBathroom: true,
-    },
-  },
-  {
-    id: 'prop-005',
-    name: 'Sunshine Family Suites Orlando',
-    location: 'Orlando, FL',
-    category: 'hotel',
-    rating: 4.6,
-    reviews: 98,
-    price: 165,
-    verified: true,
-    summary:
-      'Theme-park area hotel popular with families — roll-in showers, pool ramp, and wide suite doorways.',
-    accessibility: {
-      wheelchairRamp: true,
-      rollInShower: true,
-      elevator: true,
-      wideDoorways: true,
-      accessibleParking: true,
-      accessibleRestroom: true,
-      serviceAnimalsAllowed: true,
-      accessibleEntrance: true,
-      loweredBathroom: true,
-    },
-  },
-  {
-    id: 'prop-006',
-    name: 'Brooklyn Heights Accessible Loft',
-    location: 'New York, NY',
-    category: 'airbnb',
-    rating: 4.4,
-    reviews: 63,
-    price: 175,
-    verified: true,
-    summary:
-      'Elevator building with 34-inch doorway and tub transfer bench on request — no roll-in shower.',
-    accessibility: {
-      wheelchairRamp: true,
-      rollInShower: false,
-      elevator: true,
-      wideDoorways: true,
-      accessibleParking: false,
-      accessibleRestroom: true,
-      serviceAnimalsAllowed: true,
-      accessibleEntrance: true,
-      loweredBathroom: false,
-    },
-  },
-  {
-    id: 'prop-007',
-    name: 'MCO Terminal B Mobility Center',
-    location: 'Orlando, FL',
-    category: 'airport',
-    rating: 4.3,
-    reviews: 41,
-    price: 0,
-    verified: true,
-    summary:
-      'Orlando International — wheelchair service, accessible restrooms, and elevator access to all concourses.',
-    accessibility: {
-      wheelchairRamp: true,
-      rollInShower: false,
-      elevator: true,
-      wideDoorways: true,
-      accessibleParking: true,
-      accessibleRestroom: true,
-      serviceAnimalsAllowed: true,
-      accessibleEntrance: true,
-      loweredBathroom: true,
-    },
-  },
-];
+/** Demo corpus — always available with zero env vars. */
+function demoProperties() {
+  return getAllSeedListings();
+}
 
 // ============================================================================
 // UTILITY FUNCTIONS
@@ -409,27 +258,27 @@ async function handleSearch(req) {
 
     const { location, category, accessibility } = body;
 
-    let results = MOCK_PROPERTIES.map(normalizeListing);
-
-    if (category) {
-      results = results.filter((p) => p.category === category);
+    let community = [];
+    try {
+      const catalog = await listCommunityListings();
+      community = catalog.listings || [];
+    } catch {
+      community = [];
     }
 
-    if (location) {
-      const locLower = location.toLowerCase();
-      results = results.filter((p) => p.location.toLowerCase().includes(locLower));
-    }
+    let results = filterSeedListings({ location, category, accessibility }, community).map(
+      normalizeListing,
+    );
 
-    if (accessibility && typeof accessibility === 'object') {
-      results = results.filter((prop) =>
-        Object.entries(accessibility).every(([feature, required]) => {
-          if (required) return prop.accessibility[feature] === true;
-          return true;
-        }),
-      );
+    let enriched = { results, cloudEnriched: false, cloudPlacesAdded: 0, enrichmentSource: 'none' };
+    try {
+      enriched = await enrichListingsServer(results, { location, category, accessibility });
+      if (!enriched.results?.length) {
+        enriched = { ...enriched, results };
+      }
+    } catch (error) {
+      console.warn('[AccessLink] Enrichment skipped:', error?.message || error);
     }
-
-    const enriched = await enrichListingsServer(results, { location, category, accessibility });
 
     return {
       status: 200,
@@ -478,7 +327,7 @@ async function handleVerify(req) {
     }
 
     // Find property
-    const property = MOCK_PROPERTIES.find((p) => p.id === propertyId);
+    const property = getSeedListingById(propertyId) || demoProperties().find((p) => p.id === propertyId);
 
     if (!property) {
       return {
@@ -578,7 +427,7 @@ async function handleMonadVerify(req) {
  * POST /api/demo/verify — judge demo one-click verification
  */
 async function handleDemoVerify() {
-  const property = MOCK_PROPERTIES[0];
+  const property = getSeedListingById('prop-001') || demoProperties()[0];
   const features = Object.entries(property.accessibility)
     .filter(([, enabled]) => enabled)
     .map(([key]) => key);
@@ -617,7 +466,7 @@ async function handleMatch(req) {
 
     const sourceListings = Array.isArray(listings)
       ? listings.map(normalizeListing)
-      : MOCK_PROPERTIES.map(normalizeListing);
+      : demoProperties().map(normalizeListing);
     const { listings: ranked, parsed } = rankListingsByNeeds(sourceListings, needs);
 
     return {
@@ -626,6 +475,7 @@ async function handleMatch(req) {
       body: JSON.stringify({
         results: ranked,
         parsed,
+        ranked: Boolean(parsed?.parsed || ranked.some((item) => item.matchScore != null)),
         total: ranked.length,
       }),
     };
@@ -678,9 +528,85 @@ async function handleNotFound(req) {
         '/api/monad/verify',
         '/api/community/listings',
         '/api/community/contribute',
+        '/api/listings/:id',
+        '/api/wheelmap/enrich',
       ],
     }),
   };
+}
+
+async function handleListingById(req) {
+  const url = new URL(req.url || '/', 'http://localhost');
+  const routed = url.searchParams.get('__path') || url.pathname;
+  const match = String(routed).match(/listings\/([^/?]+)/);
+  const id = decodeURIComponent(match?.[1] || url.searchParams.get('id') || '');
+  if (!id) {
+    return {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ error: 'Missing listing id' }),
+    };
+  }
+
+  let listing = getSeedListingById(id);
+  if (!listing) {
+    try {
+      const catalog = await listCommunityListings();
+      listing = (catalog.listings || []).find((row) => row.id === id) || null;
+    } catch {
+      listing = null;
+    }
+  }
+
+  if (!listing) {
+    return {
+      status: 404,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ error: 'Property not found', id }),
+    };
+  }
+
+  return {
+    status: 200,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ listing: normalizeListing(listing), source: 'seed' }),
+  };
+}
+
+async function handleWheelmapEnrich(req) {
+  let body = req.body;
+  if (typeof body === 'string') {
+    try {
+      body = JSON.parse(body);
+    } catch {
+      body = {};
+    }
+  }
+  const listings = Array.isArray(body?.listings) ? body.listings.map(normalizeListing) : demoProperties();
+  try {
+    const enriched = await enrichListingsServer(listings, {
+      location: body?.location,
+      category: body?.category,
+      accessibility: body?.accessibility,
+    });
+    return {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(enriched),
+    };
+  } catch (error) {
+    return {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        results: listings,
+        cloudEnriched: false,
+        cloudPlacesAdded: 0,
+        enrichmentSource: 'none',
+        message: error instanceof Error ? error.message : 'Enrichment unavailable',
+      }),
+    };
+  }
 }
 
 async function handleCommunityListings() {
@@ -776,6 +702,13 @@ export default async function handler(req, res) {
     } else if (pathname === '/api/search') {
       if (req.method === 'OPTIONS') {
         response = await handleOptions(req);
+      } else if (req.method === 'GET') {
+        const url = new URL(req.url || '/', 'http://localhost');
+        req.body = {
+          location: url.searchParams.get('location') || undefined,
+          category: url.searchParams.get('category') || undefined,
+        };
+        response = await handleSearch(req);
       } else {
         response = await handleSearch(req);
       }
@@ -840,6 +773,24 @@ export default async function handler(req, res) {
         response = await handleOptions(req);
       } else {
         response = await handleVerify(req);
+      }
+    } else if (pathname.startsWith('/api/listings/')) {
+      if (req.method === 'OPTIONS') {
+        response = await handleOptions(req);
+      } else if (req.method === 'GET') {
+        response = await handleListingById(req);
+      } else {
+        response = {
+          status: 405,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ error: 'Method not allowed' }),
+        };
+      }
+    } else if (pathname === '/api/wheelmap/enrich') {
+      if (req.method === 'OPTIONS') {
+        response = await handleOptions(req);
+      } else {
+        response = await handleWheelmapEnrich(req);
       }
     } else if (pathname === '/api/community/listings') {
       if (req.method === 'OPTIONS') {

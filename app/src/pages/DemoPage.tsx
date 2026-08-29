@@ -11,7 +11,7 @@ import {
   Database,
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { AppNav } from '../components/AppNav';
+import { PageShell } from '../components/PageShell';
 import { fetchMonadStatus, runDemoVerify } from '../lib/monad/client';
 import { monadExplorerTxUrl } from '../lib/monad/explorer';
 import type { MonadChainStatus } from '../lib/monad/types';
@@ -124,9 +124,7 @@ export function DemoPage() {
   const explorer = status?.explorer || 'https://testnet.monadvision.com';
 
   return (
-    <div className="min-h-screen bg-[#f5f5f7] text-[#1d1d1f]">
-      <AppNav variant="app" />
-
+    <PageShell>
       <div className="mx-auto max-w-[720px] px-6 py-14 sm:px-8 sm:py-20">
         <p className="text-[13px] font-medium uppercase tracking-[0.12em] text-[#6e6e73]">
           Spark judge path · ~90 seconds
@@ -288,6 +286,6 @@ export function DemoPage() {
           </div>
         </div>
       </div>
-    </div>
+    </PageShell>
   );
 }

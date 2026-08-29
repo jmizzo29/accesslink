@@ -12,20 +12,20 @@ export function AccessibilityFilters({ selected, onChange, onClear }: Accessibil
   const activeCount = Object.values(selected).filter(Boolean).length;
 
   return (
-    <fieldset className="mt-8 border-t border-[#d2d2d7] pt-8">
+    <fieldset className="mt-8 border-t border-[var(--sand)] pt-8">
       <legend className="flex w-full flex-wrap items-center justify-between gap-3">
-        <span className="text-[15px] font-semibold text-[#1d1d1f]">Accessibility filters</span>
+        <span className="text-[15px] font-semibold">Accessibility filters</span>
         {activeCount > 0 && (
           <button
             type="button"
             onClick={onClear}
-            className="text-[13px] font-medium text-[#0f4c5c] underline decoration-[#0f4c5c]/30 underline-offset-2 hover:decoration-[#0f4c5c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0f4c5c]"
+            className="text-[13px] font-medium text-[var(--teal)] underline decoration-[var(--teal)]/30 underline-offset-2 hover:decoration-[var(--teal)]"
           >
             Clear {activeCount} filter{activeCount === 1 ? '' : 's'}
           </button>
         )}
       </legend>
-      <p className="mt-2 text-[14px] text-[#6e6e73]">
+      <p className="mt-2 text-[14px] text-[var(--muted)]">
         Show only listings that include every feature you select.
       </p>
 

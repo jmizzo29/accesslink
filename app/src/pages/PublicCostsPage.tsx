@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Clock, Heart, Sparkles, TrendingUp } from 'lucide-react';
-import { AppNav } from '../components/AppNav';
+import { PageShell } from '../components/PageShell';
 import { PublicActivityChart, PublicDailyChart } from '../components/costs/PublicCostCharts';
 import { fetchPublicCostDashboard } from '../lib/costs/client';
 import type { PublicCostDashboardData } from '../lib/costs/public-types';
@@ -41,10 +41,8 @@ export function PublicCostsPage() {
   const summary = data?.summary;
 
   return (
-    <div className="min-h-screen bg-[#fafafa] text-[#1d1d1f] antialiased">
-      <AppNav variant="app" />
-
-      <section className="border-b border-black/[0.04] bg-white">
+    <PageShell mainClassName="">
+      <section className="border-b border-[var(--sand)] bg-[var(--paper)]">
         <div className="mx-auto max-w-[1080px] px-6 py-16 sm:px-8 sm:py-24">
           <p className="text-[13px] font-medium uppercase tracking-[0.16em] text-[#0f4c5c]">
             Transparency
@@ -147,6 +145,6 @@ export function PublicCostsPage() {
           </div>
         )}
       </div>
-    </div>
+    </PageShell>
   );
 }

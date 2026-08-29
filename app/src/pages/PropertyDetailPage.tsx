@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, MapPin, Star } from 'lucide-react';
-import { AppNav } from '../components/AppNav';
+import { PageShell } from '../components/PageShell';
 import { AccessibilityChecklist } from '../components/property/AccessibilityChecklist';
 import { AccessibilityReportForm } from '../components/property/AccessibilityReportForm';
 import { PropertyMap } from '../components/property/PropertyMap';
@@ -66,36 +66,32 @@ export function PropertyDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#f5f5f7]">
-        <AppNav variant="app" />
+      <PageShell>
         <div className="flex justify-center py-24">
           <LoadingSpinner />
         </div>
-      </div>
+      </PageShell>
     );
   }
 
   if (notFound || !listing) {
     return (
-      <div className="min-h-screen bg-[#f5f5f7]">
-        <AppNav variant="app" />
+      <PageShell>
         <div className="mx-auto max-w-lg px-6 py-24 text-center">
-          <h1 className="text-[32px] font-semibold text-[#1d1d1f]">Property not found</h1>
+          <h1 className="font-display text-[32px] font-semibold">Property not found</h1>
           <Link
             to="/search"
-            className="mt-8 inline-flex min-h-[48px] items-center rounded-full bg-[#0f4c5c] px-8 text-[17px] font-medium text-white"
+            className="mt-8 inline-flex min-h-[48px] items-center rounded-full bg-[var(--teal)] px-8 text-[17px] font-medium text-white"
           >
             Back to search
           </Link>
         </div>
-      </div>
+      </PageShell>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#f5f5f7] text-[#1d1d1f] antialiased">
-      <AppNav variant="app" />
-
+    <PageShell>
       <div className="mx-auto max-w-[1080px] px-6 py-8 sm:px-8 sm:py-12">
         <Link
           to="/search"
@@ -191,10 +187,10 @@ export function PropertyDetailPage() {
           <AccessibilityReportForm listing={listing} />
         </div>
 
-        <p className="mt-12 text-center text-[12px] text-[#86868b]">
+        <p className="mt-12 text-center text-[12px] text-[var(--faint)]">
           Beta — always confirm accessibility with the property before booking.
         </p>
       </div>
-    </div>
+    </PageShell>
   );
 }

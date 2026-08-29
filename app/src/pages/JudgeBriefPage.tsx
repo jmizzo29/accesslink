@@ -1,10 +1,9 @@
 import { Link } from 'react-router-dom';
 import { Printer } from 'lucide-react';
-import { AppNav } from '../components/AppNav';
+import { PageShell } from '../components/PageShell';
 import { PRODUCT_NAME } from '../lib/constants';
 
-/** Live SPA path (Vercel redirects portfolio root → /app/) */
-const BASE = 'https://www.restarto.ai/portfolio/access4all/app';
+const BASE = typeof window !== 'undefined' ? window.location.origin : '';
 const CONTRACT = '0x26a0383b3E81e0f81261ecE6aadB3aAC8022195E';
 
 const LINKS = [
@@ -21,10 +20,8 @@ export function JudgeBriefPage() {
   }
 
   return (
-    <div className="judge-brief min-h-screen bg-white text-[#1d1d1f] print:bg-white">
-      <div className="print:hidden">
-        <AppNav variant="app" />
-      </div>
+    <PageShell hideFooter>
+      <div className="judge-brief min-h-screen bg-[var(--paper)] text-[var(--ink)] print:bg-white">
 
       <div className="mx-auto max-w-[680px] px-6 py-10 sm:px-8 sm:py-14 print:max-w-none print:px-12 print:py-10">
         <div className="flex flex-wrap items-start justify-between gap-4 print:block">
@@ -142,7 +139,7 @@ export function JudgeBriefPage() {
         </section>
 
         <p className="mt-10 text-[12px] text-[#86868b] print:mt-8 print:text-[9pt]">
-          {PRODUCT_NAME} · Restarto portfolio · July 2026
+          {PRODUCT_NAME} · Judge brief · 2026
         </p>
 
         <div className="mt-8 flex gap-4 print:hidden">
@@ -167,7 +164,8 @@ export function JudgeBriefPage() {
           nav, .print\\:hidden { display: none !important; }
           a { color: #0f4c5c; }
         }
-      `}</style>
+      `}      </style>
     </div>
+    </PageShell>
   );
 }

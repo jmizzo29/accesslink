@@ -8,6 +8,7 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { randomBytes } from 'node:crypto';
+import { getCommunitySeedListings } from './seed-listings.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -42,18 +43,31 @@ function emptyAccessibility() {
   };
 }
 
+function mergeById(primary = [], secondary = []) {
+  const byId = new Map();
+  for (const listing of [...secondary, ...primary]) {
+    if (listing?.id) byId.set(listing.id, listing);
+  }
+  return [...byId.values()];
+}
+
 function seedCatalog() {
   try {
     const seeded = JSON.parse(
-      readFileSync(join(__dirname, '../app/public/community-catalog.json'), 'utf8'),
+      readFileSync(join(__dirname, 'community-catalog.json'), 'utf8'),
     );
+    const fromFile = Array.isArray(seeded.listings) ? seeded.listings : [];
     return {
       version: 1,
       updatedAt: seeded.updatedAt || new Date().toISOString(),
-      listings: Array.isArray(seeded.listings) ? seeded.listings : [],
+      listings: mergeById(fromFile, getCommunitySeedListings()),
     };
   } catch {
-    return { version: 1, updatedAt: new Date().toISOString(), listings: [] };
+    return {
+      version: 1,
+      updatedAt: new Date().toISOString(),
+      listings: getCommunitySeedListings(),
+    };
   }
 }
 
@@ -138,21 +152,25 @@ async function fetchRawCatalog() {
 }
 
 export async function listCommunityListings() {
+  const seed = seedCatalog();
+  let remote = null;
   const fromGh = await fetchGithubFile();
-  if (fromGh?.catalog) {
-    memoryCatalog = fromGh.catalog;
-    return { listings: fromGh.catalog.listings, source: 'shared', total: fromGh.catalog.listings.length };
+  if (fromGh?.catalog) remote = fromGh.catalog;
+  else {
+    const raw = await fetchRawCatalog();
+    if (raw) remote = raw;
   }
-  const raw = await fetchRawCatalog();
-  if (raw) {
-    memoryCatalog = raw;
-    return { listings: raw.listings, source: 'shared', total: raw.listings.length };
-  }
-  if (memoryCatalog) {
-    return { listings: memoryCatalog.listings, source: 'memory', total: memoryCatalog.listings.length };
-  }
-  memoryCatalog = seedCatalog();
-  return { listings: memoryCatalog.listings, source: 'seed', total: memoryCatalog.listings.length };
+  const listings = mergeById(memoryCatalog?.listings || [], mergeById(remote?.listings || [], seed.listings));
+  memoryCatalog = {
+    version: 1,
+    updatedAt: remote?.updatedAt || seed.updatedAt,
+    listings,
+  };
+  return {
+    listings,
+    source: remote ? 'shared+seed' : memoryCatalog ? 'memory+seed' : 'seed',
+    total: listings.length,
+  };
 }
 
 async function persistCatalog(catalog, sha) {

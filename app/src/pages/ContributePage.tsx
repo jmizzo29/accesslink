@@ -2,7 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Search, CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { AppNav } from '../components/AppNav';
+import { PageShell } from '../components/PageShell';
 import { ACCESSIBILITY_FILTERS, CONTRIBUTE_CATEGORIES } from '../lib/listings/filters';
 import type { AccessibilityFilterKey, Listing, ListingCategory } from '../lib/listings/types';
 import { publishCommunityContribution } from '../lib/listings/communityCatalog';
@@ -84,9 +84,7 @@ export function ContributePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f5f5f7] text-[#1d1d1f]">
-      <AppNav variant="app" />
-
+    <PageShell>
       <div className="mx-auto max-w-[720px] px-4 py-12 sm:px-8 sm:py-16">
         <p className="text-[13px] font-medium uppercase tracking-[0.12em] text-[#6e6e73]">
           Community catalog
@@ -295,6 +293,6 @@ export function ContributePage() {
           </form>
         )}
       </div>
-    </div>
+    </PageShell>
   );
 }

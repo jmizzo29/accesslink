@@ -1,0 +1,19 @@
+{
+  "name": "Access4All — verified accessible places",
+  "short_name": "Access4All",
+  "description": "Community catalog of accessibility-verified hotels, stays, airports, and wheelchair vans.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f3eee4",
+  "theme_color": "#0f5c68",
+  "lang": "en",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

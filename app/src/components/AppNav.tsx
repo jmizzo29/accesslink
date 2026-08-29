@@ -20,23 +20,17 @@ type AppNavProps = {
 export function AppNav({ variant = 'app' }: AppNavProps) {
   const { pathname } = useLocation();
   const onHero = variant === 'hero';
-  const isLanding = variant === 'landing' || onHero;
 
-  const linkBase = onHero
-    ? 'text-white/85 hover:text-white'
-    : 'text-[#6e6e73] hover:text-[#1d1d1f]';
-  const linkActive = onHero ? 'text-white' : 'text-[#1d1d1f]';
+  const linkBase = onHero ? 'text-white/85 hover:text-white' : 'text-[var(--muted)] hover:text-[var(--ink)]';
+  const linkActive = onHero ? 'text-white' : 'text-[var(--ink)]';
 
   return (
     <header
       className={[
-        'marketing-nav z-50',
+        'z-50',
         onHero
-          ? // Float on the hero photo — no bar, no blur strip, no border
-            'absolute inset-x-0 top-0 border-0 bg-transparent shadow-none backdrop-blur-none'
-          : isLanding
-            ? 'sticky top-0 border-b border-black/5 bg-white/90 backdrop-blur-xl'
-            : 'sticky top-0 border-b border-[#d2d2d7] bg-white',
+          ? 'absolute inset-x-0 top-0 border-0 bg-transparent'
+          : 'sticky top-0 border-b border-[var(--sand)] bg-[var(--paper)]/92 backdrop-blur-xl',
       ].join(' ')}
     >
       <div
@@ -48,20 +42,15 @@ export function AppNav({ variant = 'app' }: AppNavProps) {
         <Link
           to="/"
           className={[
-            'shrink-0 text-[17px] font-semibold tracking-tight focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4',
-            onHero
-              ? 'text-white drop-shadow-[0_1px_8px_rgba(0,0,0,0.45)] focus-visible:outline-white'
-              : 'text-[#1d1d1f] focus-visible:outline-[#0f4c5c]',
+            'shrink-0 font-display text-[18px] font-semibold tracking-tight',
+            onHero ? 'text-white' : 'text-[var(--ink)]',
           ].join(' ')}
           aria-label={`${PRODUCT_NAME} home`}
         >
           Access4All
         </Link>
 
-        <nav
-          aria-label="Main navigation"
-          className="min-w-0 flex-1 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-        >
+        <nav aria-label="Main" className="min-w-0 flex-1 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <ul className="flex items-center justify-end gap-0.5 sm:gap-5">
             {DESKTOP_LINKS.map((item) => {
               const active = pathname === item.to;
@@ -70,11 +59,7 @@ export function AppNav({ variant = 'app' }: AppNavProps) {
                   <Link
                     to={item.to}
                     className={[
-                      'inline-flex min-h-[44px] items-center px-2 text-[14px] font-medium transition-colors sm:px-0',
-                      'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4',
-                      onHero
-                        ? 'drop-shadow-[0_1px_6px_rgba(0,0,0,0.4)] focus-visible:outline-white'
-                        : 'focus-visible:outline-[#0f4c5c]',
+                      'inline-flex min-h-[44px] items-center px-2 text-[14px] font-medium sm:px-0',
                       active ? linkActive : linkBase,
                     ].join(' ')}
                     aria-current={active ? 'page' : undefined}
@@ -91,11 +76,7 @@ export function AppNav({ variant = 'app' }: AppNavProps) {
                   <Link
                     to={item.to}
                     className={[
-                      'inline-flex min-h-[44px] items-center whitespace-nowrap px-2.5 text-[13px] font-medium transition-colors sm:px-0 sm:text-[14px]',
-                      'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4',
-                      onHero
-                        ? 'drop-shadow-[0_1px_6px_rgba(0,0,0,0.4)] focus-visible:outline-white'
-                        : 'focus-visible:outline-[#0f4c5c]',
+                      'inline-flex min-h-[44px] items-center whitespace-nowrap px-2.5 text-[13px] font-medium sm:px-0 sm:text-[14px]',
                       active ? linkActive : linkBase,
                     ].join(' ')}
                     aria-current={active ? 'page' : undefined}
@@ -109,11 +90,10 @@ export function AppNav({ variant = 'app' }: AppNavProps) {
               <Link
                 to="/contribute"
                 className={[
-                  'inline-flex min-h-[40px] items-center rounded-full px-4 text-[13px] font-semibold transition-colors sm:min-h-[44px] sm:px-5 sm:text-[14px]',
-                  'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4',
+                  'inline-flex min-h-[40px] items-center rounded-full px-4 text-[13px] font-semibold sm:min-h-[44px] sm:px-5 sm:text-[14px]',
                   onHero
-                    ? 'bg-white/95 text-[#0f4c5c] shadow-md shadow-black/20 hover:bg-white focus-visible:outline-white'
-                    : 'bg-[#0f4c5c] text-white hover:bg-[#0a3540] focus-visible:outline-[#0f4c5c]',
+                    ? 'bg-white text-[var(--teal)] shadow-md hover:bg-[var(--cream)]'
+                    : 'bg-[var(--teal)] text-white hover:bg-[var(--teal-deep)]',
                 ].join(' ')}
               >
                 Contribute

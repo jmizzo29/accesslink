@@ -24,7 +24,7 @@ export function SearchResultsList({
       <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
         <h2
           id="results-heading"
-          className="text-[13px] font-medium uppercase tracking-[0.08em] text-[#86868b]"
+          className="text-[13px] font-medium uppercase tracking-[0.08em] text-[var(--faint)]"
         >
           {results.length} {results.length === 1 ? 'place' : 'places'}
           {ranked ? ' · ranked by need fit' : ''}

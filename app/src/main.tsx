@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
-import '../forge-identity.css';
 import './styles.css';
 import { BootErrorBoundary } from './components/BootErrorBoundary';
 import { LEGACY_PORTFOLIO_BASE, PORTFOLIO_BASE } from './lib/constants';
@@ -71,6 +70,12 @@ try {
   );
 
   document.getElementById('a4a-boot')?.remove();
+
+  if ('serviceWorker' in navigator && import.meta.env.PROD) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`).catch(() => undefined);
+    });
+  }
 } catch (err) {
   showBootError(err);
 }

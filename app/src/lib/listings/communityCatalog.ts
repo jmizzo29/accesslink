@@ -1,4 +1,5 @@
 import { apiUrl } from '../api-base';
+import { listingMatchesLocation } from './locationMatch';
 import type { AccessibilityFeatures, Listing, ListingCategory } from './types';
 
 const LOCAL_KEY = 'a4a-community-catalog-v1';
@@ -269,16 +270,7 @@ export function mergeCommunityIntoResults(
   }
 
   if (loc) {
-    extras = extras.filter((p) => {
-      const haystack = `${p.location} ${p.city} ${p.state} ${p.name}`.toLowerCase();
-      return (
-        haystack.includes(loc) ||
-        loc.split(',').some((part) => {
-          const t = part.trim();
-          return t.length > 1 && haystack.includes(t);
-        })
-      );
-    });
+    extras = extras.filter((p) => listingMatchesLocation(p, queryLocation));
   }
 
   const byId = new Map<string, Listing>();

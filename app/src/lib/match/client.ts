@@ -39,7 +39,11 @@ export async function matchListingsByNeeds(
             requiredFeatures: {},
             matchedPhrases: [],
           },
-        ranked: Boolean(data.ranked),
+        ranked: Boolean(
+          data.ranked ??
+            data.parsed?.parsed ??
+            (Array.isArray(data.results) && data.results.some((row: Listing) => row.matchScore != null)),
+        ),
       };
     }
   } catch {

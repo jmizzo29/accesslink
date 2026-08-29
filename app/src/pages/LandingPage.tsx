@@ -1,14 +1,8 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, MapPin, Users, Shield } from 'lucide-react';
+import { ArrowRight, MapPin, Shield, Users } from 'lucide-react';
 import { AppNav } from '../components/AppNav';
+import { SiteFooter } from '../components/SiteFooter';
 import { PRODUCT_NAME, PRODUCT_TAGLINE } from '../lib/constants';
-
-/** Original generated asset — local only; no third-party stock photos.
- *  Must use Vite BASE_URL so portfolio deploys resolve under /portfolio/access4all/app/. */
-const HERO_IMAGE = {
-  src: `${import.meta.env.BASE_URL}accesslink-hero.webp`,
-  alt: 'Step-free hotel entrance with a wide ramp and glass doors in soft morning light',
-} as const;
 
 const WHY_ITEMS = [
   {
@@ -18,8 +12,8 @@ const WHY_ITEMS = [
   },
   {
     icon: Users,
-    title: 'Community-driven — like GitHub',
-    body: 'Anyone can contribute a hotel, Airbnb, or wheelchair van. Others search the shared catalog. Publish via GitHub so the whole community benefits.',
+    title: 'Community-driven',
+    body: 'Anyone can contribute a hotel, Airbnb stay, or wheelchair van. Others search the shared catalog.',
   },
   {
     icon: Shield,
@@ -35,16 +29,16 @@ function FeedbackSection() {
   );
 
   return (
-    <section id="feedback" className="border-t border-[#d2d2d7] pt-16" aria-labelledby="feedback-heading">
-      <h2 id="feedback-heading" className="font-display text-[28px] font-semibold tracking-tight text-[#1d1d1f] sm:text-[32px]">
+    <section id="feedback" className="border-t border-[var(--sand)] pt-16" aria-labelledby="feedback-heading">
+      <h2 id="feedback-heading" className="font-display text-[28px] font-semibold tracking-tight sm:text-[32px]">
         Send feedback
       </h2>
-      <p className="mt-4 max-w-xl text-[17px] leading-relaxed text-[#6e6e73]">
+      <p className="mt-4 max-w-xl text-[17px] leading-relaxed text-[var(--muted)]">
         Help us improve Access4All. Your mail app opens with a pre-filled message — you choose Send.
       </p>
       <a
-        href={`mailto:hello@restarto.ai?subject=${subject}&body=${body}`}
-        className="mt-8 inline-flex min-h-[48px] items-center text-[17px] font-medium text-[#0f4c5c] underline decoration-[#0f4c5c]/30 underline-offset-4 transition-colors hover:decoration-[#0f4c5c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#0f4c5c]"
+        href={`mailto:hello@access4all.app?subject=${subject}&body=${body}`}
+        className="mt-8 inline-flex min-h-[48px] items-center text-[17px] font-medium text-[var(--teal)] underline decoration-[var(--teal)]/30 underline-offset-4 hover:decoration-[var(--teal)]"
       >
         Email your feedback
       </a>
@@ -54,125 +48,105 @@ function FeedbackSection() {
 
 export function LandingPage() {
   return (
-    <div className="a4a-landing min-h-screen w-full bg-white text-[#1d1d1f] antialiased">
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:left-6 focus:top-4 focus:z-[60] focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:text-[#0f4c5c] focus:outline focus:outline-2 focus:outline-[#0f4c5c]"
-      >
+    <div className="min-h-screen w-full bg-[var(--cream)] text-[var(--ink)]">
+      <a href="#main-content" className="skip-link">
         Skip to main content
       </a>
 
-      <section
-        className="a4a-hero entry-plate marketing-nav forge-shell-marketing-hero relative min-h-[min(92vh,900px)] w-full overflow-hidden"
-        aria-labelledby="hero-heading"
-      >
-        <div className="absolute inset-0" aria-hidden>
-          <img
-            src={HERO_IMAGE.src}
-            alt=""
-            className="a4a-hero-img h-full w-full object-cover object-[72%_40%]"
-            width={1920}
-            height={1080}
-            loading="eager"
-            fetchPriority="high"
-          />
-          {/* Keep photo on the right; solid dark field under copy so foliage can't fight the type */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black from-0% via-black/92 via-45% to-transparent to-78%" />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/70" />
-        </div>
+      <section className="hero-dunes relative min-h-[min(92vh,880px)] w-full overflow-hidden" aria-labelledby="hero-heading">
+        <svg
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-40 w-full text-black/20"
+          viewBox="0 0 1440 160"
+          preserveAspectRatio="none"
+          aria-hidden
+        >
+          <path fill="currentColor" d="M0 96l80-10c80-11 240-32 400-21s320 53 480 58 320-21 400-32l80-10v69H0z" />
+        </svg>
+        <AppNav variant="hero" />
 
-        <div className="relative z-10 flex min-h-[min(92vh,900px)] w-full flex-col">
-          <AppNav variant="hero" />
+        <div className="relative z-10 mx-auto flex min-h-[min(92vh,880px)] w-full max-w-[1200px] flex-col justify-center px-4 pb-20 pt-24 sm:px-8">
+          <div className="max-w-xl">
+            <p className="text-[13px] font-semibold uppercase tracking-[0.16em] text-white/70">
+              Verified accessible places, by the community
+            </p>
+            <h1
+              id="hero-heading"
+              className="font-display mt-4 max-w-[14ch] text-[clamp(2.75rem,9vw,4.75rem)] font-semibold leading-[1.02] tracking-tight text-white"
+            >
+              {PRODUCT_NAME}
+            </h1>
+            <p className="mt-5 max-w-md text-[clamp(1.2rem,2.8vw,1.55rem)] font-semibold leading-snug text-white">
+              {PRODUCT_TAGLINE}
+            </p>
+            <p className="mt-4 max-w-md text-[17px] font-medium leading-relaxed text-white/90 sm:text-[18px]">
+              Filter hotels, stays, airports, and wheelchair vans by real features — then rank by
+              plain-English needs and anchor a verification on Monad.
+            </p>
 
-          <div className="mx-auto flex w-full max-w-[1200px] flex-1 flex-col justify-center px-4 pb-16 pt-20 sm:px-8 sm:pb-20 sm:pt-24">
-            <div className="a4a-hero-copy max-w-xl sm:max-w-lg lg:max-w-xl">
-              <h1
-                id="hero-heading"
-                className="font-display max-w-[14ch] text-[clamp(2.75rem,9vw,4.75rem)] font-semibold leading-[1.02] tracking-tight text-white"
+            <div className="mt-8 flex w-full max-w-md flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+              <Link
+                to="/contribute"
+                className="inline-flex min-h-[52px] w-full items-center justify-center gap-2 rounded-full bg-white px-9 text-[17px] font-semibold text-[var(--teal)] shadow-lg hover:scale-[1.02] sm:w-auto"
               >
-                Access4All
-              </h1>
-              <p className="mt-5 max-w-md text-[clamp(1.2rem,2.8vw,1.55rem)] font-semibold leading-snug text-white">
-                I stopped trusting “accessible” labels. Now I verify the features that matter.
-              </p>
-              <p className="mt-4 max-w-md text-[17px] font-medium leading-relaxed text-white sm:text-[18px]">
-                {PRODUCT_TAGLINE} — filter by roll-in showers and step-free entry, match your needs in
-                plain English, and anchor community verifications on Monad.
-              </p>
-
-              <div className="mt-8 flex w-full max-w-md flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
-                <Link
-                  to="/contribute"
-                  className="inline-flex min-h-[52px] w-full items-center justify-center gap-2 rounded-full bg-white px-9 text-[17px] font-semibold text-[#0f4c5c] shadow-lg shadow-slate-900/30 transition-transform hover:scale-[1.02] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white sm:w-auto"
-                >
-                  Contribute a place
-                  <ArrowRight className="h-4 w-4" aria-hidden />
-                </Link>
-                <Link
-                  to="/search"
-                  className="inline-flex min-h-[52px] w-full items-center justify-center rounded-full border-2 border-white bg-transparent px-8 text-[16px] font-semibold text-white transition-colors hover:bg-white/15 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white sm:w-auto"
-                >
-                  Search the catalog
-                </Link>
-              </div>
+                Contribute a place
+                <ArrowRight className="h-4 w-4" aria-hidden />
+              </Link>
+              <Link
+                to="/search"
+                className="inline-flex min-h-[52px] w-full items-center justify-center rounded-full border-2 border-white bg-transparent px-8 text-[16px] font-semibold text-white hover:bg-white/12 sm:w-auto"
+              >
+                Search the catalog
+              </Link>
             </div>
           </div>
         </div>
       </section>
 
-      <main id="main-content" className="w-full bg-[#f5f5f7]">
+      <main id="main-content" className="w-full bg-[var(--cream)]">
         <section
           id="how-it-works"
-          className="how-it-works mx-auto w-full max-w-[1200px] px-4 py-16 sm:px-8 sm:py-24"
+          className="mx-auto w-full max-w-[1200px] px-4 py-16 sm:px-8 sm:py-24"
           aria-labelledby="why-heading"
         >
-          <h2
-            id="why-heading"
-            className="font-display text-[32px] font-semibold tracking-tight text-[#1d1d1f] sm:text-[40px]"
-          >
+          <h2 id="why-heading" className="font-display text-[32px] font-semibold tracking-tight sm:text-[40px]">
             Why Access4All?
           </h2>
-          <p className="mt-4 max-w-2xl text-[18px] leading-relaxed text-[#6e6e73] sm:text-[19px]">
+          <p className="mt-4 max-w-2xl text-[18px] leading-relaxed text-[var(--muted)] sm:text-[19px]">
             Travel should work for everyone. Verified data, community wisdom, and thoughtful design —
             so you focus on the adventure, not the obstacles.
           </p>
 
           <ul className="mt-12 grid list-none gap-4 sm:mt-16 sm:grid-cols-3 sm:gap-6">
             {WHY_ITEMS.map(({ icon: Icon, title, body }) => (
-              <li key={title} className="rounded-2xl border border-[#d2d2d7] bg-white p-6 shadow-sm sm:p-8">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#0f4c5c]/10">
-                  <Icon className="h-5 w-5 text-[#0f4c5c]" strokeWidth={1.75} aria-hidden />
+              <li key={title} className="rounded-2xl border border-[var(--sand)] bg-[var(--paper)] p-6 shadow-sm sm:p-8">
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--teal-soft)]">
+                  <Icon className="h-5 w-5 text-[var(--teal)]" strokeWidth={1.75} aria-hidden />
                 </div>
-                <h3 className="mt-5 font-display text-[20px] font-semibold tracking-tight text-[#1d1d1f] sm:text-[21px]">
-                  {title}
-                </h3>
-                <p className="mt-3 text-[16px] leading-relaxed text-[#6e6e73] sm:text-[17px]">{body}</p>
+                <h3 className="mt-5 font-display text-[20px] font-semibold tracking-tight sm:text-[21px]">{title}</h3>
+                <p className="mt-3 text-[16px] leading-relaxed text-[var(--muted)] sm:text-[17px]">{body}</p>
               </li>
             ))}
           </ul>
         </section>
 
-        <section className="w-full border-t border-[#d2d2d7] bg-white" aria-labelledby="cta-heading">
+        <section className="w-full border-t border-[var(--sand)] bg-[var(--paper)]" aria-labelledby="cta-heading">
           <div className="mx-auto max-w-[1200px] px-4 py-16 text-center sm:px-8 sm:py-24">
-            <h2
-              id="cta-heading"
-              className="font-display text-[32px] font-semibold tracking-tight text-[#1d1d1f] sm:text-[40px]"
-            >
+            <h2 id="cta-heading" className="font-display text-[32px] font-semibold tracking-tight sm:text-[40px]">
               Ready for the 90-second path?
             </h2>
-            <p className="mx-auto mt-4 max-w-lg text-[18px] leading-relaxed text-[#6e6e73] sm:text-[19px]">
+            <p className="mx-auto mt-4 max-w-lg text-[18px] leading-relaxed text-[var(--muted)] sm:text-[19px]">
               Run the judge demo, or print the one-page brief for the table.
             </p>
-            <div className="mt-10 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center sm:gap-4">
+            <div className="mt-10 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
               <Link
                 to="/demo"
-                className="inline-flex min-h-[48px] items-center justify-center rounded-full bg-[#0f4c5c] px-8 text-[17px] font-semibold text-white transition-colors hover:bg-[#0a3540] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#0f4c5c]"
+                className="inline-flex min-h-[48px] items-center justify-center rounded-full bg-[var(--teal)] px-8 text-[17px] font-semibold text-white hover:bg-[var(--teal-deep)]"
               >
                 Start judge demo
               </Link>
               <Link
                 to="/judge"
-                className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-[#d2d2d7] bg-white px-8 text-[17px] font-semibold text-[#1d1d1f] transition-colors hover:border-[#86868b] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#0f4c5c]"
+                className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-[var(--sand)] bg-[var(--paper)] px-8 text-[17px] font-semibold hover:border-[var(--muted)]"
               >
                 Print judge brief
               </Link>
@@ -185,14 +159,7 @@ export function LandingPage() {
         </div>
       </main>
 
-      <footer className="w-full border-t border-[#d2d2d7] bg-white py-10">
-        <p className="text-center text-[13px] text-[#86868b]">
-          &copy; {new Date().getFullYear()} {PRODUCT_NAME}. {PRODUCT_TAGLINE}
-        </p>
-        <p className="mt-2 text-center text-[12px] text-[#86868b]">
-          Beta — curated demo stays and live open-map places are labeled in search.
-        </p>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }

@@ -71,8 +71,8 @@ function buildPublicPayload(summary, dailyRollups, hourlyUsage) {
       bullets: [
         `${summary.totalCalls} manufacturing runs completed for search, verification, and map data`,
         `Typical response time ${(summary.averageRuntimeMs / 1000).toFixed(1)}s — tuned for real accessibility workflows`,
-        'Community-verified listings and open data — no hidden mock results',
-        'Full operational detail available to authorized Forge operators only',
+        'Community-verified listings and optional open-map enrichment — demo stays are labeled',
+        'Full operational detail available to authorized operators only',
       ],
     },
     lastUpdated: new Date().toISOString(),

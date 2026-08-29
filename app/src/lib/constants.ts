@@ -7,4 +7,6 @@ export const PORTFOLIO_BASE = `/portfolio/${PORTFOLIO_SLUG}`;
 export const LEGACY_PORTFOLIO_BASE = '/portfolio/accesslink';
 
 export const PRODUCT_NAME = 'Access4All';
-export const PRODUCT_TAGLINE = 'Accessible Travel for Everyone';
+export const PRODUCT_MISSION = 'verified accessible places, by the community.';
+export const PRODUCT_TAGLINE = 'I stopped trusting “accessible” labels. Now I verify the features that matter.';
+export const PRODUCT_SHORT = 'Accessible travel for everyone';

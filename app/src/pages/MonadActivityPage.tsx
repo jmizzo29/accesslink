@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { AppNav } from '../components/AppNav';
+import { PageShell } from '../components/PageShell';
 import { VerificationHistory } from '../components/monad/VerificationHistory';
 import { fetchMonadStatus } from '../lib/monad/client';
 import type { MonadChainStatus } from '../lib/monad/types';
@@ -13,9 +13,7 @@ export function MonadActivityPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#f5f5f7] text-[#1d1d1f] antialiased">
-      <AppNav variant="app" />
-
+    <PageShell>
       <div className="mx-auto max-w-[1080px] px-6 py-12 sm:px-8 sm:py-16">
         <header className="max-w-2xl">
           <h1 className="text-[40px] font-semibold tracking-tight sm:text-[48px]">Monad activity</h1>
@@ -46,6 +44,6 @@ export function MonadActivityPage() {
           Verified reports are hashed and anchored via the AccessLinkVerified contract on Monad.
         </p>
       </div>
-    </div>
+    </PageShell>
   );
 }
