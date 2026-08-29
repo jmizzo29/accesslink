@@ -59,6 +59,7 @@ export const LISTING_CATEGORIES = [
 export const CONTRIBUTE_CATEGORIES = [
   { value: 'hotel', label: 'Hotel' },
   { value: 'airbnb', label: 'Airbnb / stay' },
+  { value: 'airport', label: 'Airport' },
   { value: 'wav', label: 'Wheelchair van (WAV)' },
 ] as const;
 

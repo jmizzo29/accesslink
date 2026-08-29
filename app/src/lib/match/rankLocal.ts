@@ -43,7 +43,7 @@ export function scoreListingForNeeds(
   let score = matchPercent;
 
   if (listing.verified) score += 8;
-  if (listing.verifiedOnChain) score += 7;
+  if (listing.provenance === 'verified') score += 6;
   if (listing.wheelchairRating === 'full') score += 5;
   if (listing.provenance === 'open-data' && matched.length > 0) score += 3;
   if (missing.length === 0) score += 10;
@@ -59,7 +59,9 @@ export function scoreListingForNeeds(
       `Missing ${missing.map((k) => FEATURE_LABELS[k] || k).join(', ')} — confirm with property.`,
     );
   }
-  if (listing.verifiedOnChain) reasons.push('On-chain verified record.');
+  if (listing.provenance === 'verified' || listing.verified) {
+    reasons.push('Verified by travelers.');
+  }
   if (listing.wheelchairRating === 'full') reasons.push('Wheelmap: fully wheelchair accessible.');
 
   return { score, matchPercent, matched, missing, reasons };

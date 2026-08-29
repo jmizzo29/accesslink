@@ -16,15 +16,15 @@ export function AccessibilityChecklist({ features }: AccessibilityChecklistProps
         <div>
           <h2
             id="accessibility-checklist-heading"
-            className="text-[28px] font-semibold tracking-tight text-[#1d1d1f] sm:text-[32px]"
+            className="font-display text-[28px] font-semibold tracking-tight sm:text-[32px]"
           >
-            Accessibility checklist
+            What travelers confirmed
           </h2>
-          <p className="mt-2 text-[17px] text-[#6e6e73]">
-            Community-verified features — confirm with the property before you book.
+          <p className="mt-2 text-[17px] text-[var(--muted)]">
+            Features checked on site. Always confirm with the place before you book.
           </p>
         </div>
-        <p className="rounded-full bg-[#0f4c5c]/8 px-4 py-2 text-[14px] font-medium text-[#0f4c5c]">
+        <p className="rounded-full bg-[var(--teal-soft)] px-4 py-2 text-[14px] font-medium text-[var(--teal)]">
           {available} of {total} confirmed
         </p>
       </div>
@@ -36,22 +36,22 @@ export function AccessibilityChecklist({ features }: AccessibilityChecklistProps
             <li
               key={key}
               className={[
-                'flex items-start gap-3 rounded-xl border px-4 py-4',
-                has ? 'border-[#0f4c5c]/25 bg-[#0f4c5c]/5' : 'border-[#d2d2d7] bg-white',
+                'flex items-start gap-3 rounded-2xl border px-4 py-4',
+                has ? 'border-[var(--teal)]/20 bg-[var(--teal-soft)]' : 'border-[var(--sand)] bg-[var(--paper)]',
               ].join(' ')}
             >
               <span
                 className={[
                   'mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full',
-                  has ? 'bg-[#0f4c5c] text-white' : 'bg-[#f5f5f7] text-[#86868b]',
+                  has ? 'bg-[var(--teal)] text-white' : 'bg-[var(--sand)] text-[var(--faint)]',
                 ].join(' ')}
                 aria-hidden
               >
                 {has ? <Check className="h-3.5 w-3.5" /> : <X className="h-3.5 w-3.5" />}
               </span>
               <span>
-                <span className="block text-[15px] font-medium text-[#1d1d1f]">{label}</span>
-                <span className="mt-1 block text-[13px] leading-snug text-[#86868b]">
+                <span className="block text-[15px] font-medium">{label}</span>
+                <span className="mt-1 block text-[13px] leading-snug text-[var(--faint)]">
                   {description}
                 </span>
                 <span className="sr-only">{has ? 'Confirmed' : 'Not confirmed'}</span>

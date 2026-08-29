@@ -17,6 +17,7 @@ import {
 } from './communityCatalog';
 import { getListingById as getLocalById } from './mockData';
 import { searchListingsLocal } from './searchLocal';
+import { withListingPhoto } from './photos';
 
 export type ListingsDataSource = 'supabase' | 'api' | 'local';
 
@@ -234,11 +235,7 @@ function normalizeListings(raw: unknown): Listing[] {
       rating: Number(r.rating ?? 0),
       reviewCount: Number(r.reviews ?? r.reviewCount ?? 0),
       verified: Boolean(r.verified ?? false),
-      verifiedOnChain: Boolean(r.verifiedOnChain ?? r.verified_on_chain ?? false),
       provenance: r.provenance as Listing['provenance'],
-      monadRecordId: r.monadRecordId ? String(r.monadRecordId) : undefined,
-      monadTxHash: r.monadTxHash ? String(r.monadTxHash) : undefined,
-      monadVerifiedAt: r.monadVerifiedAt ? String(r.monadVerifiedAt) : undefined,
       summary: String(
         r.summary ?? r.description ?? 'Community-verified accessibility details available.',
       ).slice(0, 240),
@@ -266,5 +263,5 @@ function normalizeListings(raw: unknown): Listing[] {
         ceilingHoist: Boolean(acc.ceilingHoist ?? acc.ceiling_hoist),
       },
     };
-  });
+  }).map(withListingPhoto);
 }

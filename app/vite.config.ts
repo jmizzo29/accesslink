@@ -21,7 +21,7 @@ function stripCrossorigin(): Plugin {
   };
 }
 
-/** Standalone Vercel uses `/`. Restarto can set VITE_BASE=/portfolio/access4all/app/ */
+/** Standalone Vercel uses `/`. Override with VITE_BASE only for a subpath host. */
 const DEPLOY_BASE = process.env.VITE_BASE || '/';
 
 export default defineConfig({

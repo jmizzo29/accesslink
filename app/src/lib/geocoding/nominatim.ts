@@ -20,7 +20,7 @@ export async function geocodeLocation(query: string): Promise<GeocodeResult | nu
     const res = await fetch(url.toString(), {
       headers: {
         Accept: 'application/json',
-        'User-Agent': 'Access4All/1.0 (accessible travel search; contact@restarto.ai)',
+        'User-Agent': 'Access4All/1.0 (accessible travel search)',
       },
     });
     if (!res.ok) {

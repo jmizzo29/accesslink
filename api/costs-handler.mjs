@@ -69,10 +69,10 @@ function buildPublicPayload(summary, dailyRollups, hourlyUsage) {
       subhead:
         'Every run of our pipeline helps travelers save time and find better options — with honest reporting on how Access4All is built.',
       bullets: [
-        `${summary.totalCalls} manufacturing runs completed for search, verification, and map data`,
+        `${summary.totalCalls} catalog and matcher runs completed for search, verification, and map data`,
         `Typical response time ${(summary.averageRuntimeMs / 1000).toFixed(1)}s — tuned for real accessibility workflows`,
-        'Community-verified listings and optional open-map enrichment — demo stays are labeled',
-        'Full operational detail available to authorized operators only',
+        'Community-verified listings and optional open-map enrichment — each stay is labeled',
+        'Detailed spend stays on a private page; travelers see public aggregates',
       ],
     },
     lastUpdated: new Date().toISOString(),

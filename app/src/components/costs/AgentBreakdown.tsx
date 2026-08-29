@@ -22,7 +22,7 @@ export function AgentBreakdown({ summary }: AgentBreakdownProps) {
     <div className="rounded-2xl border border-[#d2d2d7] bg-white p-6 sm:p-8">
       <h3 className="text-[20px] font-semibold tracking-tight text-[#1d1d1f]">Per-agent cost breakdown</h3>
       <p className="mt-2 text-[14px] text-[#6e6e73]">
-        Share of pipeline spend by Forge agent role
+        Share of catalog and matcher spend by role
       </p>
 
       <div className="mt-8 space-y-4">

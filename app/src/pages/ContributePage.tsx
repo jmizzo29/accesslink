@@ -1,12 +1,11 @@
 import { useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, CheckCircle2 } from 'lucide-react';
+import { CheckCircle2, Search } from 'lucide-react';
 import { toast } from 'sonner';
 import { PageShell } from '../components/PageShell';
 import { ACCESSIBILITY_FILTERS, CONTRIBUTE_CATEGORIES } from '../lib/listings/filters';
 import type { AccessibilityFilterKey, Listing, ListingCategory } from '../lib/listings/types';
 import { publishCommunityContribution } from '../lib/listings/communityCatalog';
-import { verifyListingOnMonad } from '../lib/monad/client';
 
 export function ContributePage() {
   const navigate = useNavigate();
@@ -16,7 +15,6 @@ export function ContributePage() {
   const [address, setAddress] = useState('');
   const [summary, setSummary] = useState('');
   const [contributorName, setContributorName] = useState('');
-  const [photoUrl, setPhotoUrl] = useState('');
   const [features, setFeatures] = useState<Partial<Record<AccessibilityFilterKey, boolean>>>({});
   const [submitting, setSubmitting] = useState(false);
   const [saved, setSaved] = useState<Listing | null>(null);
@@ -38,11 +36,11 @@ export function ContributePage() {
       return;
     }
     if (location.trim().length < 3) {
-      toast.error('Add a city or location so others can find it.');
+      toast.error('Add a city so other travelers can find it.');
       return;
     }
     if (summary.trim().length < 20) {
-      toast.error('Describe accessibility in at least 20 characters — help the next traveler.');
+      toast.error('Tell the next traveler what you found — at least a couple of sentences.');
       return;
     }
 
@@ -55,29 +53,18 @@ export function ContributePage() {
         category,
         summary,
         contributorName: contributorName || undefined,
-        photoUrl: photoUrl || undefined,
         accessibility: features,
       });
-
-      const featureKeys = Object.entries(features)
-        .filter(([, v]) => v)
-        .map(([k]) => k);
-      void verifyListingOnMonad({
-        propertyId: result.listing.id,
-        propertyName: result.listing.name,
-        location: result.listing.location,
-        features: featureKeys,
-      }).catch(() => undefined);
 
       setSaved(result.listing);
       setShared(result.shared);
       toast.success(
         result.shared
-          ? 'Published — anyone can search this place now.'
+          ? 'Published — anyone searching that city can see your report.'
           : result.message,
       );
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Could not save contribution');
+      toast.error(err instanceof Error ? err.message : 'Could not save your report');
     } finally {
       setSubmitting(false);
     }
@@ -86,27 +73,30 @@ export function ContributePage() {
   return (
     <PageShell>
       <div className="mx-auto max-w-[720px] px-4 py-12 sm:px-8 sm:py-16">
-        <p className="text-[13px] font-medium uppercase tracking-[0.12em] text-[#6e6e73]">
-          Community catalog
+        <p className="text-[13px] font-semibold uppercase tracking-[0.14em] text-[var(--teal)]">
+          Share what you found
         </p>
-        <h1 className="mt-3 font-display text-[36px] font-semibold tracking-tight sm:text-[44px]">
-          Contribute a place
+        <h1 className="mt-3 font-display text-[40px] font-semibold tracking-tight sm:text-[48px]">
+          Write a stay report
         </h1>
-        <p className="mt-4 text-[18px] leading-relaxed text-[#6e6e73]">
-          Add a hotel, Airbnb, or wheelchair van you personally verified. It goes into the shared
-          catalog so other travelers can find it — no tech skills required.
+        <p className="mt-4 text-[19px] leading-relaxed text-[var(--muted)]">
+          If a listing said “accessible” and it was wrong — or surprisingly right — tell the next
+          traveler. Your report is labeled Community until someone else can confirm the same
+          features.
         </p>
 
         {saved ? (
-          <div className="mt-10 rounded-2xl border border-emerald-200 bg-white p-6 sm:p-8">
+          <div className="mt-10 rounded-3xl border border-[var(--sand)] bg-[var(--paper)] p-6 sm:p-8">
             <div className="flex items-start gap-3">
-              <CheckCircle2 className="mt-0.5 h-6 w-6 shrink-0 text-emerald-700" aria-hidden />
+              <CheckCircle2 className="mt-0.5 h-6 w-6 shrink-0 text-[var(--ok)]" aria-hidden />
               <div>
-                <h2 className="text-[22px] font-semibold tracking-tight">{saved.name} is in the catalog</h2>
-                <p className="mt-2 text-[15px] leading-relaxed text-[#6e6e73]">
+                <h2 className="font-display text-[26px] font-semibold tracking-tight">
+                  {saved.name} is in the catalog
+                </h2>
+                <p className="mt-2 text-[16px] leading-relaxed text-[var(--muted)]">
                   {shared
-                    ? 'Live for everyone. Search by city or WAV to see it.'
-                    : 'Saved on this device. If the shared network was still connecting, open Contribute once more after a refresh so the whole world can see it.'}
+                    ? 'Live for everyone. Search that city to see your report alongside verified stays.'
+                    : 'Saved on this device. If the shared catalog is still connecting, refresh and search the city to confirm it appears.'}
                 </p>
               </div>
             </div>
@@ -118,21 +108,21 @@ export function ContributePage() {
                     `/search?location=${encodeURIComponent(saved.location)}&category=${saved.category}`,
                   )
                 }
-                className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-full bg-[#0f4c5c] px-6 text-[15px] font-semibold text-white hover:bg-[#0a3540]"
+                className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-full bg-[var(--teal)] px-6 text-[15px] font-semibold text-white hover:bg-[var(--teal-deep)]"
               >
                 <Search className="h-4 w-4" aria-hidden />
                 Search for it
               </button>
               <Link
                 to={`/property/${saved.id}`}
-                className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-[#d2d2d7] bg-white px-6 text-[15px] font-semibold hover:bg-[#f5f5f7]"
+                className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-[var(--sand)] bg-[var(--cream)] px-6 text-[15px] font-semibold hover:bg-[var(--paper)]"
               >
-                View listing
+                Open the stay page
               </Link>
             </div>
             <button
               type="button"
-              className="mt-6 text-[14px] font-medium text-[#6e6e73] hover:text-[#1d1d1f]"
+              className="mt-6 min-h-[44px] text-[15px] font-medium text-[var(--teal)] hover:underline"
               onClick={() => {
                 setSaved(null);
                 setShared(false);
@@ -141,26 +131,26 @@ export function ContributePage() {
                 setFeatures({});
               }}
             >
-              Contribute another place
+              Write another report
             </button>
           </div>
         ) : (
           <form
             onSubmit={handleSubmit}
             noValidate
-            className="mt-10 space-y-6 rounded-2xl border border-[#d2d2d7] bg-white p-6 sm:p-8"
+            className="mt-10 space-y-7 rounded-3xl border border-[var(--sand)] bg-[var(--paper)] p-6 sm:p-8"
           >
             <fieldset>
-              <legend className="text-[13px] font-medium text-[#6e6e73]">What are you adding?</legend>
-              <div className="mt-3 grid gap-2 sm:grid-cols-3">
+              <legend className="text-[15px] font-semibold text-[var(--ink)]">What kind of place?</legend>
+              <div className="mt-3 grid gap-2 sm:grid-cols-2">
                 {CONTRIBUTE_CATEGORIES.map((c) => (
                   <label
                     key={c.value}
                     className={[
-                      'flex min-h-[48px] cursor-pointer items-center justify-center rounded-xl border px-3 text-center text-[14px] font-medium',
+                      'flex min-h-[52px] cursor-pointer items-center justify-center rounded-2xl border px-3 text-center text-[15px] font-medium',
                       category === c.value
-                        ? 'border-[#0f4c5c] bg-[#0f4c5c]/8 text-[#0f4c5c]'
-                        : 'border-[#d2d2d7] bg-[#f5f5f7] text-[#1d1d1f]',
+                        ? 'border-[var(--teal)] bg-[var(--teal-soft)] text-[var(--teal)]'
+                        : 'border-[var(--sand)] bg-[var(--cream)] text-[var(--ink)]',
                     ].join(' ')}
                   >
                     <input
@@ -178,8 +168,8 @@ export function ContributePage() {
             </fieldset>
 
             <div>
-              <label htmlFor="place-name" className="block text-[13px] font-medium text-[#6e6e73]">
-                Place or service name
+              <label htmlFor="place-name" className="block text-[15px] font-semibold">
+                Place name
               </label>
               <input
                 id="place-name"
@@ -187,15 +177,15 @@ export function ContributePage() {
                 onChange={(e) => setName(e.target.value)}
                 required
                 placeholder={
-                  category === 'wav' ? 'City Accessible Vans' : 'Harborview Accessible Hotel'
+                  category === 'wav' ? 'City Accessible Vans' : 'Harborview Accessible Inn'
                 }
-                className="mt-2 w-full rounded-xl border border-[#d2d2d7] bg-[#f5f5f7] px-4 py-3 text-[17px] focus:border-[#0f4c5c] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0f4c5c]/20"
+                className="mt-2 w-full rounded-2xl border border-[var(--sand)] bg-[var(--cream)] px-4 py-3.5 text-[17px] placeholder:text-[var(--faint)] focus:border-[var(--teal)] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[var(--teal)]/20"
               />
             </div>
 
             <div>
-              <label htmlFor="place-location" className="block text-[13px] font-medium text-[#6e6e73]">
-                City / location
+              <label htmlFor="place-location" className="block text-[15px] font-semibold">
+                City
               </label>
               <input
                 id="place-location"
@@ -203,53 +193,41 @@ export function ContributePage() {
                 onChange={(e) => setLocation(e.target.value)}
                 required
                 placeholder="New York, NY"
-                className="mt-2 w-full rounded-xl border border-[#d2d2d7] bg-[#f5f5f7] px-4 py-3 text-[17px] focus:border-[#0f4c5c] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0f4c5c]/20"
+                className="mt-2 w-full rounded-2xl border border-[var(--sand)] bg-[var(--cream)] px-4 py-3.5 text-[17px] placeholder:text-[var(--faint)] focus:border-[var(--teal)] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[var(--teal)]/20"
               />
             </div>
 
             <div>
-              <label htmlFor="place-address" className="block text-[13px] font-medium text-[#6e6e73]">
-                Address (optional)
+              <label htmlFor="place-address" className="block text-[15px] font-semibold">
+                Street address <span className="font-normal text-[var(--faint)]">(optional)</span>
               </label>
               <input
                 id="place-address"
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
-                placeholder="Street address if you have it"
-                className="mt-2 w-full rounded-xl border border-[#d2d2d7] bg-[#f5f5f7] px-4 py-3 text-[17px] focus:border-[#0f4c5c] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0f4c5c]/20"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="place-summary" className="block text-[13px] font-medium text-[#6e6e73]">
-                What worked for accessibility?
-              </label>
-              <textarea
-                id="place-summary"
-                value={summary}
-                onChange={(e) => setSummary(e.target.value)}
-                required
-                rows={4}
-                placeholder="Ramp-equipped van, curb pickup, driver helped with transfer…"
-                className="mt-2 w-full rounded-xl border border-[#d2d2d7] bg-[#f5f5f7] px-4 py-3 text-[17px] focus:border-[#0f4c5c] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0f4c5c]/20"
+                placeholder="If you remember it"
+                className="mt-2 w-full rounded-2xl border border-[var(--sand)] bg-[var(--cream)] px-4 py-3.5 text-[17px] placeholder:text-[var(--faint)] focus:border-[var(--teal)] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[var(--teal)]/20"
               />
             </div>
 
             <fieldset>
-              <legend className="text-[13px] font-medium text-[#6e6e73]">Features you verified</legend>
-              <ul className="mt-3 grid gap-2 sm:grid-cols-2">
+              <legend className="text-[15px] font-semibold">What did you actually find?</legend>
+              <p className="mt-1 text-[14px] text-[var(--muted)]">
+                Check only what you saw or used. Leave the rest unchecked.
+              </p>
+              <ul className="mt-4 grid list-none gap-2 p-0 sm:grid-cols-2">
                 {ACCESSIBILITY_FILTERS.map((f) => (
                   <li key={f.key}>
-                    <label className="flex min-h-[44px] cursor-pointer items-start gap-3 rounded-xl border border-[#d2d2d7] bg-[#f5f5f7] px-3 py-3">
+                    <label className="flex min-h-[52px] cursor-pointer items-start gap-3 rounded-2xl border border-[var(--sand)] bg-[var(--cream)] px-3 py-3">
                       <input
                         type="checkbox"
                         checked={Boolean(features[f.key])}
                         onChange={(e) => toggleFeature(f.key, e.target.checked)}
-                        className="mt-1 h-4 w-4 rounded border-[#d2d2d7] text-[#0f4c5c] focus:ring-[#0f4c5c]"
+                        className="mt-1 h-5 w-5 rounded border-[var(--sand)] text-[var(--teal)] focus:ring-[var(--teal)]"
                       />
                       <span>
-                        <span className="block text-[14px] font-medium">{f.label}</span>
-                        <span className="block text-[12px] text-[#86868b]">{f.description}</span>
+                        <span className="block text-[15px] font-medium">{f.label}</span>
+                        <span className="block text-[13px] text-[var(--faint)]">{f.description}</span>
                       </span>
                     </label>
                   </li>
@@ -258,39 +236,39 @@ export function ContributePage() {
             </fieldset>
 
             <div>
-              <label htmlFor="photo-url" className="block text-[13px] font-medium text-[#6e6e73]">
-                Photo URL you own (optional)
+              <label htmlFor="place-summary" className="block text-[15px] font-semibold">
+                Notes for the next traveler
               </label>
-              <input
-                id="photo-url"
-                type="text"
-                inputMode="url"
-                value={photoUrl}
-                onChange={(e) => setPhotoUrl(e.target.value)}
-                placeholder="https://… — only links to photos you have rights to"
-                className="mt-2 w-full rounded-xl border border-[#d2d2d7] bg-[#f5f5f7] px-4 py-3 text-[17px] focus:border-[#0f4c5c] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0f4c5c]/20"
+              <textarea
+                id="place-summary"
+                value={summary}
+                onChange={(e) => setSummary(e.target.value)}
+                required
+                rows={6}
+                placeholder="The roll-in shower had a fold-down bench and a handheld sprayer. The bathroom doorway measured 34 inches. Parking was next to the lobby elevator."
+                className="mt-2 w-full rounded-2xl border border-[var(--sand)] bg-[var(--cream)] px-4 py-3.5 text-[17px] placeholder:text-[var(--faint)] focus:border-[var(--teal)] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[var(--teal)]/20"
               />
             </div>
 
             <div>
-              <label htmlFor="contributor" className="block text-[13px] font-medium text-[#6e6e73]">
-                Your name or handle (optional)
+              <label htmlFor="contributor" className="block text-[15px] font-semibold">
+                Your name or handle <span className="font-normal text-[var(--faint)]">(optional)</span>
               </label>
               <input
                 id="contributor"
                 value={contributorName}
                 onChange={(e) => setContributorName(e.target.value)}
                 placeholder="Alex"
-                className="mt-2 w-full rounded-xl border border-[#d2d2d7] bg-[#f5f5f7] px-4 py-3 text-[17px] focus:border-[#0f4c5c] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0f4c5c]/20"
+                className="mt-2 w-full rounded-2xl border border-[var(--sand)] bg-[var(--cream)] px-4 py-3.5 text-[17px] placeholder:text-[var(--faint)] focus:border-[var(--teal)] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[var(--teal)]/20"
               />
             </div>
 
             <button
               type="submit"
               disabled={submitting}
-              className="inline-flex min-h-[52px] w-full items-center justify-center rounded-full bg-[#0f4c5c] px-8 text-[17px] font-semibold text-white hover:bg-[#0a3540] disabled:opacity-60 sm:w-auto"
+              className="inline-flex min-h-[54px] w-full items-center justify-center rounded-full bg-[var(--teal)] px-8 text-[17px] font-semibold text-white hover:bg-[var(--teal-deep)] disabled:opacity-60 sm:w-auto"
             >
-              {submitting ? 'Publishing…' : 'Publish for everyone'}
+              {submitting ? 'Publishing…' : 'Publish my report'}
             </button>
           </form>
         )}

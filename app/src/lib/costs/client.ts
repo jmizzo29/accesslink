@@ -31,8 +31,8 @@ const SEED_PUBLIC_COSTS: PublicCostDashboardData = {
     bullets: [
       '42 catalog and matcher runs completed for search, verification, and map data',
       'Typical response time 0.5s — tuned for real accessibility workflows',
-      'Community-verified listings and optional open-map enrichment — demo stays are labeled',
-      'Operator dashboard stays gated; travelers see public aggregates only',
+      'Community-verified listings and optional open-map enrichment — each stay is labeled',
+      'Travelers see public aggregates; detailed spend stays on a private page',
     ],
   },
   lastUpdated: new Date().toISOString(),

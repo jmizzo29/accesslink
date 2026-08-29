@@ -8,23 +8,13 @@
  * Endpoints:
  * - GET /api/costs - Cost tracking data (supports ?format=json|csv|report)
  * - POST /api/search - Search accessible properties
- * - POST /api/verify - Verify property accessibility
- * - GET /api/monad/status - Monad chain + contract status
- * - GET /api/monad/history - Verification ledger history
- * - POST /api/monad/verify - Log / anchor verification on Monad
- * - POST /api/demo/verify - Judge demo one-click verify
+ * - POST /api/verify - Read a listing's community verification
  * - POST /api/match - Rank listings by natural-language needs
  */
 
 import { handleAdminVerify, handleCosts } from './costs-handler.mjs';
 import { enrichListingsServer } from './wheelmap-server.mjs';
 import { rankListingsByNeeds } from './match-needs.mjs';
-import {
-  getMonadStatus,
-  listVerificationRecords,
-  readOnChainRecordCount,
-  verifyPropertyOnMonad,
-} from './monad-server.mjs';
 import {
   addCommunityListing,
   isCommunityStoreConfigured,
@@ -37,7 +27,7 @@ import {
 } from './seed-listings.mjs';
 
 // ============================================================================
-// MOCK DATA - Replace with real Supabase/Monad integration when live
+// MOCK DATA - Replace with live database integration when configured
 // ============================================================================
 
 const LOCATION_COORDS = {
@@ -363,89 +353,6 @@ async function handleVerify(req) {
 }
 
 /**
- * GET /api/monad/status — chain + contract posture
- */
-async function handleMonadStatus() {
-  const status = getMonadStatus();
-  const onChainRecordCount = await readOnChainRecordCount();
-  const ledgerRecordCount = listVerificationRecords().length;
-  return {
-    status: 200,
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ ...status, onChainRecordCount, ledgerRecordCount }),
-  };
-}
-
-/**
- * GET /api/monad/history — verification ledger
- */
-async function handleMonadHistory(req) {
-  const url = new URL(req.url || '/', 'http://localhost');
-  const propertyId = url.searchParams.get('propertyId');
-  const records = listVerificationRecords({ propertyId: propertyId || undefined });
-  const status = getMonadStatus();
-  return {
-    status: 200,
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      records,
-      total: records.length,
-      propertyId: propertyId || null,
-      status,
-    }),
-  };
-}
-
-/**
- * POST /api/monad/verify — anchor accessibility verification
- */
-async function handleMonadVerify(req) {
-  try {
-    let body = {};
-    if (req.body) {
-      body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
-    }
-    const record = await verifyPropertyOnMonad(body);
-    return {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ record, status: getMonadStatus() }),
-    };
-  } catch (error) {
-    return {
-      status: 400,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        error: 'Monad verify failed',
-        message: error instanceof Error ? error.message : 'unknown error',
-      }),
-    };
-  }
-}
-
-/**
- * POST /api/demo/verify — judge demo one-click verification
- */
-async function handleDemoVerify() {
-  const property = getSeedListingById('prop-001') || demoProperties()[0];
-  const features = Object.entries(property.accessibility)
-    .filter(([, enabled]) => enabled)
-    .map(([key]) => key);
-  const record = await verifyPropertyOnMonad({
-    propertyId: property.id,
-    propertyName: property.name,
-    location: property.location,
-    features,
-    verifiedBy: 'Access4All demo',
-  });
-  return {
-    status: 200,
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ record, status: getMonadStatus() }),
-  };
-}
-
-/**
  * POST /api/match — Rank listings by natural-language accessibility needs
  */
 async function handleMatch(req) {
@@ -519,13 +426,9 @@ async function handleNotFound(req) {
       available: [
         '/api/search',
         '/api/match',
-        '/api/demo/verify',
         '/api/costs',
         '/api/costs/verify-admin',
         '/api/verify',
-        '/api/monad/status',
-        '/api/monad/history',
-        '/api/monad/verify',
         '/api/community/listings',
         '/api/community/contribute',
         '/api/listings/:id',
@@ -717,50 +620,6 @@ export default async function handler(req, res) {
         response = await handleOptions(req);
       } else if (req.method === 'POST') {
         response = await handleMatch(req);
-      } else {
-        response = {
-          status: 405,
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ error: 'Method not allowed' }),
-        };
-      }
-    } else if (pathname === '/api/demo/verify') {
-      if (req.method === 'OPTIONS') {
-        response = await handleOptions(req);
-      } else if (req.method === 'POST') {
-        response = await handleDemoVerify();
-      } else {
-        response = {
-          status: 405,
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ error: 'Method not allowed' }),
-        };
-      }
-    } else if (pathname === '/api/monad/status') {
-      if (req.method === 'GET') {
-        response = await handleMonadStatus();
-      } else {
-        response = {
-          status: 405,
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ error: 'Method not allowed' }),
-        };
-      }
-    } else if (pathname === '/api/monad/history') {
-      if (req.method === 'GET') {
-        response = await handleMonadHistory(req);
-      } else {
-        response = {
-          status: 405,
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ error: 'Method not allowed' }),
-        };
-      }
-    } else if (pathname === '/api/monad/verify') {
-      if (req.method === 'OPTIONS') {
-        response = await handleOptions(req);
-      } else if (req.method === 'POST') {
-        response = await handleMonadVerify(req);
       } else {
         response = {
           status: 405,

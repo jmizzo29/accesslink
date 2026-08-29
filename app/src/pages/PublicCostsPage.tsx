@@ -72,14 +72,14 @@ export function PublicCostsPage() {
                 hint="Estimated spend to build and improve Access4All"
               />
               <MetricTile
-                label="Pipeline runs"
+                label="Catalog runs"
                 value={summary.totalCalls.toLocaleString()}
-                hint="End-to-end manufacturing cycles completed"
+                hint="Search, match, and listing lookups completed"
               />
               <MetricTile
                 label="Avg response"
                 value={`${summary.averageRuntimeSec}s`}
-                hint="Typical time to deliver a pipeline step"
+                hint="Typical time to return a search or match"
               />
               <MetricTile
                 label="Focus"

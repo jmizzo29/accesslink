@@ -77,9 +77,6 @@ function normalizeListing(raw: Partial<Listing> & { id?: string; name?: string }
     coordinates: raw.coordinates,
     accessibility: acc,
     provenance: 'community',
-    verifiedOnChain: Boolean(raw.verifiedOnChain),
-    monadTxHash: raw.monadTxHash,
-    monadVerifiedAt: raw.monadVerifiedAt,
   };
 }
 

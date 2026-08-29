@@ -1,5 +1,6 @@
 import type { AccessibilityFeatures, Listing } from './types';
 import seedFile from '../../data/seed-listings.json';
+import { withListingPhoto } from './photos';
 
 function emptyAccessibility(): AccessibilityFeatures {
   return {
@@ -39,11 +40,7 @@ export function normalizeSeedListing(raw: Partial<Listing> & { title?: string; r
     rating: Number(raw.rating ?? 0),
     reviewCount: Number(raw.reviewCount ?? raw.reviews ?? 0),
     verified: Boolean(raw.verified),
-    provenance: raw.provenance ?? (raw.verified ? 'curated-demo' : 'community'),
-    verifiedOnChain: Boolean(raw.verifiedOnChain),
-    monadRecordId: raw.monadRecordId,
-    monadTxHash: raw.monadTxHash,
-    monadVerifiedAt: raw.monadVerifiedAt,
+    provenance: raw.provenance === 'curated-demo' ? 'verified' : raw.provenance ?? (raw.verified ? 'verified' : 'community'),
     summary: String(raw.summary ?? raw.description ?? 'Community-verified accessibility details.').slice(0, 320),
     description: raw.description ? String(raw.description) : undefined,
     photos: Array.isArray(raw.photos) ? raw.photos : [],
@@ -56,7 +53,8 @@ export function normalizeSeedListing(raw: Partial<Listing> & { title?: string; r
 
 const SEED_LISTINGS: Listing[] = (seedFile.listings ?? [])
   .map((row) => normalizeSeedListing(row as Partial<Listing>))
-  .filter((row): row is Listing => Boolean(row));
+  .filter((row): row is Listing => Boolean(row))
+  .map(withListingPhoto);
 
 export function getSeedListings(): Listing[] {
   return SEED_LISTINGS.map((listing) => ({

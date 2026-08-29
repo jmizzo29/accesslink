@@ -10,26 +10,16 @@ import { ProvenanceBadge } from '../components/search/ProvenanceBadge';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { getListingById } from '../lib/listings/repository';
 import { categoryLabel } from '../lib/listings/filters';
-import { VerificationHistory } from '../components/monad/VerificationHistory';
-import { OnChainBadge } from '../components/monad/OnChainBadge';
-import { AnchorVerifyButton } from '../components/monad/AnchorVerifyButton';
-import { fetchMonadStatus } from '../lib/monad/client';
-import { monadExplorerTxUrl, shortenHash } from '../lib/monad/explorer';
+import { listingPhotos } from '../lib/listings/photos';
 import { wheelchairRatingLabel } from '../lib/accessibility-cloud/mappers';
 import { provenanceLabel, resolveProvenance } from '../lib/listings/provenance';
 import type { Listing } from '../lib/listings/types';
-import type { MonadChainStatus } from '../lib/monad/types';
 
 export function PropertyDetailPage() {
   const { id } = useParams<{ id: string }>();
   const [listing, setListing] = useState<Listing | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
-  const [monadStatus, setMonadStatus] = useState<MonadChainStatus | null>(null);
-
-  useEffect(() => {
-    fetchMonadStatus().then(setMonadStatus);
-  }, []);
 
   useEffect(() => {
     if (!id) {
@@ -78,7 +68,7 @@ export function PropertyDetailPage() {
     return (
       <PageShell>
         <div className="mx-auto max-w-lg px-6 py-24 text-center">
-          <h1 className="font-display text-[32px] font-semibold">Property not found</h1>
+          <h1 className="font-display text-[32px] font-semibold">We could not find that place</h1>
           <Link
             to="/search"
             className="mt-8 inline-flex min-h-[48px] items-center rounded-full bg-[var(--teal)] px-8 text-[17px] font-medium text-white"
@@ -90,65 +80,78 @@ export function PropertyDetailPage() {
     );
   }
 
+  const photos = listingPhotos(listing);
+
   return (
     <PageShell>
-      <div className="mx-auto max-w-[1080px] px-6 py-8 sm:px-8 sm:py-12">
+      <div className="mx-auto max-w-[1100px] px-4 py-8 sm:px-8 sm:py-12">
         <Link
           to="/search"
-          className="inline-flex min-h-[44px] items-center gap-2 text-[15px] font-medium text-[#0f4c5c] hover:text-[#0a3540]"
+          className="inline-flex min-h-[44px] items-center gap-2 text-[15px] font-medium text-[var(--teal)]"
         >
           <ArrowLeft className="h-4 w-4" aria-hidden />
           Back to search
         </Link>
 
-        <header className="mt-8">
-          <div className="flex flex-wrap items-center gap-2">
-            <p className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#86868b]">
-              {categoryLabel(listing.category)}
+        <div className="mt-6 overflow-hidden rounded-[2rem] bg-[var(--sand)]">
+          <PropertyPhotoGallery photos={photos} propertyName={listing.name} />
+        </div>
+
+        <header className="mt-8 grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">
+          <div>
+            <div className="flex flex-wrap items-center gap-2">
+              <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[var(--faint)]">
+                {categoryLabel(listing.category)}
+              </p>
+              <ProvenanceBadge listing={listing} />
+            </div>
+            <h1 className="mt-3 font-display text-[40px] font-semibold tracking-tight sm:text-[52px]">
+              {listing.name}
+            </h1>
+            <p className="mt-4 flex items-center gap-2 text-[18px] text-[var(--muted)]">
+              <MapPin className="h-4 w-4 shrink-0" aria-hidden />
+              {listing.address || listing.location}
             </p>
-            <ProvenanceBadge listing={listing} />
-            {listing.verified && (
-              <OnChainBadge compact onChain={listing.verifiedOnChain} />
+            {listing.reviewCount > 0 && (
+              <p className="mt-2 flex items-center gap-1 text-[15px] text-[var(--faint)]">
+                <Star className="h-4 w-4 fill-[var(--gold)] text-[var(--gold)]" aria-hidden />
+                {listing.rating.toFixed(1)} · {listing.reviewCount} traveler notes
+              </p>
+            )}
+            {listing.wheelchairRating && (
+              <p className="mt-3 text-[15px] font-medium text-[var(--teal)]">
+                {wheelchairRatingLabel(listing.wheelchairRating)}
+              </p>
             )}
           </div>
-          <p className="mt-2 text-[13px] text-[#6e6e73]">
-            {provenanceLabel(resolveProvenance(listing))}
-          </p>
-          {listing.wheelchairRating && (
-            <p className="mt-2 text-[15px] font-medium text-[#0f4c5c]">
-              {wheelchairRatingLabel(listing.wheelchairRating)}
+          <aside className="rounded-3xl border border-[var(--sand)] bg-[var(--paper)] p-6">
+            {listing.price > 0 ? (
+              <p className="font-display text-[36px] font-semibold tabular-nums">
+                ${listing.price}
+                <span className="ml-2 font-sans text-[15px] font-normal text-[var(--faint)]">
+                  {listing.priceLabel}
+                </span>
+              </p>
+            ) : (
+              <p className="text-[18px] font-semibold">{listing.priceLabel}</p>
+            )}
+            <p className="mt-2 text-[14px] leading-relaxed text-[var(--muted)]">
+              {provenanceLabel(resolveProvenance(listing))}. Always confirm details with the place
+              before you book.
             </p>
-          )}
-          <h1 className="mt-3 font-display text-[40px] font-semibold tracking-tight sm:text-[48px]">
-            {listing.name}
-          </h1>
-          <p className="mt-4 flex items-center gap-2 text-[17px] text-[#6e6e73]">
-            <MapPin className="h-4 w-4 shrink-0" aria-hidden />
-            {listing.address || listing.location}
-          </p>
-          {listing.reviewCount > 0 && (
-            <p className="mt-2 flex items-center gap-1 text-[15px] text-[#86868b]">
-              <Star className="h-4 w-4 fill-[#0f4c5c] text-[#0f4c5c]" aria-hidden />
-              {listing.rating.toFixed(1)} · {listing.reviewCount} reviews
-            </p>
-          )}
-          {listing.price > 0 && (
-            <p className="mt-4 text-[28px] font-semibold tabular-nums">
-              ${listing.price}
-              <span className="ml-2 text-[15px] font-normal text-[#86868b]">{listing.priceLabel}</span>
-            </p>
-          )}
-          <div className="mt-6">
-            <AnchorVerifyButton listing={listing} status={monadStatus} />
-          </div>
+            <Link
+              to="/contribute"
+              className="mt-6 inline-flex min-h-[48px] w-full items-center justify-center rounded-full bg-[var(--teal)] px-5 text-[15px] font-semibold text-white hover:bg-[var(--teal-deep)]"
+            >
+              Add what you found here
+            </Link>
+          </aside>
         </header>
 
-        <div className="mt-10 space-y-16">
-          <PropertyPhotoGallery photos={listing.photos ?? []} propertyName={listing.name} />
-
+        <div className="mt-14 space-y-16">
           <section>
-            <h2 className="text-[28px] font-semibold tracking-tight">About this place</h2>
-            <p className="mt-4 max-w-3xl text-[17px] leading-relaxed text-[#6e6e73]">
+            <h2 className="font-display text-[28px] font-semibold tracking-tight">The stay</h2>
+            <p className="mt-4 max-w-3xl text-[18px] leading-relaxed text-[var(--muted)]">
               {listing.description || listing.summary}
             </p>
           </section>
@@ -161,35 +164,8 @@ export function PropertyDetailPage() {
             coordinates={listing.coordinates}
           />
 
-          {listing.monadTxHash && (
-            <section className="rounded-2xl border border-[#d2d2d7] bg-white p-6 sm:p-8">
-              <h2 className="text-[24px] font-semibold tracking-tight">Monad verification</h2>
-              <p className="mt-3 text-[15px] text-[#6e6e73]">
-                This listing has a community-verified accessibility record
-                {listing.monadVerifiedAt
-                  ? ` from ${new Date(listing.monadVerifiedAt).toLocaleDateString()}`
-                  : ''}
-                .
-              </p>
-              <a
-                href={monadExplorerTxUrl('https://testnet.monadvision.com', listing.monadTxHash)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-4 inline-flex items-center gap-2 font-mono text-[14px] text-[#0f4c5c] hover:underline"
-              >
-                {shortenHash(listing.monadTxHash)}
-              </a>
-            </section>
-          )}
-
-          <VerificationHistory propertyId={listing.id} propertyName={listing.name} />
-
           <AccessibilityReportForm listing={listing} />
         </div>
-
-        <p className="mt-12 text-center text-[12px] text-[var(--faint)]">
-          Beta — always confirm accessibility with the property before booking.
-        </p>
       </div>
     </PageShell>
   );

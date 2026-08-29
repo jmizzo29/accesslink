@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { MapPin, Search } from 'lucide-react';
 import { PageShell } from '../components/PageShell';
 import { AccessibilityFilters } from '../components/search/AccessibilityFilters';
-import { ListingDetailPanel } from '../components/search/ListingDetailPanel';
 import { NeedsMatcher } from '../components/search/NeedsMatcher';
 import { SearchEmptyState } from '../components/search/SearchEmptyState';
 import { SearchResultsList } from '../components/search/SearchResults';
@@ -11,9 +10,7 @@ import { ACCESSIBILITY_FILTERS, LISTING_CATEGORIES } from '../lib/listings/filte
 import { searchListings } from '../lib/listings/repository';
 import { resolveProvenance } from '../lib/listings/provenance';
 import { matchListingsByNeeds } from '../lib/match/client';
-import { fetchMonadStatus } from '../lib/monad/client';
 import type { AccessibilityFilterKey, Listing, ListingCategory } from '../lib/listings/types';
-import type { MonadChainStatus } from '../lib/monad/types';
 
 type SearchStatus = 'idle' | 'loading' | 'done' | 'error';
 
@@ -29,7 +26,6 @@ function featuresFromParams(params: URLSearchParams): Partial<Record<Accessibili
 
 export function SearchPage() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const navigate = useNavigate();
   const bootstrapped = useRef(false);
 
   const [location, setLocation] = useState(searchParams.get('location') || '');
@@ -42,19 +38,13 @@ export function SearchPage() {
   const [results, setResults] = useState<Listing[]>([]);
   const [status, setStatus] = useState<SearchStatus>('idle');
   const [hasSearched, setHasSearched] = useState(false);
-  const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
   const [needs, setNeeds] = useState(searchParams.get('needs') || '');
   const [matching, setMatching] = useState(false);
   const [ranked, setRanked] = useState(false);
   const [parsedFeatures, setParsedFeatures] = useState<string[]>([]);
   const [enrichmentNote, setEnrichmentNote] = useState<string | null>(null);
-  const [monadStatus, setMonadStatus] = useState<MonadChainStatus | null>(null);
 
   const activeFilterCount = Object.values(featureFilters).filter(Boolean).length;
-
-  useEffect(() => {
-    fetchMonadStatus().then(setMonadStatus);
-  }, []);
 
   const syncUrl = useCallback(
     (next: {
@@ -112,7 +102,6 @@ export function SearchPage() {
 
       setHasSearched(true);
       setStatus('loading');
-      setSelectedListing(null);
       setRanked(false);
 
       try {
@@ -143,7 +132,7 @@ export function SearchPage() {
         const demo = nextResults.filter((r) => resolveProvenance(r) === 'curated-demo').length;
         const community = nextResults.filter((r) => resolveProvenance(r) === 'community').length;
         const parts: string[] = [];
-        if (demo) parts.push(`${demo} curated demo stay${demo === 1 ? '' : 's'}`);
+        if (demo) parts.push(`${demo} verified stay${demo === 1 ? '' : 's'}`);
         if (community) parts.push(`${community} community report${community === 1 ? '' : 's'}`);
         if (openData || response.cloudPlacesAdded) {
           parts.push(
@@ -199,18 +188,16 @@ export function SearchPage() {
     }
   }
 
-  function handleViewDetails(listing: Listing) {
-    navigate(`/property/${listing.id}${searchParams.get('demo') === '1' ? '?demo=1' : ''}`);
-  }
-
   return (
     <PageShell>
       <div className="mx-auto max-w-[1080px] px-4 py-12 sm:px-8 sm:py-16">
         <header className="max-w-2xl">
-          <h1 className="font-display text-[40px] font-semibold tracking-tight sm:text-[48px]">Search</h1>
+          <h1 className="font-display text-[40px] font-semibold tracking-tight sm:text-[48px]">
+            Find a stay that will actually work
+          </h1>
           <p className="mt-4 text-[19px] leading-relaxed text-[var(--muted)]">
-            Find hotels, stays, airports, and wheelchair vans with verified accessibility details —
-            curated demo stays and community reports are labeled clearly.
+            Hotels, Airbnb stays, airports, and wheelchair vans — filtered by the features
+            travelers checked on site.
           </p>
           {enrichmentNote && <p className="mt-3 text-[14px] text-[var(--teal)]">{enrichmentNote}</p>}
         </header>
@@ -284,21 +271,20 @@ export function SearchPage() {
         {ranked && results[0] && (
           <div className="mt-8 rounded-2xl border border-[var(--teal)]/20 bg-gradient-to-br from-[var(--teal-soft)] to-[var(--paper)] p-6 sm:p-8">
             <p className="text-[13px] font-semibold uppercase tracking-[0.1em] text-[var(--teal)]">
-              Access Match → Anchor
+              Best match for your needs
             </p>
             <h2 className="mt-2 font-display text-[24px] font-semibold tracking-tight">
-              Best fit: {results[0].name}
+              {results[0].name}
             </h2>
             <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-[var(--muted)]">
-              Feature-by-feature match against your needs. Anchor a verification on Monad so the trust
-              signal is public and inspectable.
+              Ranked against the features you described — not a marketing “accessible” tag.
             </p>
             <div className="mt-5 flex flex-wrap gap-3">
               <Link
                 to={`/property/${results[0].id}`}
                 className="inline-flex min-h-[44px] items-center rounded-full border border-[var(--sand)] bg-[var(--paper)] px-5 text-[15px] font-medium"
               >
-                Inspect stay
+                View this stay
               </Link>
             </div>
           </div>
@@ -327,17 +313,11 @@ export function SearchPage() {
           )}
 
           {status === 'done' && results.length > 0 && (
-            <SearchResultsList
-              results={results}
-              onViewDetails={handleViewDetails}
-              ranked={ranked}
-              monadStatus={monadStatus}
-            />
+            <SearchResultsList results={results} ranked={ranked} />
           )}
         </section>
       </div>
 
-      <ListingDetailPanel listing={selectedListing} onClose={() => setSelectedListing(null)} />
     </PageShell>
   );
 }

@@ -1,20 +1,20 @@
 @import "tailwindcss";
 
 :root {
-  --ink: #142024;
-  --muted: #4a5b60;
-  --faint: #6b7c81;
-  --teal: #0f5c68;
-  --teal-deep: #0a3d46;
-  --teal-soft: #d7eef0;
-  --cream: #f3eee4;
-  --paper: #fffcf7;
-  --sand: #e4d9c8;
+  --ink: #1c1915;
+  --muted: #5a5348;
+  --faint: #7a7164;
+  --teal: #1f4d48;
+  --teal-deep: #163833;
+  --teal-soft: #dce8e4;
+  --clay: #c45c26;
+  --clay-deep: #9a4418;
+  --cream: #f6f0e6;
+  --paper: #fffaf3;
+  --sand: #e4d8c6;
   --gold: #9a6b12;
-  --gold-soft: #f3e4c0;
-  --focus: #0f5c68;
-  --danger: #8a2f2f;
-  --ok: #1f6b4a;
+  --focus: #1f4d48;
+  --ok: #2a6b4a;
   --a4a-ink: var(--ink);
   --a4a-muted: var(--muted);
   --a4a-teal: var(--teal);
@@ -45,18 +45,11 @@ body,
 
 body {
   font-family: "Source Sans 3", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  font-size: 16px;
+  font-size: 17px;
   line-height: 1.55;
   color: var(--ink);
   background: var(--cream);
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-#root {
-  display: block;
-  min-height: 100vh;
-  background: var(--cream);
 }
 
 .font-display,
@@ -100,18 +93,6 @@ h3 {
   border-width: 0;
 }
 
-.sr-only:focus,
-.focus\:not-sr-only:focus {
-  position: static;
-  width: auto;
-  height: auto;
-  padding: inherit;
-  margin: inherit;
-  overflow: visible;
-  clip: auto;
-  white-space: normal;
-}
-
 input,
 select,
 textarea,
@@ -121,28 +102,18 @@ button {
 
 a,
 button,
-[role="button"],
-input,
-select,
-textarea {
+[role="button"] {
   min-height: 44px;
 }
 
-button:disabled {
-  cursor: not-allowed;
+.stay-card {
+  transition: transform 180ms ease, box-shadow 180ms ease;
 }
 
-.hero-dunes {
-  background:
-    radial-gradient(1200px 500px at 90% 10%, rgba(216, 168, 90, 0.28), transparent 55%),
-    radial-gradient(900px 420px at 12% 80%, rgba(15, 92, 104, 0.45), transparent 60%),
-    linear-gradient(165deg, #0b2a30 0%, #0f4c5c 46%, #16343a 100%);
+.stay-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 40px rgba(28, 25, 21, 0.08);
 }
-
-.tile-hotel { background: linear-gradient(160deg, #0f5c68, #1d3f48); }
-.tile-airbnb { background: linear-gradient(160deg, #7a4a1e, #c48a3a); }
-.tile-airport { background: linear-gradient(160deg, #1d4f7a, #3d7ea6); }
-.tile-wav { background: linear-gradient(160deg, #2d5a3d, #5a8f6a); }
 
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -153,11 +124,8 @@ button:disabled {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-}
 
-@media print {
-  .skip-link,
-  .print-hidden {
-    display: none !important;
+  .stay-card:hover {
+    transform: none;
   }
 }

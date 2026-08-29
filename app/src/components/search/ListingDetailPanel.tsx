@@ -127,7 +127,7 @@ export function ListingDetailPanel({ listing, onClose }: ListingDetailPanelProps
         </section>
 
         <p className="mt-8 text-[13px] leading-relaxed text-[#86868b]">
-          Beta — details are community-reported. Always confirm accessibility with the property before booking.
+          Details are traveler-reported. Always confirm accessibility with the place before you book.
         </p>
 
         <button

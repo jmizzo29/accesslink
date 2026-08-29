@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import { Routes, Route, useLocation, Link } from 'react-router-dom';
+import { Routes, Route, useLocation, Link, Navigate } from 'react-router-dom';
 import { Toaster } from 'sonner';
 import { LandingPage } from './pages/LandingPage';
 import { SearchPage } from './pages/SearchPage';
@@ -8,7 +8,6 @@ import { PublicCostsPage } from './pages/PublicCostsPage';
 import { AdminCostsPage } from './pages/AdminCostsPage';
 import { DemoPage } from './pages/DemoPage';
 import { JudgeBriefPage } from './pages/JudgeBriefPage';
-import { MonadActivityPage } from './pages/MonadActivityPage';
 import { ContributePage } from './pages/ContributePage';
 import { LoadingSpinner } from './components/LoadingSpinner';
 import { PageShell } from './components/PageShell';
@@ -29,7 +28,7 @@ export default function App() {
             <Route path="/" element={<LandingPage />} />
             <Route path="/search" element={<SearchPage />} />
             <Route path="/property/:id" element={<PropertyDetailPage />} />
-            <Route path="/activity" element={<MonadActivityPage />} />
+            <Route path="/activity" element={<Navigate to="/" replace />} />
             <Route path="/demo" element={<DemoPage />} />
             <Route path="/contribute" element={<ContributePage />} />
             <Route path="/judge" element={<JudgeBriefPage />} />

@@ -45,10 +45,6 @@ export type Listing = {
   provenance?: 'verified' | 'community' | 'open-data' | 'curated-demo';
   wheelchairRating?: 'full' | 'partial' | 'none' | 'unknown';
   accessibilityCloudId?: string;
-  verifiedOnChain?: boolean;
-  monadRecordId?: string;
-  monadTxHash?: string;
-  monadVerifiedAt?: string;
   matchScore?: number;
   matchPercent?: number;
   matchReasons?: string[];
