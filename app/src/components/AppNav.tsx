@@ -32,12 +32,19 @@ export function AppNav({ variant = 'app' }: AppNavProps) {
         <Link
           to="/"
           className={[
-            'inline-flex min-h-[44px] min-w-[44px] shrink-0 items-center rounded-md px-1 font-display text-[20px] font-semibold tracking-tight underline-offset-4 hover:underline',
+            'inline-flex min-h-[44px] min-w-[44px] shrink-0 items-center gap-2.5 rounded-md px-1 font-display text-[20px] font-semibold tracking-tight underline-offset-4 hover:underline',
             onHero ? 'text-white' : 'text-[var(--ink)]',
           ].join(' ')}
           aria-label={`${PRODUCT_NAME} home`}
           aria-current={onHome ? 'page' : undefined}
         >
+          <img
+            src="/favicon.svg?v=isa"
+            alt=""
+            width={28}
+            height={28}
+            className="h-7 w-7 rounded-[7px]"
+          />
           {PRODUCT_NAME}
         </Link>
 

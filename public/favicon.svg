@@ -1,6 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="64" height="64" rx="12" fill="#0066cc"/>
-  <path d="M32 16C35.314 16 38 18.686 38 22C38 25.314 35.314 28 32 28C28.686 28 26 25.314 26 22C26 18.686 28.686 16 32 16Z" fill="white"/>
-  <path d="M24 48V36C24 32.134 27.134 29 31 29H33C36.866 29 40 32.134 40 36V48" fill="white"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Access4All — International Symbol of Access">
+  <rect width="64" height="64" rx="16" fill="#0f5c68"/>
+  <g fill="#fff">
+    <circle cx="38.4" cy="14.2" r="6"/>
+    <rect x="32.6" y="19.8" width="8.4" height="12.6" rx="3.3"/>
+    <rect x="38.6" y="22.2" width="13.6" height="5.2" rx="2.6"/>
+    <rect x="34.6" y="30.4" width="12" height="5.4" rx="2.5"/>
+    <rect x="41.8" y="32.8" width="5.4" height="14.8" rx="2.6"/>
+    <rect x="41.8" y="44.6" width="11.2" height="4.6" rx="2.3"/>
+  </g>
+  <circle cx="25.6" cy="42.8" r="13.6" fill="none" stroke="#fff" stroke-width="6.4"/>
 </svg>
