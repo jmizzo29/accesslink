@@ -144,7 +144,7 @@ export function PropertyDetailPage() {
         </header>
 
         <div className="mt-10 space-y-16">
-          <PropertyPhotoGallery photos={listing.photos} propertyName={listing.name} />
+          <PropertyPhotoGallery photos={listing.photos ?? []} propertyName={listing.name} />
 
           <section>
             <h2 className="text-[28px] font-semibold tracking-tight">About this place</h2>

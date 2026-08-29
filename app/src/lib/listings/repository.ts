@@ -13,6 +13,7 @@ import {
   getCommunityListingByIdAsync,
   loadCommunityCatalog,
   mergeCommunityIntoResults,
+  readLocalCommunityCatalog,
 } from './communityCatalog';
 import { getListingById as getLocalById } from './mockData';
 import { searchListingsLocal } from './searchLocal';
@@ -156,6 +157,9 @@ export async function getListingById(
   const forced = options.dataSource;
   const local = getLocalById(id);
   if (local) return { listing: local, dataSource: 'local' };
+
+  const justPublished = readLocalCommunityCatalog().find((listing) => listing.id === id);
+  if (justPublished) return { listing: justPublished, dataSource: 'local' };
 
   const community = await getCommunityListingByIdAsync(id);
   if (community) return { listing: community, dataSource: 'local' };
