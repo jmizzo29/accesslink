@@ -147,6 +147,7 @@ export function ContributePage() {
         ) : (
           <form
             onSubmit={handleSubmit}
+            noValidate
             className="mt-10 space-y-6 rounded-2xl border border-[#d2d2d7] bg-white p-6 sm:p-8"
           >
             <fieldset>
@@ -262,7 +263,8 @@ export function ContributePage() {
               </label>
               <input
                 id="photo-url"
-                type="url"
+                type="text"
+                inputMode="url"
                 value={photoUrl}
                 onChange={(e) => setPhotoUrl(e.target.value)}
                 placeholder="https://… — only links to photos you have rights to"

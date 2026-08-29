@@ -71,6 +71,7 @@ export function normalizeSeedListing(raw) {
 
 function loadCatalog(filename, fallbackListings = []) {
   const candidates = [
+    join(__dirname, 'data', filename),
     join(__dirname, filename),
     join(__dirname, '../app/src/data', filename),
     join(__dirname, '../app/public', filename),

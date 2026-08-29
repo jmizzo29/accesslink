@@ -54,7 +54,7 @@ function mergeById(primary = [], secondary = []) {
 function seedCatalog() {
   try {
     const seeded = JSON.parse(
-      readFileSync(join(__dirname, 'community-catalog.json'), 'utf8'),
+      readFileSync(join(__dirname, 'data/community-catalog.json'), 'utf8'),
     );
     const fromFile = Array.isArray(seeded.listings) ? seeded.listings : [];
     return {
