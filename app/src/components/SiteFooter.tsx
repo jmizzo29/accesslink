@@ -12,6 +12,11 @@ export function SiteFooter() {
         <nav aria-label="Footer">
           <ul className="flex flex-wrap gap-x-8 gap-y-2 text-[15px] font-medium text-[var(--teal)]">
             <li>
+              <Link to="/" className="inline-flex min-h-[44px] items-center hover:underline">
+                Home
+              </Link>
+            </li>
+            <li>
               <Link to="/search" className="inline-flex min-h-[44px] items-center hover:underline">
                 Search
               </Link>
