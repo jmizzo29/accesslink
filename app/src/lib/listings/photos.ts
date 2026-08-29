@@ -1,38 +1,38 @@
 import type { Listing, ListingPhoto } from './types';
 
 const CATEGORY_PHOTO: Record<Listing['category'], string> = {
-  hotel: '/photos/photo-hotel-room.png',
-  airbnb: '/photos/photo-stay.png',
-  airport: '/photos/photo-airport.png',
-  wav: '/photos/photo-van.png',
+  hotel: '/photos/photo-hotel-room.jpg',
+  airbnb: '/photos/photo-stay.jpg',
+  airport: '/photos/photo-airport.jpg',
+  wav: '/photos/photo-van.jpg',
 };
 
 const LISTING_PHOTO: Record<string, string> = {
-  'prop-001': '/photos/photo-hotel-room.png',
-  'prop-004': '/photos/photo-resort.png',
-  'prop-005': '/photos/photo-resort.png',
-  'prop-008': '/photos/photo-hotel-room.png',
-  'prop-012': '/photos/photo-hotel-room.png',
-  'community-hotel-chi': '/photos/photo-hotel-room.png',
-  'community-hotel-aus': '/photos/photo-hotel-room.png',
-  'prop-002': '/photos/photo-stay.png',
-  'prop-006': '/photos/photo-stay.png',
-  'prop-009': '/photos/photo-stay.png',
-  'prop-013': '/photos/photo-stay.png',
-  'prop-015': '/photos/photo-stay.png',
-  'community-stay-mia': '/photos/photo-stay.png',
-  'community-stay-pdx': '/photos/photo-stay.png',
-  'prop-003': '/photos/photo-airport.png',
-  'prop-007': '/photos/photo-airport.png',
-  'prop-011': '/photos/photo-airport.png',
-  'prop-014': '/photos/photo-airport.png',
-  'prop-010': '/photos/photo-van.png',
-  'prop-016': '/photos/photo-van.png',
-  'community-wav-nyc': '/photos/photo-van.png',
-  'community-wav-orl': '/photos/photo-van.png',
+  'prop-001': '/photos/photo-hotel-room.jpg',
+  'prop-004': '/photos/photo-resort.jpg',
+  'prop-005': '/photos/photo-resort.jpg',
+  'prop-008': '/photos/photo-hotel-room.jpg',
+  'prop-012': '/photos/photo-hotel-room.jpg',
+  'community-hotel-chi': '/photos/photo-hotel-room.jpg',
+  'community-hotel-aus': '/photos/photo-hotel-room.jpg',
+  'prop-002': '/photos/photo-stay.jpg',
+  'prop-006': '/photos/photo-stay.jpg',
+  'prop-009': '/photos/photo-stay.jpg',
+  'prop-013': '/photos/photo-stay.jpg',
+  'prop-015': '/photos/photo-stay.jpg',
+  'community-stay-mia': '/photos/photo-stay.jpg',
+  'community-stay-pdx': '/photos/photo-stay.jpg',
+  'prop-003': '/photos/photo-airport.jpg',
+  'prop-007': '/photos/photo-airport.jpg',
+  'prop-011': '/photos/photo-airport.jpg',
+  'prop-014': '/photos/photo-airport.jpg',
+  'prop-010': '/photos/photo-van.jpg',
+  'prop-016': '/photos/photo-van.jpg',
+  'community-wav-nyc': '/photos/photo-van.jpg',
+  'community-wav-orl': '/photos/photo-van.jpg',
 };
 
-export const HERO_PHOTO = '/photos/hero-hotel-entrance.png';
+export const HERO_PHOTO = '/photos/hero-hotel-entrance.jpg';
 
 export function listingPhotoUrl(listing: Pick<Listing, 'id' | 'category' | 'photos'>): string {
   const owned = listing.photos?.find((p) => p.url);
